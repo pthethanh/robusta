@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:4.1.8
+    hostname: robusta-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      # You can replace /opt/data/mongo_home by any path to
+      # a directory on your machine.
+      # MongoDB will use that directory to store all the data.
+      - /opt/data/mongo_home:/data/db
+    restart: always
+
+  backend:
+    image: lnquy/realize:2.0.2
+    hostname: robusta-backend
+    ports:
+      - "8080:8080"
+      - "8082:8082"
+    environment:
+      # Add more environments here if you want to pass it
+      # to backend service env config.
+      - DB_TYPE=mongodb
+      - MONGODB_ADDRS=mongodb:27017
+    command: [ "start" ]
+    volumes:
+      # Add Go packages here if needed.
+      - ../../.realize.yaml:/go/src/github.com/pthethanh/robusta/.realize.yaml
+      - ../../main.go:/go/src/github.com/pthethanh/robusta/main.go
+      - ../../internal:/go/src/github.com/pthethanh/robusta/internal/
+      - ../../vendor:/go/src/github.com/pthethanh/robusta/vendor/
+    working_dir: /go/src/github.com/pthethanh/robusta
+    depends_on:
+      - mongodb
+    restart: always
+
+  frontend:
+    image: node:11.10.0-alpine
+    hostname: ofriend-frontend
+    ports:
+      - "8081:8081"
+    environment:
+      - BIRD_BACKEND_ADDRS=http://backend:8080
+    volumes:
+      - ../../web:/home/robusta
+    working_dir: /home/robusta/
+    command: [ sh, -c, "npm rebuild node-sass && npm run serve" ]
+    depends_on:
+      - backend
+    restart: always

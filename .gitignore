@@ -1,0 +1,12 @@
+.idea/*
+**/testdata/**
+*.bin
+**/node_modules/**
+*.log
+
+deployment/docker/web/dist
+deployment/docker/*.bin
+
+robusta
+
+.realize/
