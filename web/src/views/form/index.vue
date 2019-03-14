@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       form: {
         name: '',
@@ -64,10 +64,10 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
+    onSubmit () {
       this.$message('submit!')
     },
-    onCancel() {
+    onCancel () {
       this.$message({
         message: 'cancel!',
         type: 'warning'
@@ -82,4 +82,3 @@ export default {
   text-align: center;
 }
 </style>
-

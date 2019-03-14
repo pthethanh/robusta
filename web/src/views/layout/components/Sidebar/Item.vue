@@ -13,7 +13,7 @@ export default {
       }
     }
   },
-  render(h, context) {
+  render (h, context) {
     const { icon, title } = context.props.meta
     const vnodes = []
 

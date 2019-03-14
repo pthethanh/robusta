@@ -25,13 +25,13 @@ export default {
     ...mapGetters([
       'sidebar'
     ]),
-    routes() {
+    routes () {
       return this.$router.options.routes
     },
-    variables() {
+    variables () {
       return variables
     },
-    isCollapse() {
+    isCollapse () {
       return !this.sidebar.opened
     }
   }
