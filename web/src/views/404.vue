@@ -9,12 +9,10 @@
       </div>
       <div class="bullshit">
         <div class="bullshit__oops">OOPS!</div>
-        <div class="bullshit__info">版权所有
-          <a class="link-type" href="https://wallstreetcn.com" target="_blank">华尔街见闻</a>
-        </div>
         <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">请检查您输入的网址是否正确，请点击以下按钮返回主页或者发送错误报告</div>
-        <a href="" class="bullshit__return-home">返回首页</a>
+        <a href="" class="bullshit__return-home">
+          <router-link to="/">Return Home</router-link>
+        </a>
       </div>
     </div>
   </div>
@@ -26,7 +24,7 @@ export default {
   name: 'Page404',
   computed: {
     message () {
-      return '网管说这个页面你不能进......'
+      return 'The page you are looking for is either nolonger exists or invalid'
     }
   }
 }
@@ -41,13 +39,13 @@ export default {
 }
 .wscn-http404 {
   position: relative;
-  width: 1200px;
+  width: 100%;
   padding: 0 50px;
   overflow: hidden;
   .pic-404 {
     position: relative;
     float: left;
-    width: 600px;
+    width: 100%;
     overflow: hidden;
     &__parent {
       width: 100%;
