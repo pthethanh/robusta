@@ -15,7 +15,7 @@
           <el-form-item>
               <el-button type="primary">Login</el-button>
               <div>
-                  Not a user? Click 
+                  Not a user? Click
                   <a><router-link to="/users/register"><b>here</b></router-link></a>
                   to register
               </div>
@@ -23,7 +23,7 @@
                   <a><router-link to="/">Return Home</router-link></a>
               </div>
           </el-form-item>
-        </el-form>      
+        </el-form>
       </el-col>
     </el-row>
   </div>
@@ -31,14 +31,14 @@
 
 <script>
 export default {
-    data () {
-        return {
-            user: {
-                username: '',
-                password: ''
-            }
-        }
+  data () {
+    return {
+      user: {
+        username: '',
+        password: ''
+      }
     }
+  }
 }
 </script>
 
