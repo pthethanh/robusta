@@ -1,11 +1,11 @@
 <template>
-  <div class="home">
+  <div class="layout">
     <el-container>
       <el-header>
         <Header></Header>
       </el-header>
       <el-container>
-        <el-aside>
+        <el-aside width="200px" v-show="isCollapse">
           <Sidebar></Sidebar>
         </el-aside>
         <el-main>
@@ -19,17 +19,26 @@
 <script>
 import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
     Header,
     Sidebar
+  },
+  computed: {
+    ...mapGetters([
+      'sidebar'
+    ]),
+    isCollapse () {
+      return !this.sidebar.opened
+    }
   }
 }
 </script>
 
 <style>
-  .home {
+  .layout {
     height: 100%;
     width: 100%;
   }
