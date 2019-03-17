@@ -41,6 +41,7 @@ export default {
   }
   .el-card .box {
       float: left;
+      max-width: 95%;
   }
   .box-left {
     width: 30px;
@@ -65,6 +66,7 @@ export default {
   .content {
     max-height: 150px;
     overflow-y: hidden;
+    margin-bottom: 10px;
   }
   ul.footer {
     padding-inline-start: 0px;
@@ -79,7 +81,7 @@ export default {
     margin-right: 10px;
   }
   .el-icon-arrow-up {
-    font-size: 1.4em;   
+    font-size: 1.4em;
   }
   .el-icon-arrow-up:hover{
     color: red;

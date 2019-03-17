@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <el-container>
-      <el-header>
+      <el-header style="padding: 0px 0px">
         <Header></Header>
       </el-header>
       <el-container>
@@ -41,5 +41,8 @@ export default {
   .layout {
     height: 100%;
     width: 100%;
+    padding: 0px 0px;
+    margin: 0px 0px;
   }
+
 </style>

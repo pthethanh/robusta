@@ -6,6 +6,7 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/api/handler/friend"
 	"github.com/pthethanh/robusta/internal/app/api/handler/index"
+	"github.com/pthethanh/robusta/internal/app/api/handler/mock"
 	"github.com/pthethanh/robusta/internal/app/db"
 	"github.com/pthethanh/robusta/internal/app/friend"
 	"github.com/pthethanh/robusta/internal/pkg/glog"
@@ -67,6 +68,11 @@ func Init(conns *InfraConns) (http.Handler, error) {
 			path:    "/api/v1/friend/{id:[a-z0-9-\\-]+}",
 			method:  get,
 			handler: friendHandler.Get,
+		},
+		{
+			path:    "/api/v1/articles",
+			method:  get,
+			handler: mock.ArticleList,
 		},
 		// web
 		{

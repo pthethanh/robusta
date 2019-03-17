@@ -16,11 +16,8 @@ import axios from 'axios'
 import './registerServiceWorker'
 import './plugins/element.js'
 
-import '../mock' // simulation data
-
 Vue.use(ElementUI, { locale })
 
-Vue.config.productionTip = false
 // Set base URL to backend API service
 const backendAddr = process.env.BIRD_BACKEND_ADDRS || 'http://localhost:8080'
 console.log(`BIRD_BACKEND_ADDRS: ${backendAddr}`)

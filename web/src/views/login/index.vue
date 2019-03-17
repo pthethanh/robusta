@@ -3,7 +3,7 @@
     <el-row type="flex" justify="center">
       <el-col :span=8>
         <div>
-          <h1>Join Robusta</h1>
+          <h1>Join <Logo style="display:inline"></Logo></h1>
         </div>
         <el-form>
           <el-form-item label="Username">
@@ -29,7 +29,11 @@
 </template>
 
 <script>
+import Logo from '@/components/Logo/index'
 export default {
+  components: {
+    Logo
+  },
   data () {
     return {
       user: {

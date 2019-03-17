@@ -6,8 +6,9 @@
       :collapse="false"
       :router="true"
       >
-      <el-menu-item index="1" route="/">Home</el-menu-item>
+      <el-menu-item index="1" route="/">News</el-menu-item>
       <el-menu-item index="3" route="/tutorials">Tutorials</el-menu-item>
+      <el-menu-item index="3" route="/interview/programs">Interview Preparation</el-menu-item>
     </el-menu>
   </div>
 </template>

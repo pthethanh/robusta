@@ -21,7 +21,7 @@ Vue.use(Router)
   }
 **/
 export const constantRouterMap = [
-  { path: '/users/login', component: () => import('@/views/login/index'), hidden: true },
+  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
   {
     path: '/',
@@ -43,6 +43,17 @@ export const constantRouterMap = [
     children: [{
       path: 'latest',
       component: () => import('@/views/tutorial/index')
+    }]
+  },
+  {
+    path: '/interview',
+    name: 'Interview',
+    component: Layout,
+    redirect: '/interview/programs',
+    hidden: true,
+    children: [{
+      path: 'programs',
+      component: () => import('@/views/interview/index')
     }]
   },
   { path: '*', redirect: '/404', hidden: true }

@@ -7,7 +7,8 @@ import { getToken } from '@/utils/auth' // getToken from cookie
 
 NProgress.configure({ showSpinner: false })// NProgress configuration
 
-const whiteList = ['/login'] // Do not redirect whitelist
+const requiredLoginList = [
+] // Do not redirect whitelist
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
@@ -29,7 +30,7 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (requiredLoginList.indexOf(to.path) === -1) {
       next()
     } else {
       next(`/login?redirect=${to.path}`) // Otherwise redirect all to the login page

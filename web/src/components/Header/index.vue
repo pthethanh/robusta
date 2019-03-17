@@ -5,9 +5,15 @@
       :router="true"
     >
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal"/>
-      <el-menu-item index="1" route="/home">Home</el-menu-item>
+      <div class="el-menu-item el-menu-item--horizontal nav-title">
+        <router-link to="/">
+          <Logo></Logo>
+        </router-link>
+      </div>
+      <el-menu-item index="1" route="/home">News</el-menu-item>
       <el-menu-item index="2" route="/tutorials">Tutorials</el-menu-item>
-      <el-menu-item index="3" route="/users/login">Login</el-menu-item>
+      <el-menu-item index="3" route="/interview/programs">Interview Preparation</el-menu-item>
+      <el-menu-item index="4" route="/login" style="float:right">Login</el-menu-item>
 
     </el-menu>
   </div>
@@ -16,9 +22,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
+import Logo from '@/components/Logo'
+
 export default {
   components: {
-    Hamburger
+    Hamburger,
+    Logo
   },
   computed: {
     ...mapGetters([
@@ -32,3 +41,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-menu-item.el-menu-item--horizontal.nav-title {
+  font-weight: 700;
+  font-size: 1.5em;
+  color: black;
+}
+.el-menu-item.el-menu-item--horizontal.nav-title:hover {
+  color: black;
+}
+</style>
