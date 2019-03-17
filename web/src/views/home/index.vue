@@ -1,10 +1,10 @@
 <template>
   <div class="home">
     <el-row type="flex" justify="center">
-      <el-col>
+      <el-col :span="14">
         <Article v-for="article in articles" :key="article.id" :article="article"></Article>
       </el-col>
-      <el-col :span="8" style="margin: 19px 10px;" class="hidden-xs-only">
+      <el-col :span="5" style="margin: 19px 10px;" class="hidden-xs-only">
         <el-card>
           <div>
             <h1>Hot news</h1>
