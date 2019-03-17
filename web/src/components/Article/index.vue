@@ -2,19 +2,25 @@
   <div class="article">
     <el-card
       class="box-card">
-        <div class="box box-left">
-          <i class="el-icon-arrow-up"></i>
-          <div>{{article.likes}}</div>
-        </div>
-        <div class="box">
-          <div class="header">Posted by {{article.created_by_name}} 20 hours ago</div>
-          <div class="title">{{article.title}}</div>
-          <div class="content" v-html="article.abstract"></div>
-          <ul class="footer">
-            <li>{{article.views}} views |</li>
-            <li>{{article.comments}} comments</li>
-        </ul>
-      </div>
+        <el-row>
+          <el-col :span="1.7">
+            <div class="box box-left">
+              <i class="el-icon-arrow-up"></i>
+              <div>{{article.likes}}</div>
+            </div>
+          </el-col>
+          <el-col :span="22">
+            <div class="box">
+              <div class="header">Posted by {{article.created_by_name}} 20 hours ago</div>
+              <div class="title">{{article.title}}</div>
+              <div class="content" v-html="article.abstract"></div>
+              <ul class="footer">
+                <li>{{article.views}} views |</li>
+                <li>{{article.comments}} comments</li>
+              </ul>
+            </div>
+          </el-col>
+        </el-row>
     </el-card>
   </div>
 </template>

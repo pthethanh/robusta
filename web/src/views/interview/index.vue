@@ -9,7 +9,7 @@
           <div>
             Basic Go knowledge
           </div>
-          </el-card>
+        </el-card>
         <el-card>
           <div>
             <h1>Short Challenges</h1>

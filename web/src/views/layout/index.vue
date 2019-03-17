@@ -44,5 +44,10 @@ export default {
     padding: 0px 0px;
     margin: 0px 0px;
   }
+</style>
 
+<style>
+  body {
+    background-color: #D9DEE6;
+  }
 </style>

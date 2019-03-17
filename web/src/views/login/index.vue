@@ -45,9 +45,13 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .el-form {
     border: 1px solid lightgrey;
     padding: 10px;
+  }
+  .login {
+    height: 100%;
+    background-color: white;
   }
 </style>
