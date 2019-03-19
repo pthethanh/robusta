@@ -4,30 +4,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/respond"
 	"github.com/pthethanh/robusta/internal/pkg/uuid"
 )
 
-type (
-	article struct {
-		ID            string    `json:"id"`
-		Title         string    `json:"title"`
-		Content       string    `json:"content"`
-		Abstract      string    `json:"abstract"`
-		CreatedByID   string    `json:"created_by_id"`
-		CreatedByName string    `json:"created_by_name"`
-		Views         int64     `json:"views"`
-		Likes         int64     `json:"likes"`
-		Comments      int64     `json:"comments"`
-		CreatedAt     time.Time `json:"created_at"`
-	}
-)
-
 func ArticleList(w http.ResponseWriter, r *http.Request) {
 	n := 50
-	result := make([]article, 0)
+	result := make([]*types.Article, 0)
 	for i := 0; i < n; i++ {
-		result = append(result, article{
+		result = append(result, &types.Article{
 			ID:    uuid.New(),
 			Title: "Go " + time.Now().String(),
 			Abstract: `<p>

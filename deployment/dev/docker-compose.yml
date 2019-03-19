@@ -38,11 +38,11 @@ services:
 
   frontend:
     image: node:11.10.0-alpine
-    hostname: ofriend-frontend
+    hostname: robusta-frontend
     ports:
       - "8081:8081"
     environment:
-      - BIRD_BACKEND_ADDRS=http://backend:8080
+      - ROBUSTA_BACKEND_ADDRS=http://backend:8080
     volumes:
       - ../../web:/home/robusta
     working_dir: /home/robusta/

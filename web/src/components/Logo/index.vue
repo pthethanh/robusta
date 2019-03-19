@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <span style="color:#88553E">Go</span><span>way</span>
+    <span style="color:#F0270E">Go</span><span>way</span>
   </div>
 </template>
 

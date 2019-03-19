@@ -11,7 +11,7 @@
           </el-col>
           <el-col :span="22">
             <div class="box">
-              <div class="header">Posted by {{article.created_by_name}} 20 hours ago</div>
+              <div class="header">Posted by {{article.created_by_name}} {{article.created_at|moment("from")}}</div>
               <div class="title">{{article.title}}</div>
               <div class="content" v-html="article.abstract"></div>
               <ul class="footer">

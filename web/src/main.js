@@ -16,7 +16,9 @@ import '@/permission' // permission control
 import axios from 'axios'
 import './registerServiceWorker'
 import './plugins/element.js'
+import Moment from 'vue-moment'
 
+Vue.use(Moment);
 Vue.use(ElementUI, { locale })
 
 // Set base URL to backend API service

@@ -3,6 +3,9 @@
     <el-menu
       mode="horizontal"
       :router="true"
+      text-color="black"
+      active-text-color="red"
+      background-color="white"
     >
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal"/>
       <div class="el-menu-item el-menu-item--horizontal nav-title">
@@ -52,6 +55,7 @@ export default {
 }
 .el-menu-item {
   font-weight: 550;
+  color: black;
 }
 .el-menu {
   overflow: hidden;
