@@ -2,7 +2,7 @@
   <div class="home">
     <el-row type="flex" justify="center">
       <el-col :span="14">
-        <Article v-for="article in articles" :key="article.id" :article="article"></Article>
+        <Article v-for="(article,index) in articles" :key="index" :article="article" @selected="openDetail"></Article>
       </el-col>
       <el-col :span="5" style="margin: 19px 10px;" class="hidden-xs-only">
         <el-card>
@@ -18,20 +18,35 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-row>
+      <el-dialog 
+        :visible.sync="isOpenDetail"
+        :center=true
+        :modal=true
+        :append-to-body=true
+        :fullscreen=true
+        >
+        <ArticleDetail :article="selectedArticle"></ArticleDetail>
+      </el-dialog>
+    </el-row>
   </div>
 </template>
 
 <script>
 import { fetchList } from '@/api/article'
 import Article from '@/components/Article'
+import ArticleDetail from '@/components/ArticleDetail'
 export default {
   components: {
-    Article
+    Article,
+    ArticleDetail
   },
   data () {
     return {
       articles: [
-      ]
+      ],
+      isOpenDetail: false,
+      selectedArticle: null,
     }
   },
   created () {
@@ -43,6 +58,10 @@ export default {
         console.log(response.data)
         this.articles = response.items
       })
+    },
+    openDetail(article) {
+      this.selectedArticle = article
+      this.isOpenDetail = true
     }
   }
 }
@@ -51,5 +70,8 @@ export default {
 <style>
   .home {
       margin: 0px 75px 0 75px;
+  }
+  .el-dialog{
+    height: 100%;
   }
 </style>
