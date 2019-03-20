@@ -74,4 +74,13 @@ export default {
   .el-dialog{
     height: 100%;
   }
+  .el-dialog__close.el-icon.el-icon-close {
+    color: grey;
+    font-weight: 700;
+    font-size: 1.5em;
+    border: 0.5px solid grey;
+    position: fixed;
+    top: 10px;
+    right: 20px;
+  }
 </style>

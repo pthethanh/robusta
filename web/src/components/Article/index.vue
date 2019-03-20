@@ -1,7 +1,6 @@
 <template>
-  <div class="article">
-    <el-card
-      class="box-card">
+  <div class="article" @click="$emit('selected', article)">
+    <el-card class="box-card">
         <el-row>
           <el-col :span="1.7">
             <div class="box box-left">
@@ -10,7 +9,7 @@
             </div>
           </el-col>
           <el-col :span="22">
-            <div class="box" @click="$emit('selected', article)">
+            <div class="box">
               <div class="header">Posted by {{article.created_by_name}} {{article.created_at|moment("from")}}</div>
               <div class="title">{{article.title}}</div>
               <div class="content" v-html="article.abstract"></div>
