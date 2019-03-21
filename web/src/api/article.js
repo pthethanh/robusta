@@ -31,3 +31,10 @@ export function updateArticle (data) {
     data
   })
 }
+
+export function viewArticle (id) {
+  return request({
+    url: '/api/v1/articles/' + id,
+    method: 'post',
+  })
+}

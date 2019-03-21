@@ -15,7 +15,8 @@
               <div class="content" v-html="article.abstract"></div>
               <ul class="footer">
                 <li>{{article.views}} views |</li>
-                <li>{{article.comments}} comments</li>
+                <li>{{article.comments}} comments |</li>
+                <li>source: <span style="width: 15px; overflow-y:hidden">{{article.source}}</span></li>
               </ul>
             </div>
           </el-col>

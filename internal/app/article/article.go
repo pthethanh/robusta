@@ -12,6 +12,7 @@ import (
 // Repository is an interface of an article repository
 type Repository interface {
 	FindAll(ctx context.Context, offset, limit int) ([]*types.Article, error)
+	Increase(ctx context.Context, id string, field string, val interface{}) error
 }
 
 // Service is an article service
@@ -34,6 +35,14 @@ func (s *Service) FindAll(ctx context.Context, offset, limit int) ([]*types.Arti
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find all articles")
 	}
+	for i, a := range articles {
+		if a.CreatedByName == "" && a.CreatedByID == "" {
+			articles[i].CreatedByName = "goway"
+		}
+		if a.Source == "" {
+			articles[i].Source = "goway"
+		}
+	}
 	return articles, nil
 }
 
@@ -54,4 +63,8 @@ func (s *Service) Update(ctx context.Context, id string, a *types.Article) error
 
 func (s *Service) Get(ctx context.Context, id string) (*types.Article, error) {
 	return nil, nil
+}
+
+func (s *Service) View(ctx context.Context, id string) error {
+	return s.repo.Increase(ctx, id, "views", 1)
 }

@@ -106,3 +106,16 @@ func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*
 func (r *MongoRepository) collection(s *mgo.Session) *mgo.Collection {
 	return s.DB("goway").C("article")
 }
+
+func (r *MongoRepository) Increase(ctx context.Context, id string, field string, val interface{}) error {
+	s := r.session.Clone()
+	defer s.Close()
+
+	selector := bson.M{
+		"_id": id,
+	}
+	update := bson.M{
+		"$inc": bson.M{field: val},
+	}
+	return r.collection(s).Update(selector, update)
+}

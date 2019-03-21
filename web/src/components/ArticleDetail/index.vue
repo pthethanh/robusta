@@ -5,6 +5,8 @@
         <div class="title">{{article.title}}</div>
         <div class="info">
           Posted by {{article.created_by_name}} {{article.created_at|moment('from')}}
+          <br>
+          Source: {{article.source}}
         </div>
         <div class="abstract" v-html="article.abstract"></div>
         <div class="content" v-html="article.content"></div>
@@ -14,9 +16,20 @@
 </template>
 
 <script>
+import { viewArticle } from '@/api/article'
+import router from '@/router'
 export default {
   props: {
     'article': Object
+  },
+  created () {
+    this.increaseArticleViews()
+  },
+  methods: {
+    increaseArticleViews() {
+      console.log('article.id: ' + this.article.id)
+      viewArticle(this.article.id)
+    }
   }
 }
 </script>
@@ -31,13 +44,14 @@ export default {
   font-weight: 500;
   font-size: 1.1em;
   font-family: 'Courier New', Courier, monospace;
-  padding-bottom: 20px;
   font-style: initial;
+  padding-left: 20px;
+  border-left: 2px solid grey;
 }
-.abstract {
+.abstract, .content {
+  padding-top: 20px;
   font-size: 17px;
   line-height: 1.58;
   letter-spacing: -.004em;
 }
-
 </style>
