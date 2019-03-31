@@ -19,12 +19,13 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-dialog 
+      <el-dialog
         :visible.sync="isOpenDetail"
         :center=true
         :modal=true
         :append-to-body=true
         :fullscreen=true
+        @close="detailClosed"
         >
         <ArticleDetail :article="selectedArticle"></ArticleDetail>
       </el-dialog>
@@ -46,7 +47,7 @@ export default {
       articles: [
       ],
       isOpenDetail: false,
-      selectedArticle: null,
+      selectedArticle: null
     }
   },
   created () {
@@ -59,9 +60,13 @@ export default {
         this.articles = response.items
       })
     },
-    openDetail(article) {
+    openDetail (article) {
       this.selectedArticle = article
       this.isOpenDetail = true
+      history.pushState({}, null, '/articles/detail/' + this.selectedArticle.id)
+    },
+    detailClosed () {
+      history.pushState({}, null, '/')
     }
   }
 }

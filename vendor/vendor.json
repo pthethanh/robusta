@@ -3,6 +3,72 @@
 	"ignore": "",
 	"package": [
 		{
+			"checksumSHA1": "rs5R/nSz+hgp6V1vmyuYw3A6SRw=",
+			"path": "github.com/Knetic/govaluate",
+			"revision": "9aa49832a739dcd78a5542ff189fb82c3e423116",
+			"revisionTime": "2017-10-22T00:36:10Z"
+		},
+		{
+			"checksumSHA1": "wJgFjKTO3x1l7Mwd9jGA8/jntXM=",
+			"path": "github.com/casbin/casbin",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "4VmPD3LF+sa2d3YZqgZXBdaVcUY=",
+			"path": "github.com/casbin/casbin/config",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "ISPy+rbKb5OFo0u3gzIH5ZAfHJ0=",
+			"path": "github.com/casbin/casbin/effect",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "+EI2PebunywWBgfJxkkt7hVaCWE=",
+			"path": "github.com/casbin/casbin/log",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "7ylP+DgjItSApLEtiU6Xlateux4=",
+			"path": "github.com/casbin/casbin/model",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "yWnKk5xZeh2gFDUS1wwcIR9+GD8=",
+			"path": "github.com/casbin/casbin/persist",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "Gm4rEQcPixI0XJC+IcCZJDt4+p8=",
+			"path": "github.com/casbin/casbin/persist/file-adapter",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "ZruzUDr8GdmwPfkP9s9UNdr4Jrw=",
+			"path": "github.com/casbin/casbin/rbac",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "6L0OaKfs25cecr9VuiSowORA2p8=",
+			"path": "github.com/casbin/casbin/rbac/default-role-manager",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
+			"checksumSHA1": "VfOYVFoy4lW0GspQFphVKj/JIBk=",
+			"path": "github.com/casbin/casbin/util",
+			"revision": "a5a1667e25abdbc5a4414ea9b6b889764174b7ec",
+			"revisionTime": "2019-02-12T13:48:39Z"
+		},
+		{
 			"checksumSHA1": "3KhDEC5MM0iyN+FsLfxpnvFVeuY=",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "d8f796af33cc11cb798c1aaeb27a4ebc5099927d",
@@ -13,6 +79,24 @@
 			"path": "github.com/davecgh/go-spew/spew/testdata",
 			"revision": "d8f796af33cc11cb798c1aaeb27a4ebc5099927d",
 			"revisionTime": "2018-08-30T19:11:22Z"
+		},
+		{
+			"checksumSHA1": "B5HfcRjCrks1xQcuoU/nLf5v/1E=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8",
+			"revisionTime": "2018-09-21T17:23:15Z"
+		},
+		{
+			"checksumSHA1": "PPw7uxTwitSQ/0qN7k/sxV80UHI=",
+			"path": "github.com/dgrijalva/jwt-go/request",
+			"revision": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8",
+			"revisionTime": "2018-09-21T17:23:15Z"
+		},
+		{
+			"checksumSHA1": "/ibMJtZibmIJwKZDKCOUZWSbf8M=",
+			"path": "github.com/dgrijalva/jwt-go/test",
+			"revision": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8",
+			"revisionTime": "2018-09-21T17:23:15Z"
 		},
 		{
 			"checksumSHA1": "umKQ1O+Lr2ZcBI192xH8FILVGJc=",
@@ -153,5 +237,5 @@
 			"revisionTime": "2019-02-18T14:38:26Z"
 		}
 	],
-	"rootPath": "robusta"
+	"rootPath": "github.com/pthethanh/robusta"
 }

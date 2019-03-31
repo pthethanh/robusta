@@ -11,13 +11,12 @@
         <div class="abstract" v-html="article.abstract"></div>
         <div class="content" v-html="article.content"></div>
       </el-col>
-    </el-row>  
+    </el-row>
   </div>
 </template>
 
 <script>
 import { viewArticle } from '@/api/article'
-import router from '@/router'
 export default {
   props: {
     'article': Object
@@ -26,7 +25,7 @@ export default {
     this.increaseArticleViews()
   },
   methods: {
-    increaseArticleViews() {
+    increaseArticleViews () {
       console.log('article.id: ' + this.article.id)
       viewArticle(this.article.id)
     }
