@@ -66,7 +66,7 @@ export default {
       history.pushState({}, null, '/articles/detail/' + this.selectedArticle.id)
     },
     detailClosed () {
-      history.pushState({}, null, '/')
+      history.back()
     }
   }
 }

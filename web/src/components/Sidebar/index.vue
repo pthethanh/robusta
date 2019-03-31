@@ -18,6 +18,9 @@
     width: 200px;
     min-height: 400px;
   }
+  .sidebar {
+    position: fixed;
+  }
 </style>
 
 <script>
