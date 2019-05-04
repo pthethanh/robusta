@@ -14,7 +14,7 @@ type (
 		Roles     []string `json:"roles" bson:"roles"`
 		Groups    []string `json:"groups" bson:"groups"`
 
-		CreatedAt time.Time `json:"created_at" bson:"created_at"`
-		UpdateAt  time.Time `json:"updated_at" bson:"updated_at"`
+		CreatedAt *time.Time `json:"created_at" bson:"created_at"`
+		UpdateAt  *time.Time `json:"updated_at" bson:"updated_at"`
 	}
 )

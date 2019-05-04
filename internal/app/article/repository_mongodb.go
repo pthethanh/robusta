@@ -49,8 +49,9 @@ func (r *MongoRepository) Get(ctx context.Context, id string) (*types.Article, e
 func (r *MongoRepository) Create(ctx context.Context, a *types.Article) error {
 	s := r.session.Clone()
 	defer s.Close()
-	a.CreatedAt = time.Now()
-	a.UpdatedAt = time.Now()
+	updatedAt := time.Now()
+	a.CreatedAt = &updatedAt
+	a.UpdatedAt = &updatedAt
 	if err := r.collection(s).Insert(a); err != nil {
 		return errors.Wrapf(err, "failed to insert article %s", a.ID)
 	}
@@ -71,7 +72,8 @@ func (r *MongoRepository) Delete(ctx context.Context, id string) error {
 func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Article) error {
 	s := r.session.Clone()
 	defer s.Close()
-	a.UpdatedAt = time.Now()
+	updatedAt := time.Now()
+	a.UpdatedAt = &updatedAt
 	if err := r.collection(s).Update(bson.D{{Name: "id", Value: id}}, a); err != nil {
 		return errors.Wrapf(err, "failed to update article %s", id)
 	}

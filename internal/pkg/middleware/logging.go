@@ -13,8 +13,7 @@ func Logging(logger glog.Logger) func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			bg := time.Now()
 			logger.WithField("method", r.Method).WithField("path", r.URL.Path).
-				WithField("stage", "started").
-				Infoc(r.Context(), "")
+				Infoc(r.Context(), "started")
 			inner.ServeHTTP(w, r)
 			code := http.StatusOK
 			if mw, ok := w.(interface {
@@ -25,8 +24,7 @@ func Logging(logger glog.Logger) func(inner http.Handler) http.Handler {
 			logger.WithField("method", r.Method).WithField("path", r.URL.Path).
 				WithField("time_spent", time.Since(bg)).
 				WithField("status", code).
-				WithField("stage", "finished").
-				Infoc(r.Context(), "")
+				Infoc(r.Context(), "finished")
 		})
 	}
 }

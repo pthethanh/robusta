@@ -12,7 +12,7 @@ type (
 		CreatedByAvatar string `json:"created_by_avatar" bson:"created_by_avatar"`
 		Parent          string `json:"parent,omitempty" bson:"parent"`
 
-		CreatedAt time.Time `json:"created_at,omitempty" bson:"created_at"`
-		UpdatedAt time.Time `json:"modified_at,omitempty" bson:"updated_at"`
+		CreatedAt *time.Time `json:"created_at,omitempty" bson:"created_at"`
+		UpdatedAt *time.Time `json:"modified_at,omitempty" bson:"updated_at"`
 	}
 )

@@ -1,4 +1,4 @@
-package articlehandler
+package article
 
 import (
 	"context"
@@ -35,6 +35,7 @@ func New(s service, l glog.Logger) *Handler {
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	list, err := h.srv.FindAll(r.Context(), 0, 100)
 	if err != nil {
+		h.logger.Infocf(r.Context(), "failed to execute FinAll, err: %v", err)
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -48,6 +49,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) View(w http.ResponseWriter, r *http.Request) {
 	err := h.srv.View(r.Context(), mux.Vars(r)["id"])
 	if err != nil {
+		h.logger.Infocf(r.Context(), "failed to execute View, err: %v", err)
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}

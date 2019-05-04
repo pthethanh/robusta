@@ -4,11 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/globalsign/mgo/bson"
-
 	"github.com/pthethanh/robusta/internal/pkg/uuid"
 
 	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/app/types"
 )
@@ -22,8 +21,9 @@ type (
 func (r *MongoDBRepository) Create(ctx context.Context, user *types.User) (string, error) {
 	s := r.session.Clone()
 	defer s.Close()
+	updatedAt := time.Now()
 	user.ID = uuid.New()
-	user.CreatedAt = time.Now()
+	user.CreatedAt = &updatedAt
 	user.UpdateAt = user.CreatedAt
 
 	if err := r.collection(s).Insert(user); err != nil {
@@ -41,7 +41,8 @@ func (r *MongoDBRepository) Delete(ctx context.Context, id string) error {
 func (r *MongoDBRepository) Update(ctx context.Context, user *types.User) error {
 	s := r.session.Clone()
 	defer s.Close()
-	user.UpdateAt = time.Now()
+	updatedAt := time.Now()
+	user.UpdateAt = &updatedAt
 	return r.collection(s).Update(bson.M{"_id": user.ID}, user)
 }
 
@@ -55,6 +56,7 @@ func (r *MongoDBRepository) Lock(ctx context.Context, id string) error {
 		},
 	})
 }
+
 func (r *MongoDBRepository) FindBySample(ctx context.Context, user *types.User) ([]*types.User, error) {
 	selector := bson.M{}
 	if user.ID != "" {
@@ -95,6 +97,17 @@ func (r *MongoDBRepository) FindAll(context.Context, *types.User) ([]*types.User
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *MongoDBRepository) FindByID(ctx context.Context, id string) (*types.User, error) {
+	selector := bson.M{"_id": id}
+	s := r.session.Clone()
+	defer s.Close()
+	var user *types.User
+	if err := r.collection(s).Find(selector).One(&user); err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (r *MongoDBRepository) collection(s *mgo.Session) *mgo.Collection {

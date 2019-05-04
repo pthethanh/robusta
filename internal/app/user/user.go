@@ -17,9 +17,10 @@ type (
 		Lock(context.Context, string) error
 		FindBySample(context.Context, *types.User) ([]*types.User, error)
 		FindAll(context.Context) ([]*types.User, error)
+		FindByID(ctx context.Context, id string) (*types.User, error)
 	}
 	PolicyService interface {
-		IsAllowed(ctx context.Context, subject []string, action, resource string) (bool, error)
+		IsAllowed(ctx context.Context, roles []string, action, resource string) (bool, error)
 	}
 	Service struct {
 		logger glog.Logger
@@ -86,15 +87,22 @@ func (s *Service) FindAll(ctx context.Context) ([]*types.User, error) {
 	return users, err
 }
 
+func (s *Service) FindByID(ctx context.Context, id string) (*types.User, error) {
+	if err := s.IsAllowed(ctx, ActionReadList); err != nil {
+		return nil, err
+	}
+	return s.repo.FindByID(ctx, id)
+}
+
 func (s *Service) IsAllowed(ctx context.Context, action string) error {
 	user := ctx.Value("user").(*types.User)
 	isAllowed, err := s.policy.IsAllowed(ctx, user.Roles, action, PermissionResource)
 	if err != nil {
-		s.logger.Errorc(ctx, "failed to check permission, err: %v", err)
+		s.logger.Errorcf(ctx, "failed to check permission, err: %v", err)
 		return errors.Wrap(err, "failed to check permission")
 	}
 	if !isAllowed {
-		s.logger.Errorc(ctx, "permission denied: action %s", action)
+		s.logger.Errorcf(ctx, "permission denied: action %s", action)
 		return ErrPermissionDenied
 	}
 	return nil

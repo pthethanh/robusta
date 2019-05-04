@@ -1,4 +1,4 @@
-package indexhandler
+package api
 
 import (
 	"io"
@@ -13,8 +13,8 @@ type (
 	Handler struct{}
 )
 
-// New return new index web handler
-func New() *Handler {
+// return new index web handler
+func newIndexHandler() *Handler {
 	return &Handler{}
 }
 

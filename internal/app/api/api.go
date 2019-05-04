@@ -1,12 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/pthethanh/robusta/internal/app/api/handler/article"
-	"github.com/pthethanh/robusta/internal/app/api/handler/index"
-	"github.com/pthethanh/robusta/internal/app/article"
 	"github.com/pthethanh/robusta/internal/app/db"
 	"github.com/pthethanh/robusta/internal/pkg/glog"
 	"github.com/pthethanh/robusta/internal/pkg/health"
@@ -41,19 +37,12 @@ const (
 // Init init all handlers
 func Init(conns *InfraConns) (http.Handler, error) {
 	logger := glog.New()
-
-	var articleRepo article.Repository
-	switch conns.Databases.Type {
-	case db.TypeMongoDB:
-		articleRepo = article.NewMongoRepository(conns.Databases.MongoDB)
-	default:
-		return nil, fmt.Errorf("database type not supported: %s", conns.Databases.Type)
+	articleHandler, err := newArticleHandler(conns)
+	if err != nil {
+		return nil, err
 	}
-	articleLogger := logger.WithField("package", "article")
-	articleSrv := article.NewService(articleRepo, articleLogger)
-	articleHandler := articlehandler.New(articleSrv, articleLogger)
 
-	indexWebHandler := indexhandler.New()
+	indexWebHandler := newIndexHandler()
 	routes := []route{
 		// infra
 		{
