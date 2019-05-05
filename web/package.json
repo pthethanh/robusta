@@ -12,8 +12,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.5",
+    "js-cookie": "2.2.0",
+    "mockjs": "^1.0.1-beta3",
+    "nprogress": "^0.2.0",
     "register-service-worker": "^1.5.2",
     "vue": "^2.5.22",
+    "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

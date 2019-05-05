@@ -1,13 +1,9 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/pthethanh/robusta/internal/app/api/handler/friend"
-	"github.com/pthethanh/robusta/internal/app/api/handler/index"
 	"github.com/pthethanh/robusta/internal/app/db"
-	"github.com/pthethanh/robusta/internal/app/friend"
 	"github.com/pthethanh/robusta/internal/pkg/glog"
 	"github.com/pthethanh/robusta/internal/pkg/health"
 	"github.com/pthethanh/robusta/internal/pkg/middleware"
@@ -41,20 +37,12 @@ const (
 // Init init all handlers
 func Init(conns *InfraConns) (http.Handler, error) {
 	logger := glog.New()
-
-	var friendRepo friend.Repository
-	switch conns.Databases.Type {
-	case db.TypeMongoDB:
-		friendRepo = friend.NewMongoRepository(conns.Databases.MongoDB)
-	default:
-		return nil, fmt.Errorf("database type not supported: %s", conns.Databases.Type)
+	articleHandler, err := newArticleHandler(conns)
+	if err != nil {
+		return nil, err
 	}
 
-	friendLogger := logger.WithField("package", "friend")
-	friendSrv := friend.NewService(friendRepo, friendLogger)
-	friendHandler := friendhandler.New(friendSrv, friendLogger)
-
-	indexWebHandler := indexhandler.New()
+	indexWebHandler := newIndexHandler()
 	routes := []route{
 		// infra
 		{
@@ -64,9 +52,14 @@ func Init(conns *InfraConns) (http.Handler, error) {
 		},
 		// services
 		{
-			path:    "/api/v1/friend/{id:[a-z0-9-\\-]+}",
+			path:    "/api/v1/articles",
 			method:  get,
-			handler: friendHandler.Get,
+			handler: articleHandler.List,
+		},
+		{
+			path:    "/api/v1/articles/{id:[a-z0-9-\\-]+}",
+			method:  post,
+			handler: articleHandler.View,
 		},
 		// web
 		{
