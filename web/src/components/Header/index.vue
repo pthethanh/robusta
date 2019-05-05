@@ -13,10 +13,12 @@
           <Logo></Logo>
         </router-link>
       </div>
-      <el-menu-item index="1" route="/home">News</el-menu-item>
-      <el-menu-item index="2" route="/tutorials">Tutorials</el-menu-item>
-      <el-menu-item index="3" route="/interview/programs">Interview Preparation</el-menu-item>
-      <el-menu-item index="4" route="/login" style="float:right">Login</el-menu-item>
+      <!-- temporary hidden the menu items-->
+      <el-menu-item index="1" route="/home" hidden>Articles</el-menu-item>
+      <el-menu-item index="2" route="/tutorials" hidden>Tutorials</el-menu-item>
+      <el-menu-item index="3" route="/interview/programs" hidden>Interview Preparation</el-menu-item>
+      <el-input class="el-menu el-menu-item" v-model="keyword" placeholder="tag: go-introduction"></el-input>
+      <el-menu-item index="4" route="/login" style="float:right" hidden>Login</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -30,6 +32,11 @@ export default {
   components: {
     Hamburger,
     Logo
+  },
+  data(){
+    return {
+      keyword: ""
+    }
   },
   computed: {
     ...mapGetters([

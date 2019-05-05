@@ -9,17 +9,19 @@ import (
 	"github.com/pthethanh/robusta/internal/pkg/glog"
 )
 
-// Repository is an interface of an article repository
-type Repository interface {
-	FindAll(ctx context.Context, offset, limit int) ([]*types.Article, error)
-	Increase(ctx context.Context, id string, field string, val interface{}) error
-}
+type (
+	// Repository is an interface of an article repository
+	Repository interface {
+		FindAll(ctx context.Context, offset, limit int) ([]*types.Article, error)
+		Increase(ctx context.Context, id string, field string, val interface{}) error
+	}
 
-// Service is an article service
-type Service struct {
-	repo   Repository
-	logger glog.Logger
-}
+	// Service is an article service
+	Service struct {
+		repo   Repository
+		logger glog.Logger
+	}
+)
 
 // NewService return a new article service
 func NewService(r Repository, l glog.Logger) *Service {

@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	StatusPublished Status = "published"
+	StatusPublished Status = "public"
 	StatusDraft     Status = "draft"
 	StatusDeleted   Status = "deleted"
 )
