@@ -1,0 +1,183 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './view-me.scss';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 0.01rem;
+  line-height: 1.75em;
+  color: rgba(0, 0, 0, 0.84);
+  margin: 0px 0px;
+  word-break: keep-all;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+//main-container全局样式
+.app-main {
+  min-height: 100%
+}
+
+.app-container {
+  padding: 20px;
+}
+
+// pre, code tag
+code:after, code:before, kbd:after, kbd:before {
+  content: none;
+  letter-spacing: -1px;
+  overflow-y: scroll;
+}
+code, kbd, pre > code, samp {
+  background-color: #FBFFDA;
+  overflow-y: scroll;
+}
+
+code, pre {
+  font-family: monospace,monospace;
+  font-size: 13px;
+  overflow-y: scroll;
+  line-height: 1.5em;
+}
+
+pre > code {
+  display: block;
+  overflow-y: scroll;
+  border: 1px solid lightgrey;
+  padding-bottom: 0px;
+}
+
+// ce block
+.ce-block {
+  margin-left: 5px;
+  padding: 5px 0px;
+}
+
+.ce-block__content {
+  margin-left: 5px;
+}
+.ce-block--focused{
+  border-radius: 3px;
+}
+
+// quote
+blockquote {
+  padding: 5px 25px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+	position: relative;
+	width: 100%;
+  line-height: 1.75;
+  font-size: 1.5em;
+  background-color: grey;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-style: italic
+}
+
+blockquote p:first-of-type:before {
+	content: '\201c';
+	position: absolute;
+	left: -1px;
+}
+
+blockquote p:last-of-type:after {
+	content: '\201d';
+	position: absolute;
+}
+
+blockquote footer {
+	position: relative;
+}
+
+blockquote footer:before {
+	content: '–';
+	position: absolute;
+	left: -.6em;
+}
+
+// disable scrollbar
+::-webkit-scrollbar { 
+  display: none; 
+}
+
+// content fonts
+.content {
+  font-family: "Merriweather", serif;
+  letter-spacing: 0.01rem;
+  font-size: 0.95rem;
+  line-height: 1.75em;
+  color: rgba(0, 0, 0, 0.84);
+}
+
+.title {
+  font-size: 2.5rem;
+  line-height: 1.5em;
+  font-family: 'Open Sans', sans-serif;
+  padding-bottom: 10px;
+}
+
+.full-height {
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', sans-serif;
+  word-break: normal;
+}
+
+.caption {
+  font-style: italic;
+  color: grey;
+  font-size: 0.95em;
+}

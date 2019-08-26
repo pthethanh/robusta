@@ -1,0 +1,10 @@
+$mainBackgroundColor: #DAE0E6;
+$btnFontWeight: 600;
+$secondaryBackgroundColor: #6A97FF;
+
+// the :export directive is the magic sauce for webpack
+// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
+:export {
+  mainBackgroundColor: $mainBackgroundColor;
+  btnFontWeight: $btnFontWeight;
+}

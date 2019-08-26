@@ -1,0 +1,44 @@
+# This file will only be used by deployment/dev/docker-compose.yml
+# to start the development environment.
+# Realize will detect changes on *.go files and automatically restart
+# the backend API service (hot-reload).
+
+settings:
+  files:
+    outputs:
+      status: true
+      path: ""
+      name: .r.outputs.log
+    logs:
+      status: true
+      path: ""
+      name: .r.logs.log
+    errors:
+      status: true
+      path: ""
+      name: .r.errors.log
+  legacy:
+    force: false
+    interval: 0s
+server:
+  status: true
+  open: false
+  port: 8082
+  host: ""
+schema:
+- name: backend
+  path: /go/src/github.com/pthethanh/robusta
+  commands:
+    run:
+      status: true
+  watcher:
+    extensions:
+    - go
+    - mod
+    - sum
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - vendor
+    - web

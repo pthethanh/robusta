@@ -1,0 +1,97 @@
+{
+  "name": "goway",
+  "version": "0.1.0",
+  "private": true,
+  "size-limit": [
+    {
+      "webpack": false,
+      "gzip": true,
+      "limit": "210 ms",
+      "path": "dist/js/app*.js"
+    }
+  ],
+  "scripts": {
+    "serve": "vue-cli-service serve --port 8081",
+    "build": "vue-cli-service build",
+    "size": "vue-cli-service build && size-limit",
+    "lint": "vue-cli-service lint --fix",
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit",
+    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
+  },
+  "dependencies": {
+    "@editorjs/checklist": "^1.1.0",
+    "@editorjs/code": "^2.4.1",
+    "@editorjs/delimiter": "^1.1.0",
+    "@editorjs/editorjs": "^2.12.3",
+    "@editorjs/embed": "^2.2.0",
+    "@editorjs/header": "^2.2.3",
+    "@editorjs/image": "^2.2.0",
+    "@editorjs/inline-code": "^1.3.0",
+    "@editorjs/link": "^2.1.2",
+    "@editorjs/list": "^1.3.2",
+    "@editorjs/marker": "^1.2.0",
+    "@editorjs/paragraph": "^2.5.0",
+    "@editorjs/quote": "^2.2.0",
+    "@editorjs/table": "^1.2.0",
+    "@editorjs/warning": "^1.1.0",
+    "axios": "^0.18.0",
+    "code-example": "file:./src/components/Editor/plugins/code-example",
+    "core-js": "^2.6.5",
+    "date-fns": "^2.0.0-beta.3",
+    "element-ui": "^2.10.0",
+    "highlight.js": "^9.15.8",
+    "js-cookie": "2.2.0",
+    "nprogress": "^0.2.0",
+    "register-service-worker": "^1.5.2",
+    "vue": "^2.5.22",
+    "vue-clipboard2": "^0.3.0",
+    "vue-highlight.js": "^3.1.0",
+    "vue-page-title": "^1.1.4",
+    "vue-router": "^3.0.1",
+    "vue-shortkey": "^3.1.7",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.5.5",
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-plugin-e2e-nightwatch": "^3.9.0",
+    "@vue/cli-plugin-eslint": "^3.9.0",
+    "@vue/cli-plugin-pwa": "^3.9.0",
+    "@vue/cli-plugin-unit-jest": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "@vue/test-utils": "^1.0.0-beta.20",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-component": "^1.1.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "lint-staged": "^8.1.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.1.0",
+    "size-limit": "^1.3.7",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "svg-inline-loader": "^0.8.0",
+    "svg-sprite-loader": "4.1.3",
+    "svgo": "1.2.0",
+    "vue-cli-plugin-element": "^1.0.1",
+    "vue-cli-plugin-pug": "^1.0.7",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

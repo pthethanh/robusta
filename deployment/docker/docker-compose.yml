@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  backend:
+    image: "robusta:${BUILD_VERSION}"
+    hostname: robusta
+    ports:
+      - "8080:8080"
+    environment:
+      # general
+      - ALLOWED_ORIGINS=*
+      # oauth 2
+      - GOOGLE_CLIENT_ID=511091284450-9oes9tddrskgtlfcafblrke7pk28lthp.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=xxx
+      - GOOGLE_REDIRECT_URL=http://mylocalhost.com/auth/google/callback
+      - SESSION_SECRET=xxx
+      # db
+      - MONGODB_ADDRS=ds121871.mlab.com:21871
+      - MONGODB_DATABASE=goway
+      - MONGODB_USERNAME=goway
+      - MONGODB_PASSWORD=xxx
+      - MONGODB_TIMEOUT=10s
+      # casbin
+      - CASBIN_MONGODB_ADDRS=ds121871.mlab.com:21871
+      - CASBIN_MONGODB_DATABASE=goway
+      - CASBIN_MONGODB_USERNAME=goway
+      - CASBIN_MONGODB_PASSWORD=xxx
+      - CASBIN_MONGODB_TIMEOUT=10s
+      # log
+      - LOG_FORMAT=json
+      - LOG_OUTPUT=file://robusta.log
+      # cloudinary
+      - CLOUDINARY_SECRET=xxx
+      - CLOUDINARY_API_KEY=xxx
+      - CLOUDINARY_CLOUD_NAME=pthethanh
+      # HTTP
+      - HTTP_PORT=8080
+      - HTTP_HOST=https://goway.herokuapp.com
+      # SMTP
+      - SMTP_ADDRESS=smtp.gmail.com:587
+      - SMTP_USERNAME=gowaynotification@gmail.com
+      - SMTP_PASSWORD=xxx
+      - SMTP_DEFAULT_FROM=gowaynotification@gmail.com
+    restart: always
