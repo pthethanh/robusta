@@ -27,8 +27,8 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	closer := closeutil.NewCloser()
 	es := event.NewMemoryEventStore(event.LoadConfigFromEnv())
 	closer.Add(es.Close)
+	notifier, notifierCloser := createNotificationService()
 
-	mailer := createMailer()
 	userSrv, userCloser, err := newUserService()
 	if err != nil {
 		return nil, closer, err
@@ -52,7 +52,7 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	}
 	closer.Append(commentCloser)
 
-	articleHandler, articleCloser, err := newArticleHandler(policySrv, es, mailer, userSrv)
+	articleHandler, articleCloser, err := newArticleHandler(policySrv, es, notifier, userSrv)
 	if err != nil {
 		return nil, closer, err
 	}
@@ -77,6 +77,10 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	authHandler := newAuthHandler(jwtSignVerifier, map[string]auth.Authenticator{
 		"local": userSrv,
 	})
+
+	// close notifier after close other services as the other services might generate notification
+	// while they are shutting down
+	closer.Append(notifierCloser)
 
 	rateLimiter := limiter.New(limiter.LoadConfigFromEnv())
 	indexHandler := NewIndexHandler()

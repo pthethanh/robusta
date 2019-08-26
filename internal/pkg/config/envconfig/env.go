@@ -47,7 +47,7 @@ func SetEnvFromFile(f string) error {
 		k := env[0]
 		v := env[1]
 		os.Setenv(k, v)
-		log.Infof("set env, key=%s, val=%s", k, v)
+		log.Infof("set env, key=%s", k)
 	}
 	return nil
 }

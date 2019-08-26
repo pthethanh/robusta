@@ -10,7 +10,6 @@ import (
 	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
-	"github.com/pthethanh/robusta/internal/pkg/email"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/util/timeutil"
@@ -45,27 +44,30 @@ type (
 		FindByUserID(ctx context.Context, id string) (*types.User, error)
 	}
 
+	Notifier interface {
+		Notify(ctx context.Context, info types.Notification)
+	}
 	// Service is an article Service
 	Service struct {
-		conf   Config
-		repo   Repository
-		policy PolicyService
-		es     event.Subscriber
-		wait   sync.WaitGroup
-		mailer email.Sender
-		user   UserService
+		conf     Config
+		repo     Repository
+		policy   PolicyService
+		es       event.Subscriber
+		wait     sync.WaitGroup
+		notifier Notifier
+		user     UserService
 	}
 )
 
 // NewService return a new article service
-func NewService(conf Config, r Repository, policySrv PolicyService, es event.Subscriber, mailer email.Sender, userSrv UserService) *Service {
+func NewService(conf Config, r Repository, policySrv PolicyService, es event.Subscriber, notifier Notifier, userSrv UserService) *Service {
 	srv := &Service{
-		conf:   conf,
-		repo:   r,
-		policy: policySrv,
-		es:     es,
-		mailer: mailer,
-		user:   userSrv,
+		conf:     conf,
+		repo:     r,
+		policy:   policySrv,
+		es:       es,
+		notifier: notifier,
+		user:     userSrv,
 	}
 
 	// handling events from other services

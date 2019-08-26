@@ -3,12 +3,12 @@ package article
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/email"
-	"github.com/pthethanh/robusta/internal/pkg/log"
 )
 
 func (s *Service) sendCommentCreatedNotification(c types.Comment) error {
@@ -26,15 +26,16 @@ func (s *Service) sendCommentCreatedNotification(c types.Comment) error {
 		return errors.Wrap(err, "failed to find user")
 	}
 	// TODO improve email content by using beautiful HTML template
-	err = s.mailer.Send(context.Background(), email.Email{
+	m := email.Email{
 		To:      []string{user.Email},
 		Subject: fmt.Sprintf("%s commented on your post - %s", c.CreatedByName, a.Title),
 		Body:    fmt.Sprintf(`Article: <a href="%s">%s</a><br>Comment: %s<br>Goway`, a.GetLink(), a.Title, c.Content),
-	})
-	if err != nil {
-		return errors.Wrap(err, "failed to send email")
 	}
-	log.Debugf("notification: comment_added is already sent")
+	noti, err := types.NewNotification(types.NotificationTypeEmail, m, time.Now())
+	if err != nil {
+		return errors.Wrap(err, "failed to create notification")
+	}
+	s.notifier.Notify(context.Background(), noti)
 	return nil
 }
 
@@ -53,14 +54,15 @@ func (s *Service) sendReactionNotification(r types.Reaction) error {
 		return errors.Wrap(err, "failed to find user")
 	}
 	// TODO improve email content by using beautiful HTML template
-	err = s.mailer.Send(context.Background(), email.Email{
+	m := email.Email{
 		To:      []string{user.Email},
 		Subject: fmt.Sprintf("%s %s your post - %s", r.CreatedByName, r.Type, a.Title),
 		Body:    fmt.Sprintf(`Article: <a href="%s">%s</a><br>Goway`, a.GetLink(), a.Title),
-	})
-	if err != nil {
-		return errors.Wrap(err, "failed to send email")
 	}
-	log.Debugf("notification: reaction  %s is already sent", r.Type)
+	noti, err := types.NewNotification(types.NotificationTypeEmail, m, time.Now())
+	if err != nil {
+		return errors.Wrap(err, "failed to create notification")
+	}
+	s.notifier.Notify(context.Background(), noti)
 	return nil
 }

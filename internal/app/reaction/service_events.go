@@ -10,14 +10,10 @@ import (
 )
 
 func (s *Service) sendEvent(ctx context.Context, req *types.ReactionChanged, eventType string) {
-	eventData, err := event.NewEventData(req)
+	ev, err := event.NewEvent(eventType, req, time.Now())
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to publish event, err: %v", err)
 		return
 	}
-	s.eventStore.Publish(event.Event{
-		Type:      eventType,
-		Data:      eventData,
-		CreatedAt: time.Now().Nanosecond(),
-	}, s.conf.Topic)
+	s.eventStore.Publish(ev, s.conf.Topic)
 }

@@ -10,16 +10,12 @@ import (
 )
 
 func (s *Service) sendEvent(ctx context.Context, c types.Comment, eventType string) {
-	eventData, err := event.NewEventData(c)
+	ev, err := event.NewEvent(eventType, c, time.Now())
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to publish event, err: %v", err)
 		return
 	}
-	s.es.Publish(event.Event{
-		Type:      eventType,
-		Data:      eventData,
-		CreatedAt: time.Now().Nanosecond(),
-	}, s.conf.Topic)
+	s.es.Publish(ev, s.conf.Topic)
 }
 
 func (s *Service) listenEvents() {

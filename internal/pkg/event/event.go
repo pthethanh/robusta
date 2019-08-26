@@ -2,7 +2,8 @@ package event
 
 import (
 	"bytes"
-	"encoding/gob"
+	"encoding/json"
+	"time"
 
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 )
@@ -12,7 +13,7 @@ type (
 	Event     struct {
 		Type      string
 		Data      EventData
-		CreatedAt int // nanoseconds
+		CreatedAt int64 // nanoseconds
 	}
 
 	Subscriber interface {
@@ -33,14 +34,26 @@ type (
 	}
 )
 
-func NewEventData(v interface{}) (EventData, error) {
+func NewEvent(typ string, data interface{}, createdAt time.Time) (Event, error) {
+	b, err := marshal(data)
+	if err != nil {
+		return Event{}, err
+	}
+	return Event{
+		Type:      typ,
+		Data:      b,
+		CreatedAt: createdAt.UnixNano(),
+	}, nil
+}
+
+func marshal(v interface{}) (EventData, error) {
 	buff := &bytes.Buffer{}
-	err := gob.NewEncoder(buff).Encode(v)
+	err := json.NewEncoder(buff).Encode(v)
 	return EventData(buff.Bytes()), err
 }
 
 func (data EventData) Unmarshal(v interface{}) error {
-	return gob.NewDecoder(bytes.NewReader(data)).Decode(v)
+	return json.NewDecoder(bytes.NewReader(data)).Decode(v)
 }
 
 func LoadConfigFromEnv() Config {
