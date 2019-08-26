@@ -1,3 +1,3 @@
 #!/bin/sh
 
-heroku config:set $(cat ./heroku.env | sed '/^$/d; /#[[:print:]]*$/d') --app goway
+heroku config:set $(cat ./../deployment/docker/.env | sed '/^$/d; /#[[:print:]]*$/d') --app goway

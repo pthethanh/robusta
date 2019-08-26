@@ -101,5 +101,4 @@ func (s *Service) Close() error {
 	case <-time.After(s.conf.CloseTimeout):
 		return ErrTimeout
 	}
-	return nil
 }

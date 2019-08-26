@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/pthethanh/robusta](https://badges.gitter.im/pthethanh/robusta.svg)](https://gitter.im/pthethanh/robusta?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A website to share technology knowledge
+A website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com
 
 ## Prerequisites
 

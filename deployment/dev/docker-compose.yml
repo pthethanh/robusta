@@ -7,9 +7,6 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      # You can replace /opt/data/mongo_home by any path to
-      # a directory on your machine.
-      # MongoDB will use that directory to store all the data.
       - /opt/data/mongo_home:/data/db
     restart: always
 
@@ -22,44 +19,47 @@ services:
       - "8082:8082"
       - "443:443"
     environment:
-      # Add more environments here if you want to pass it
-      # to backend service env config.
-      - MONGODB_ADDRS=mongodb:27017
-      - ALLOWED_ORIGINS=*
-      - GOOGLE_CLIENT_ID=511091284450-9oes9tddrskgtlfcafblrke7pk28lthp.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=xxx
-      - GOOGLE_REDIRECT_URL=http://mylocalhost.com/auth/google/callback
-      - SESSION_SECRET=xxx
-      - CASBIN_MONGODB_ADDRS=mongodb:27017
       - GO111MODULE=on
-      - CLOUDINARY_SECRET=xxx
-      - CLOUDINARY_API_KEY=xxx
-      - CLOUDINARY_CLOUD_NAME=pthethanh
-      # db
-      - MONGODB_ADDRS=ds121871.mlab.com:21871
-      - MONGODB_DATABASE=goway
-      - MONGODB_USERNAME=goway
-      - MONGODB_PASSWORD=xxx
-      - MONGODB_TIMEOUT=10s
-      # casbin
-      - CASBIN_MONGODB_ADDRS=ds121871.mlab.com:21871
-      - CASBIN_MONGODB_DATABASE=goway
-      - CASBIN_MONGODB_USERNAME=goway
-      - CASBIN_MONGODB_PASSWORD=xxx
-      - CASBIN_MONGODB_TIMEOUT=10s
-      # http server
-      - HTTP_PORT=8080
-      - HTTP_HOST=https://goway.herokuapp.com
-      #- HTTP_PORT=443
-      #- HTTP_TLS_CERT_FILE=/certs/server.pem
-      #- HTTP_TLS_KEY_FILE=/certs/server-key.pem
-      # email
-      - SMTP_ADDRESS=smtp.gmail.com:587
-      - SMTP_USERNAME=gowaynotification@gmail.com
-      - SMTP_PASSWORD=xxx
-      - SMTP_DEFAULT_FROM=gowaynotification@gmail.com
+      # LOGGING
+      - LOG_FORMAT=${LOG_FORMAT}
+      # HTTP
+      - HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT}
+      - HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT}
+      - HTTP_READ_HEADER_TIMEOUT=${HTTP_READ_HEADER_TIMEOUT}
+      - HTTP_SHUTDOWN_TIMEOUT=${HTTP_SHUTDOWN_TIMEOUT}
+      - PORT=${PORT}
+      - HTTP_HOST=${HTTP_HOST}
+      - HTTP_ALLOWED_ORIGINS={HTTP_ALLOWED_ORIGINS}
+      - HTTP_PORT=${HTTP_PORT}
+      - HTTP_TLS_CERT_FILE=${HTTP_TLS_CERT_FILE}
+      - HTTP_TLS_KEY_FILE=${HTTP_TLS_KEY_FILE}
+      # DB
+      - MONGODB_ADDRS=${MONGODB_ADDRS}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+      - MONGODB_USERNAME=${MONGODB_USERNAME}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+      - MONGODB_TIMEOUT=${MONGODB_TIMEOUT}
+      # POLICY
+      - CASBIN_MONGODB_ADDRS=${CASBIN_MONGODB_ADDRS}
+      - CASBIN_MONGODB_DATABASE=${CASBIN_MONGODB_DATABASE}
+      - CASBIN_MONGODB_USERNAME=${CASBIN_MONGODB_USERNAME}
+      - CASBIN_MONGODB_PASSWORD=${CASBIN_MONGODB_PASSWORD}
+      - CASBIN_MONGODB_TIMEOUT=${CASBIN_MONGODB_TIMEOUT}
+      # OAUTH
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+      # CLOUDINARY
+      - CLOUDINARY_SECRET=${CLOUDINARY_SECRET}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      # SMTP
+      - SMTP_ADDRESS=${SMTP_ADDRESS}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_DEFAULT_FROM=${SMTP_DEFAULT_FROM}
     volumes:
-      # Add Go packages here if needed.
       - ../../.realize.yaml:/go/src/github.com/pthethanh/robusta/.realize.yaml
       - ../../main.go:/go/src/github.com/pthethanh/robusta/main.go
       - ../../go.mod:/go/src/github.com/pthethanh/robusta/go.mod
