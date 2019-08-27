@@ -222,9 +222,7 @@ export default {
       comment.mode = 'view'
     },
     goToLogin () {
-      let target = process.env.NODE_ENV === 'production' ? '/auth/google' : 'http://mylocalhost.com/auth/google'
-      target = target + '?redirect=' + this.$router.currentRoute.path
-      window.location.href = target
+      this.$store.dispatch('ToggleLogin', true)
     },
     handleDeleteComment (index, comment) {
       let self = this

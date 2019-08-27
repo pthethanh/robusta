@@ -33,7 +33,7 @@ func NewService(conf Config, mailer email.Sender) *Service {
 	s := &Service{
 		conf:   conf,
 		mailer: mailer,
-		ch:     make(chan types.Notification),
+		ch:     make(chan types.Notification, conf.Buffer),
 	}
 	// start worker pool
 	s.start()
