@@ -17,10 +17,6 @@ type (
 	}
 )
 
-var (
-	NotificationTypeEmail NotificationType = "email"
-)
-
 func (d NotificationData) Unmarshal(v interface{}) error {
 	return json.Unmarshal(d, &v)
 }

@@ -48,9 +48,6 @@ func (s *Service) handleReactionEvent(ev event.Event) {
 	if err := s.repo.UpdateReactions(context.Background(), reactionChanged.NewReaction.TargetID, reactionChanged.Detail); err != nil {
 		log.Errorf("failed to update reaction of article, err: %v", err)
 	}
-	if err := s.sendReactionNotification(*reactionChanged.NewReaction); err != nil {
-		log.Errorf("failed to send reaction notification, err: %v", err)
-	}
 }
 
 func (s *Service) handleCommentEvent(ev event.Event) {
@@ -64,9 +61,6 @@ func (s *Service) handleCommentEvent(ev event.Event) {
 	case types.EventCommentCreated:
 		if err := s.updateCommentStatistic(c, +1); err != nil {
 			log.Errorf("failed to increase comment number of article: %s, err: %v", c.Target, err)
-		}
-		if err := s.sendCommentCreatedNotification(c); err != nil {
-			log.Errorf("failed to send comment notification, err: %v", err)
 		}
 	case types.EventCommentDeleted:
 		if err := s.updateCommentStatistic(c, -1); err != nil {

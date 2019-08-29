@@ -27,7 +27,10 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	closer := closeutil.NewCloser()
 	es := event.NewMemoryEventStore(event.LoadConfigFromEnv())
 	closer.Add(es.Close)
-	notifier, notifierCloser := createNotificationService()
+
+	notifier, notifierCloser := createNotificationService(es)
+	closer.Append(notifierCloser)
+	go notifier.Start()
 
 	userSrv, userCloser, err := newUserService()
 	if err != nil {
@@ -52,7 +55,7 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	}
 	closer.Append(commentCloser)
 
-	articleHandler, articleCloser, err := newArticleHandler(policySrv, es, notifier, userSrv)
+	articleHandler, articleCloser, err := newArticleHandler(policySrv, es)
 	if err != nil {
 		return nil, closer, err
 	}

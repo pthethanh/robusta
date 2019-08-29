@@ -11,6 +11,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/email"
+	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 )
 
@@ -18,25 +19,24 @@ type (
 	Service struct {
 		conf   Config
 		mailer email.Sender
-		ch     chan types.Notification
+		es     event.Subscriber
 		wg     sync.WaitGroup
 	}
 
 	Config struct {
-		Buffer       int           `envconfig:"NOTIFICATION_BUFFER" default:"1000"`
-		Worker       int           `envconfig:"NOTIFICATION_WORKER" default:"10"`
-		CloseTimeout time.Duration `envconfig:"NOTIFICATION_CLOSE_TIMEOUT" default:"15s"`
+		CommentTopic  string        `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
+		ReactionTopic string        `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
+		Worker        int           `envconfig:"NOTIFICATION_WORKER" default:"10"`
+		CloseTimeout  time.Duration `envconfig:"NOTIFICATION_CLOSE_TIMEOUT" default:"15s"`
 	}
 )
 
-func NewService(conf Config, mailer email.Sender) *Service {
+func NewService(conf Config, mailer email.Sender, es event.Subscriber) *Service {
 	s := &Service{
 		conf:   conf,
 		mailer: mailer,
-		ch:     make(chan types.Notification, conf.Buffer),
+		es:     es,
 	}
-	// start worker pool
-	s.start()
 	return s
 }
 
@@ -46,32 +46,23 @@ func LoadConfigFromEnv() Config {
 	return conf
 }
 
-func (s *Service) Notify(ctx context.Context, info types.Notification) {
-	s.ch <- info
-}
-
-func (s *Service) start() {
+func (s *Service) Start() {
+	ch := s.es.Subscribe(s.conf.CommentTopic, s.conf.ReactionTopic)
 	for i := 0; i < s.conf.Worker; i++ {
 		s.wg.Add(1)
 		go func() {
 			defer s.wg.Done()
-			for info := range s.ch {
-				if err := s.sendNotification(info); err != nil {
-					log.Errorf("failed to send notification, err: %v", err)
-					continue
+			for ev := range ch {
+				switch ev.Type {
+				case types.EventCommentCreated:
+					// TODO implement me
+					log.Infof("--------------comment created")
+				case types.EventReactionCreated:
+					// TODO implement me
+					log.Infof("--------------reaction created")
 				}
-				log.Infof("sent notification, type: %s", info.Type)
 			}
 		}()
-	}
-}
-
-func (s *Service) sendNotification(info types.Notification) error {
-	switch info.Type {
-	case types.NotificationTypeEmail:
-		return s.sendEmail(info)
-	default:
-		return ErrNotSupported
 	}
 }
 
@@ -87,7 +78,6 @@ func (s *Service) sendEmail(info types.Notification) error {
 }
 
 func (s *Service) Close() error {
-	close(s.ch)
 	done := make(chan struct{})
 	go func() {
 		log.Infof("notification: waiting for workers to be shutdown....")

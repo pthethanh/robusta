@@ -40,34 +40,23 @@ type (
 		EventWorkers  int    `envconfig:"ARTICLE_EVENT_WORKERS" default:"10"`
 	}
 
-	UserService interface {
-		FindByUserID(ctx context.Context, id string) (*types.User, error)
-	}
-
-	Notifier interface {
-		Notify(ctx context.Context, info types.Notification)
-	}
 	// Service is an article Service
 	Service struct {
-		conf     Config
-		repo     Repository
-		policy   PolicyService
-		es       event.Subscriber
-		wait     sync.WaitGroup
-		notifier Notifier
-		user     UserService
+		conf   Config
+		repo   Repository
+		policy PolicyService
+		es     event.Subscriber
+		wait   sync.WaitGroup
 	}
 )
 
 // NewService return a new article service
-func NewService(conf Config, r Repository, policySrv PolicyService, es event.Subscriber, notifier Notifier, userSrv UserService) *Service {
+func NewService(conf Config, r Repository, policySrv PolicyService, es event.Subscriber) *Service {
 	srv := &Service{
-		conf:     conf,
-		repo:     r,
-		policy:   policySrv,
-		es:       es,
-		notifier: notifier,
-		user:     userSrv,
+		conf:   conf,
+		repo:   r,
+		policy: policySrv,
+		es:     es,
 	}
 
 	// handling events from other services
