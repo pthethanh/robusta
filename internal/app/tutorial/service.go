@@ -6,18 +6,17 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/types"
 )
 
 type (
 	// Repository is an interface of an tutorial repository
 	Repository interface {
-		FindAll(ctx context.Context, offset, limit int) ([]*types.Tutorial, error)
+		FindAll(ctx context.Context, offset, limit int) ([]*Tutorial, error)
 		Increase(ctx context.Context, id string, field string, val interface{}) error
-		Create(ctx context.Context, a *types.Tutorial) error
-		FindByID(ctx context.Context, id string) (*types.Tutorial, error)
+		Create(ctx context.Context, a *Tutorial) error
+		FindByID(ctx context.Context, id string) (*Tutorial, error)
 		Delete(ctx context.Context, id string) error
-		Update(ctx context.Context, id string, a *types.Tutorial) error
+		Update(ctx context.Context, id string, a *Tutorial) error
 	}
 
 	// InternalService is an tutorial InternalService
@@ -34,7 +33,7 @@ func NewInternalService(r Repository) *InternalService {
 }
 
 // FindAll return all tutorials
-func (s *InternalService) FindAll(ctx context.Context, offset, limit int) ([]*types.Tutorial, error) {
+func (s *InternalService) FindAll(ctx context.Context, offset, limit int) ([]*Tutorial, error) {
 	tutorials, err := s.repo.FindAll(ctx, offset, limit)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find all tutorials")
@@ -51,8 +50,8 @@ func (s *InternalService) FindAll(ctx context.Context, offset, limit int) ([]*ty
 }
 
 // Create create a new tutorial
-func (s *InternalService) Create(ctx context.Context, a *types.Tutorial) error {
-	a.Status = types.StatusPublished // TODO will change in the future...
+func (s *InternalService) Create(ctx context.Context, a *Tutorial) error {
+	a.Status = StatusPublished // TODO will change in the future...
 	if user := auth.FromContext(ctx); user != nil {
 		a.CreatedByID = user.UserID
 		a.CreatedByName = user.GetName()
@@ -66,12 +65,12 @@ func (s *InternalService) Delete(ctx context.Context, id string) error {
 }
 
 // Update the existing tutorial
-func (s *InternalService) Update(ctx context.Context, id string, a *types.Tutorial) error {
+func (s *InternalService) Update(ctx context.Context, id string, a *Tutorial) error {
 	return s.repo.Update(ctx, id, a)
 }
 
 // FindByID find tutorial by id
-func (s *InternalService) FindByID(ctx context.Context, id string) (*types.Tutorial, error) {
+func (s *InternalService) FindByID(ctx context.Context, id string) (*Tutorial, error) {
 	a, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err

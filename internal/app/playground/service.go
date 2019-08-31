@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 )
 
@@ -38,7 +37,7 @@ func NewService() *Service {
 	}
 }
 
-func (s *Service) Run(ctx context.Context, r *types.PlaygroundRequest) (*types.PlaygroundResponse, error) {
+func (s *Service) Run(ctx context.Context, r *PlaygroundRequest) (*PlaygroundResponse, error) {
 	code := url.QueryEscape(r.Code)
 	playURL := fmt.Sprintf("%s?version=%d&body=%s", s.serviceURL, 2, code)
 	req, err := http.NewRequest(http.MethodPost, playURL, nil)
@@ -52,7 +51,7 @@ func (s *Service) Run(ctx context.Context, r *types.PlaygroundRequest) (*types.P
 		return nil, err
 	}
 	defer res.Body.Close()
-	var v types.PlaygroundResponse
+	var v PlaygroundResponse
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
 		return nil, err
 	}

@@ -26,10 +26,10 @@ func NewMongoRepository(s *mgo.Session) *MongoRepository {
 }
 
 // FindAll return all articles
-func (r *MongoRepository) FindAll(ctx context.Context, req FindRequest) ([]*types.Article, error) {
+func (r *MongoRepository) FindAll(ctx context.Context, req FindRequest) ([]*Article, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var articles []*types.Article
+	var articles []*Article
 	selector := bson.M{
 		"status": req.Status,
 	}
@@ -52,10 +52,10 @@ func (r *MongoRepository) FindAll(ctx context.Context, req FindRequest) ([]*type
 }
 
 // FindByID return article base on given id
-func (r *MongoRepository) FindByID(ctx context.Context, id string) (*types.Article, error) {
+func (r *MongoRepository) FindByID(ctx context.Context, id string) (*Article, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var article *types.Article
+	var article *Article
 	if err := r.collection(s).Find(bson.M{"_id": id}).One(&article); err != nil {
 		return nil, errors.Wrap(err, "failed to find all articles from database")
 	}
@@ -63,7 +63,7 @@ func (r *MongoRepository) FindByID(ctx context.Context, id string) (*types.Artic
 }
 
 // Create create new article
-func (r *MongoRepository) Create(ctx context.Context, a *types.Article) error {
+func (r *MongoRepository) Create(ctx context.Context, a *Article) error {
 	s := r.session.Clone()
 	defer s.Close()
 	a.ID = db.NewID()
@@ -76,7 +76,7 @@ func (r *MongoRepository) Create(ctx context.Context, a *types.Article) error {
 }
 
 // ChangeStatus delete the given article from database
-func (r *MongoRepository) ChangeStatus(ctx context.Context, id string, status types.Status) error {
+func (r *MongoRepository) ChangeStatus(ctx context.Context, id string, status Status) error {
 	s := r.session.Clone()
 	defer s.Close()
 	if err := r.collection(s).Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"status": status}}); err != nil {
@@ -86,7 +86,7 @@ func (r *MongoRepository) ChangeStatus(ctx context.Context, id string, status ty
 }
 
 // Update update existing article
-func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Article) error {
+func (r *MongoRepository) Update(ctx context.Context, id string, a *Article) error {
 	s := r.session.Clone()
 	defer s.Close()
 	a.UpdatedAt = timeutil.Now()
@@ -96,10 +96,10 @@ func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Articl
 	return nil
 }
 
-func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time, to time.Time) ([]*types.Article, error) {
+func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time, to time.Time) ([]*Article, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var articles []*types.Article
+	var articles []*Article
 	if err := r.collection(s).Find(bson.M{
 		"created_at": bson.M{
 			"$gt": from,
@@ -111,10 +111,10 @@ func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time,
 	return articles, nil
 }
 
-func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*types.Article, error) {
+func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*Article, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var articles []*types.Article
+	var articles []*Article
 	if err := r.collection(s).Find(bson.M{"created_by_id": id}).Sort("-created_at").All(&articles); err != nil {
 		return nil, err
 	}
@@ -139,10 +139,10 @@ func (r *MongoRepository) Increase(ctx context.Context, id string, field string,
 }
 
 // FindByArticleID return article base on given id
-func (r *MongoRepository) FindByArticleID(ctx context.Context, id string) (*types.Article, error) {
+func (r *MongoRepository) FindByArticleID(ctx context.Context, id string) (*Article, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var article *types.Article
+	var article *Article
 	if err := r.collection(s).Find(bson.M{"article_id": id}).One(&article); err != nil {
 		return nil, errors.Wrap(err, "failed to find all articles from database")
 	}

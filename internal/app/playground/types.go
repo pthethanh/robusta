@@ -1,4 +1,4 @@
-package types
+package playground
 
 type (
 	PlaygroundRequest struct {

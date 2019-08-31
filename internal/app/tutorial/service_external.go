@@ -5,7 +5,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/policy"
-	"github.com/pthethanh/robusta/internal/app/types"
 )
 
 type (
@@ -31,12 +30,12 @@ func NewExternalService(internal *InternalService, policy PolicyService) *Extern
 }
 
 // FindAll return all tutorials
-func (s *ExternalService) FindAll(ctx context.Context, offset, limit int) ([]*types.Tutorial, error) {
+func (s *ExternalService) FindAll(ctx context.Context, offset, limit int) ([]*Tutorial, error) {
 	return s.internal.FindAll(ctx, offset, limit)
 }
 
 // Create create a new tutorial
-func (s *ExternalService) Create(ctx context.Context, a *types.Tutorial) error {
+func (s *ExternalService) Create(ctx context.Context, a *Tutorial) error {
 	if err := s.internal.Create(ctx, a); err != nil {
 		return err
 	}
@@ -56,7 +55,7 @@ func (s *ExternalService) Delete(ctx context.Context, id string) error {
 }
 
 // Update the existing tutorial
-func (s *ExternalService) Update(ctx context.Context, id string, a *types.Tutorial) error {
+func (s *ExternalService) Update(ctx context.Context, id string, a *Tutorial) error {
 	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
 		return err
 	}
@@ -64,13 +63,13 @@ func (s *ExternalService) Update(ctx context.Context, id string, a *types.Tutori
 }
 
 // FindByID find tutorial by id
-func (s *ExternalService) FindByID(ctx context.Context, id string) (*types.Tutorial, error) {
+func (s *ExternalService) FindByID(ctx context.Context, id string) (*Tutorial, error) {
 	a, err := s.internal.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	// don't allow to find by ID for deleted tutorial
-	if a.Status != types.StatusPublished {
+	if a.Status != StatusPublished {
 		return nil, ErrNotFound
 	}
 	return a, nil

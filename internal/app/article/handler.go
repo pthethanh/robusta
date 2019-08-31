@@ -17,13 +17,13 @@ import (
 
 type (
 	service interface {
-		FindAll(ctx context.Context, req FindRequest) ([]*types.Article, error)
+		FindAll(ctx context.Context, req FindRequest) ([]*Article, error)
 		IncreaseView(ctx context.Context, id string) error
-		Create(ctx context.Context, a *types.Article) error
-		FindByID(ctx context.Context, id string) (*types.Article, error)
-		FindByArticleID(ctx context.Context, id string) (*types.Article, error)
-		Update(ctx context.Context, id string, a *types.Article) error
-		ChangeStatus(ctx context.Context, id string, status types.Status) error
+		Create(ctx context.Context, a *Article) error
+		FindByID(ctx context.Context, id string) (*Article, error)
+		FindByArticleID(ctx context.Context, id string) (*Article, error)
+		Update(ctx context.Context, id string, a *Article) error
+		ChangeStatus(ctx context.Context, id string, status Status) error
 	}
 	// Handler is friend web handler
 	Handler struct {
@@ -52,7 +52,7 @@ func (h *Handler) Find(w http.ResponseWriter, r *http.Request) {
 	req := FindRequest{
 		Offset:      handlerutil.IntFromQuery("offset", queries, 0),
 		Limit:       handlerutil.IntFromQuery("limit", queries, 15),
-		Status:      types.StatusPublished, // query only public articles
+		Status:      StatusPublished, // query only public articles
 		Tags:        queries["tags"],
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
@@ -87,7 +87,7 @@ func (h *Handler) UpdateView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var a types.Article
+	var a Article
 	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
 		log.WithContext(r.Context()).Infof("failed to decode body, err: %v", err)
 		respond.Error(w, err, http.StatusBadRequest)
@@ -112,7 +112,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	var find func(ctx context.Context, id string) (*types.Article, error)
+	var find func(ctx context.Context, id string) (*Article, error)
 	find = h.srv.FindByID
 	if isArticleID(id) {
 		find = h.srv.FindByArticleID
@@ -124,7 +124,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// don't allow to find by ID for deleted article
-	if a.Status != types.StatusPublished {
+	if a.Status != StatusPublished {
 		respond.JSON(w, http.StatusOK, types.BaseResponse{
 			AppError: ErrNotFound,
 			Data:     a,
@@ -145,7 +145,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// go ahead to update
-	var req types.Article
+	var req Article
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return
@@ -169,7 +169,7 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	if err := h.srv.ChangeStatus(r.Context(), id, types.StatusDeleted); err != nil {
+	if err := h.srv.ChangeStatus(r.Context(), id, StatusDeleted); err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
@@ -193,8 +193,8 @@ func (h *Handler) UpdateByAction(w http.ResponseWriter, r *http.Request) {
 // convertArticlesToReviewMode convert the given articles to preview mode
 // by stripping the content down to 2 blocks for a lighter package and
 // better performance when sending the articles in the network
-func convertArticlesToReviewMode(articles []*types.Article) []*types.Article {
-	rs := make([]*types.Article, 0)
+func convertArticlesToReviewMode(articles []*Article) []*Article {
+	rs := make([]*Article, 0)
 	for _, a := range articles {
 		v := *a
 		if len(v.Content.Blocks) > 2 {

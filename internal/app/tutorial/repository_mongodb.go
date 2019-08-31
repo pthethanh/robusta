@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/util/timeutil"
 
@@ -26,10 +25,10 @@ func NewMongoRepository(s *mgo.Session) *MongoRepository {
 }
 
 // FindAll return all tutorials
-func (r *MongoRepository) FindAll(ctx context.Context, offset, limit int) ([]*types.Tutorial, error) {
+func (r *MongoRepository) FindAll(ctx context.Context, offset, limit int) ([]*Tutorial, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var tutorials []*types.Tutorial
+	var tutorials []*Tutorial
 	if err := r.collection(s).Find(bson.M{"status": "public"}).Sort("-created_at").Skip(offset).Limit(limit).All(&tutorials); err != nil {
 		return nil, errors.Wrap(err, "failed to find all tutorials from database")
 	}
@@ -37,10 +36,10 @@ func (r *MongoRepository) FindAll(ctx context.Context, offset, limit int) ([]*ty
 }
 
 // FindByID return tutorial base on given id
-func (r *MongoRepository) FindByID(ctx context.Context, id string) (*types.Tutorial, error) {
+func (r *MongoRepository) FindByID(ctx context.Context, id string) (*Tutorial, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var tutorial *types.Tutorial
+	var tutorial *Tutorial
 	if err := r.collection(s).Find(bson.M{"_id": id}).One(&tutorial); err != nil {
 		return nil, errors.Wrap(err, "failed to find all tutorials from database")
 	}
@@ -48,7 +47,7 @@ func (r *MongoRepository) FindByID(ctx context.Context, id string) (*types.Tutor
 }
 
 // Create create new tutorial
-func (r *MongoRepository) Create(ctx context.Context, a *types.Tutorial) error {
+func (r *MongoRepository) Create(ctx context.Context, a *Tutorial) error {
 	s := r.session.Clone()
 	defer s.Close()
 	a.ID = db.NewID()
@@ -64,14 +63,14 @@ func (r *MongoRepository) Create(ctx context.Context, a *types.Tutorial) error {
 func (r *MongoRepository) Delete(ctx context.Context, id string) error {
 	s := r.session.Clone()
 	defer s.Close()
-	if err := r.collection(s).Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"status": types.StatusDeleted}}); err != nil {
+	if err := r.collection(s).Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"status": StatusDeleted}}); err != nil {
 		return errors.Wrapf(err, "failed to delete tutorial %s", id)
 	}
 	return nil
 }
 
 // Update update existing tutorial
-func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Tutorial) error {
+func (r *MongoRepository) Update(ctx context.Context, id string, a *Tutorial) error {
 	s := r.session.Clone()
 	defer s.Close()
 	a.UpdatedAt = timeutil.Now()
@@ -81,10 +80,10 @@ func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Tutori
 	return nil
 }
 
-func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time, to time.Time) ([]*types.Tutorial, error) {
+func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time, to time.Time) ([]*Tutorial, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var tutorials []*types.Tutorial
+	var tutorials []*Tutorial
 	if err := r.collection(s).Find(bson.M{
 		"created_at": bson.M{
 			"$gt": from,
@@ -96,10 +95,10 @@ func (r *MongoRepository) FindByCreatedTime(ctx context.Context, from time.Time,
 	return tutorials, nil
 }
 
-func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*types.Tutorial, error) {
+func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*Tutorial, error) {
 	s := r.session.Clone()
 	defer s.Close()
-	var tutorials []*types.Tutorial
+	var tutorials []*Tutorial
 	if err := r.collection(s).Find(bson.M{"created_by_id": id}).Sort("-created_at").All(&tutorials); err != nil {
 		return nil, err
 	}

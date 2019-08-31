@@ -19,13 +19,13 @@ import (
 type (
 	// Repository is an interface of an article repository
 	Repository interface {
-		FindAll(ctx context.Context, req FindRequest) ([]*types.Article, error)
+		FindAll(ctx context.Context, req FindRequest) ([]*Article, error)
 		Increase(ctx context.Context, id string, field string, val interface{}) error
-		Create(ctx context.Context, a *types.Article) error
-		FindByID(ctx context.Context, id string) (*types.Article, error)
-		FindByArticleID(ctx context.Context, id string) (*types.Article, error)
-		ChangeStatus(ctx context.Context, id string, status types.Status) error
-		Update(ctx context.Context, id string, a *types.Article) error
+		Create(ctx context.Context, a *Article) error
+		FindByID(ctx context.Context, id string) (*Article, error)
+		FindByArticleID(ctx context.Context, id string) (*Article, error)
+		ChangeStatus(ctx context.Context, id string, status Status) error
+		Update(ctx context.Context, id string, a *Article) error
 		UpdateReactions(ctx context.Context, id string, req *types.ReactionDetail) error
 	}
 
@@ -74,7 +74,7 @@ func LoadConfigFromEnv() Config {
 }
 
 // FindAll return all articles
-func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*types.Article, error) {
+func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*Article, error) {
 	recorder := timeutil.NewRecorder("find all articles")
 	defer log.WithContext(ctx).Info(recorder)
 
@@ -86,12 +86,12 @@ func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*types.Articl
 }
 
 // Create create a new article
-func (s *Service) Create(ctx context.Context, a *types.Article) error {
+func (s *Service) Create(ctx context.Context, a *Article) error {
 	if err := validator.Validate(a); err != nil {
 		return errors.Wrap(err, "invalid article")
 	}
 
-	a.Status = types.StatusPublished
+	a.Status = StatusPublished
 	user := auth.FromContext(ctx)
 	if user != nil {
 		a.CreatedByID = user.UserID
@@ -112,7 +112,7 @@ func (s *Service) Create(ctx context.Context, a *types.Article) error {
 }
 
 // ChangeStatus delete the given article
-func (s *Service) ChangeStatus(ctx context.Context, id string, status types.Status) error {
+func (s *Service) ChangeStatus(ctx context.Context, id string, status Status) error {
 	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (s *Service) ChangeStatus(ctx context.Context, id string, status types.Stat
 }
 
 // Update the existing article
-func (s *Service) Update(ctx context.Context, id string, a *types.Article) error {
+func (s *Service) Update(ctx context.Context, id string, a *Article) error {
 	if err := validator.Validate(a); err != nil {
 		return errors.Wrap(err, "invalid article")
 	}
@@ -131,7 +131,7 @@ func (s *Service) Update(ctx context.Context, id string, a *types.Article) error
 }
 
 // FindByID find article by id
-func (s *Service) FindByID(ctx context.Context, id string) (*types.Article, error) {
+func (s *Service) FindByID(ctx context.Context, id string) (*Article, error) {
 	a, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (s *Service) IncreaseView(ctx context.Context, id string) error {
 }
 
 // FindByArticleID find article by id
-func (s *Service) FindByArticleID(ctx context.Context, articleID string) (*types.Article, error) {
+func (s *Service) FindByArticleID(ctx context.Context, articleID string) (*Article, error) {
 	a, err := s.repo.FindByArticleID(ctx, articleID)
 	if err != nil {
 		return nil, err

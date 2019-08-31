@@ -15,11 +15,11 @@ import (
 
 type (
 	service interface {
-		FindAll(ctx context.Context, offset, limit int) ([]*types.Tutorial, error)
+		FindAll(ctx context.Context, offset, limit int) ([]*Tutorial, error)
 		View(ctx context.Context, id string) error
-		Create(ctx context.Context, a *types.Tutorial) error
-		FindByID(ctx context.Context, id string) (*types.Tutorial, error)
-		Update(ctx context.Context, id string, a *types.Tutorial) error
+		Create(ctx context.Context, a *Tutorial) error
+		FindByID(ctx context.Context, id string) (*Tutorial, error)
+		Update(ctx context.Context, id string, a *Tutorial) error
 		Delete(ctx context.Context, id string) error
 	}
 	// Handler is friend web handler
@@ -58,7 +58,7 @@ func (h *Handler) View(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var a types.Tutorial
+	var a Tutorial
 	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
 		log.WithContext(r.Context()).Infof("failed to decode body, err: %v", err)
 		respond.Error(w, err, http.StatusBadRequest)
@@ -105,7 +105,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	// go ahead to update
-	var req types.Tutorial
+	var req Tutorial
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return
