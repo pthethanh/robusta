@@ -6,7 +6,7 @@ import (
 	"github.com/pthethanh/robusta/internal/pkg/util/closeutil"
 )
 
-func newArticleHandler(policySrv article.PolicyService, es event.Subscriber) (*article.Handler, *closeutil.Closer, error) {
+func newArticleHandler(policySrv article.PolicyService, es event.PublishSubscriber) (*article.Handler, *closeutil.Closer, error) {
 	closer := closeutil.NewCloser()
 	s, mongoCloser, err := dialDefaultMongoDB()
 	if err != nil {

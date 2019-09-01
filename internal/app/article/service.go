@@ -35,9 +35,10 @@ type (
 	}
 
 	Config struct {
-		CommentTopic  string `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
-		ReactionTopic string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
-		EventWorkers  int    `envconfig:"ARTICLE_EVENT_WORKERS" default:"10"`
+		CommentTopic      string `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
+		ReactionTopic     string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
+		NotificationTopic string `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
+		EventWorkers      int    `envconfig:"ARTICLE_EVENT_WORKERS" default:"10"`
 	}
 
 	// Service is an article Service
@@ -45,13 +46,13 @@ type (
 		conf   Config
 		repo   Repository
 		policy PolicyService
-		es     event.Subscriber
+		es     event.PublishSubscriber
 		wait   sync.WaitGroup
 	}
 )
 
 // NewService return a new article service
-func NewService(conf Config, r Repository, policySrv PolicyService, es event.Subscriber) *Service {
+func NewService(conf Config, r Repository, policySrv PolicyService, es event.PublishSubscriber) *Service {
 	srv := &Service{
 		conf:   conf,
 		repo:   r,

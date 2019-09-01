@@ -28,16 +28,19 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	es := event.NewMemoryEventStore(event.LoadConfigFromEnv())
 	closer.Add(es.Close)
 
-	notifier, notifierCloser := createNotificationService(es)
-	closer.Append(notifierCloser)
-	go notifier.Start()
-
 	userSrv, userCloser, err := newUserService()
 	if err != nil {
 		return nil, closer, err
 	}
 	closer.Append(userCloser)
 	userHandler := newUserHandler(userSrv)
+
+	notifier, notifierCloser, err := createNotificationService(es, userSrv)
+	if err != nil {
+		return nil, closer, err
+	}
+	closer.Append(notifierCloser)
+	go notifier.Start()
 
 	policySrv, err := newPolicyService()
 	if err != nil {

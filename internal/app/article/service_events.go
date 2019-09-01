@@ -48,6 +48,9 @@ func (s *Service) handleReactionEvent(ev event.Event) {
 	if err := s.repo.UpdateReactions(context.Background(), reactionChanged.NewReaction.TargetID, reactionChanged.Detail); err != nil {
 		log.Errorf("failed to update reaction of article, err: %v", err)
 	}
+	if err := s.sendReactionCreatedNotification(*reactionChanged.NewReaction); err != nil {
+		log.Errorf("failed to send reaction created notification")
+	}
 }
 
 func (s *Service) handleCommentEvent(ev event.Event) {
@@ -57,10 +60,17 @@ func (s *Service) handleCommentEvent(ev event.Event) {
 		log.Errorf("failed to unmarshal event data, err: %v", err)
 		return
 	}
+	// not article -> ignore...
+	if c.TargetType != types.CommentTargetTypeArticle {
+		return
+	}
 	switch ev.Type {
 	case types.EventCommentCreated:
 		if err := s.updateCommentStatistic(c, +1); err != nil {
 			log.Errorf("failed to increase comment number of article: %s, err: %v", c.Target, err)
+		}
+		if err := s.sendCommentCreatedNotification(c); err != nil {
+			log.Errorf("failed to send comment created notification")
 		}
 	case types.EventCommentDeleted:
 		if err := s.updateCommentStatistic(c, -1); err != nil {

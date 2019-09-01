@@ -1,34 +1,25 @@
 package types
 
-import (
-	"encoding/json"
-	"time"
+type (
+	ArticleCommentNotification struct {
+		Article ArticleInfo `json:"article"`
+		Comment Comment     `json:"comment"`
+	}
 
-	"github.com/pkg/errors"
+	ArticleReactionNotification struct {
+		Article  ArticleInfo `json:"article"`
+		Reaction Reaction    `json:"reaction"`
+	}
 )
 
 type (
-	NotificationData []byte
-	NotificationType string
-	Notification     struct {
-		Type      NotificationType
-		Data      NotificationData
-		CreatedAt int64 // unix nano
+	CommentReplyNotification struct {
+		ParentOwner string  `json:"parent_owner,omitempty"`
+		Comment     Comment `json:"comment"`
+	}
+
+	CommentReactionNotification struct {
+		ParentOwner string   `json:"parent_owner,omitempty"`
+		Reaction    Reaction `json:"reaction"`
 	}
 )
-
-func (d NotificationData) Unmarshal(v interface{}) error {
-	return json.Unmarshal(d, &v)
-}
-
-func NewNotification(typ NotificationType, data interface{}, createdAt time.Time) (Notification, error) {
-	b, err := json.Marshal(data)
-	if err != nil {
-		return Notification{}, errors.Wrap(err, "failed to marshal data")
-	}
-	return Notification{
-		Type:      typ,
-		Data:      b,
-		CreatedAt: createdAt.UnixNano(),
-	}, nil
-}

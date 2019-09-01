@@ -1,43 +1,55 @@
 package notification
 
 import (
+	"bytes"
 	"context"
-	"encoding/json"
+	"html/template"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/email"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
+	"github.com/pthethanh/robusta/internal/pkg/util/htmlutil"
 )
 
 type (
+	UserService interface {
+		FindByUserID(ctx context.Context, id string) (*types.User, error)
+	}
 	Service struct {
-		conf   Config
-		mailer email.Sender
-		es     event.Subscriber
-		wg     sync.WaitGroup
+		conf      Config
+		mailer    email.Sender
+		es        event.Subscriber
+		wg        sync.WaitGroup
+		templates *template.Template
+		user      UserService
 	}
 
 	Config struct {
-		CommentTopic  string        `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
-		ReactionTopic string        `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
-		Worker        int           `envconfig:"NOTIFICATION_WORKER" default:"10"`
-		CloseTimeout  time.Duration `envconfig:"NOTIFICATION_CLOSE_TIMEOUT" default:"15s"`
+		Topic        string        `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
+		Worker       int           `envconfig:"NOTIFICATION_WORKER" default:"10"`
+		CloseTimeout time.Duration `envconfig:"NOTIFICATION_CLOSE_TIMEOUT" default:"15s"`
+		TemplatePath string        `envconfig:"NOTIFICATION_TEMPLATE_PATH" default:"templates/notifications"`
 	}
 )
 
-func NewService(conf Config, mailer email.Sender, es event.Subscriber) *Service {
-	s := &Service{
-		conf:   conf,
-		mailer: mailer,
-		es:     es,
+func NewService(conf Config, mailer email.Sender, es event.Subscriber, user UserService) (*Service, error) {
+	templates, err := htmlutil.LoadTemplates(conf.TemplatePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load notification templates")
 	}
-	return s
+	s := &Service{
+		conf:      conf,
+		mailer:    mailer,
+		es:        es,
+		templates: templates,
+		user:      user,
+	}
+	return s, nil
 }
 
 func LoadConfigFromEnv() Config {
@@ -47,34 +59,51 @@ func LoadConfigFromEnv() Config {
 }
 
 func (s *Service) Start() {
-	ch := s.es.Subscribe(s.conf.CommentTopic, s.conf.ReactionTopic)
+	ch := s.es.Subscribe(s.conf.Topic)
 	for i := 0; i < s.conf.Worker; i++ {
 		s.wg.Add(1)
 		go func() {
 			defer s.wg.Done()
 			for ev := range ch {
 				switch ev.Type {
-				case types.EventCommentCreated:
-					// TODO implement me
-					log.Infof("--------------comment created")
-				case types.EventReactionCreated:
-					// TODO implement me
-					log.Infof("--------------reaction created")
+				case types.EventNotificationArticleCommentCreated:
+					s.handleArticleCommentCreated(ev)
+				case types.EventNotificationArticleReactionCreated:
+					s.handleArticleReactionCreated(ev)
+				case types.EventNotificationCommentReactionCreated:
+					s.handleCommentReactionCreated(ev)
+				case types.EventNotificationCommentReplyCreated:
+					s.handleCommentReplyCreated(ev)
 				}
 			}
 		}()
 	}
 }
 
-func (s *Service) sendEmail(info types.Notification) error {
-	var m email.Email
-	if err := json.Unmarshal(info.Data, &m); err != nil {
-		return err
+func (s *Service) sendEmailNotification(subject string, bodyTemplate string, bodyData interface{}, userID string) {
+	owner, err := s.user.FindByUserID(context.Background(), userID)
+	if err != nil {
+		log.Errorf("failed to find user: %s, err: %v", userID, err)
+		return
 	}
-	if err := s.mailer.Send(context.Background(), m); err != nil {
-		return errors.Wrap(err, "failed to send email")
+	tmpl := s.templates.Lookup(bodyTemplate)
+	if tmpl == nil {
+		log.Errorf("failed to find the target template, err: %v", err)
+		return
 	}
-	return nil
+	buff := bytes.Buffer{}
+	if err := tmpl.Execute(&buff, bodyData); err != nil {
+		log.Errorf("failed to execute template, err: %v", err)
+		return
+	}
+	if err := s.mailer.Send(context.Background(), email.Email{
+		Subject: subject,
+		To:      []string{owner.Email},
+		Body:    buff.String(),
+	}); err != nil {
+		log.Errorf("failed to send email, err :%v", err)
+		return
+	}
 }
 
 func (s *Service) Close() error {
