@@ -14,12 +14,12 @@ type (
 
 type (
 	CommentReplyNotification struct {
-		ParentOwner string  `json:"parent_owner,omitempty"`
-		Comment     Comment `json:"comment"`
+		Comment Comment `json:"comment"`
+		Reply   Comment `json:"reply"`
 	}
 
 	CommentReactionNotification struct {
-		ParentOwner string   `json:"parent_owner,omitempty"`
-		Reaction    Reaction `json:"reaction"`
+		Comment  Comment  `json:"comment"`
+		Reaction Reaction `json:"reaction"`
 	}
 )

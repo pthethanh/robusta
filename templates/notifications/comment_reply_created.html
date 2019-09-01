@@ -1,0 +1,15 @@
+Hi {{.Comment.CreatedByName}},
+<br>
+<br>
+<b>{{.Reply.CreatedByName}}</b> has just replied to your comment:
+<br>
+Your comment: {{.Comment.Content}}
+<br>
+{{.Reply.CreatedByName}}'s comment: {{.Reply.Content}}
+<br>
+{{if eq .Comment.TargetType "article"}}
+See detail <a href="https://goway.herokuapp.com/articles/detail/{{.Comment.Target}}">here</a>
+{{end}}
+<br>
+<br>
+Goway

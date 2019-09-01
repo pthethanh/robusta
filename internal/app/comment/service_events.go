@@ -56,4 +56,8 @@ func (s *Service) handleReactionEvent(ev event.Event) {
 	if err := s.repo.UpdateReactions(context.Background(), reactionChanged.NewReaction.TargetID, reactionChanged.Detail); err != nil {
 		log.Errorf("failed to update reaction of comment, err: %v", err)
 	}
+	// send notification to the comment's owner
+	if err := s.sendReactionCreatedNotification(*reactionChanged.NewReaction); err != nil {
+		log.Errorf("failed to send reaction created notification")
+	}
 }

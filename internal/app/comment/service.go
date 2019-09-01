@@ -23,6 +23,7 @@ type (
 		UpdateReactions(ctx context.Context, id string, req *types.ReactionDetail) error
 		Update(ctx context.Context, id string, a *types.Comment) error
 		Delete(ctx context.Context, id string) (types.Comment, error)
+		FindByID(ctx context.Context, id string) (types.Comment, error)
 	}
 
 	PolicyService interface {
@@ -31,9 +32,10 @@ type (
 	}
 
 	Config struct {
-		Topic         string `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
-		ReactionTopic string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
-		EventWorkers  int    `envconfig:"COMMENT_EVENT_WORKERS" default:"10"`
+		Topic             string `envconfig:"COMMENT_TOPIC" default:"r_topic_comment"`
+		ReactionTopic     string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
+		NotificationTopic string `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
+		EventWorkers      int    `envconfig:"COMMENT_EVENT_WORKERS" default:"10"`
 	}
 
 	Service struct {
@@ -93,6 +95,11 @@ func (s *Service) Create(ctx context.Context, cm *types.Comment) error {
 	}
 	// send event to who interested in
 	defer s.sendEvent(ctx, *cm, types.EventCommentCreated)
+
+	// send reply notification to the parent comment's owner
+	if cm.ReplyToID != "" {
+		s.sendReplyCreatedNotification(*cm)
+	}
 	return nil
 }
 
@@ -120,6 +127,10 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 	}
 	defer s.sendEvent(ctx, deletedComment, types.EventCommentDeleted)
 	return nil
+}
+
+func (s *Service) FindByID(ctx context.Context, id string) (types.Comment, error) {
+	return s.repo.FindByID(ctx, id)
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, act policy.Action) error {

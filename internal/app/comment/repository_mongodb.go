@@ -104,3 +104,13 @@ func (r *MongoRepository) Delete(ctx context.Context, id string) (types.Comment,
 	}
 	return c, nil
 }
+
+func (r *MongoRepository) FindByID(ctx context.Context, id string) (types.Comment, error) {
+	s := r.session.Clone()
+	defer s.Close()
+	var c types.Comment
+	if err := s.DB("").C(commentCollection).Find(bson.M{"_id": id}).One(&c); err != nil {
+		return types.Comment{}, errors.Wrap(err, "failed to find comment")
+	}
+	return c, nil
+}
