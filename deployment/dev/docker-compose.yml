@@ -67,6 +67,7 @@ services:
       - ../../internal:/go/src/github.com/pthethanh/robusta/internal/
       - ../../web/dist:/go/src/github.com/pthethanh/robusta/web/dist
       - ../../configs:/go/src/github.com/pthethanh/robusta/configs
+      - ../../templates:/go/src/github.com/pthethanh/robusta/templates
       - ../scripts:/scripts
       - ../certs:/certs
     working_dir: /go/src/github.com/pthethanh/robusta

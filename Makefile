@@ -40,8 +40,10 @@ compose_prod: docker
 docker_prebuild: vet test web_build build
 	mkdir -p deployment/docker/web/dist
 	mkdir -p deployment/docker/configs
+	mkdir -p deployment/docker/templates
 	mv $(PROJECT_NAME)-$(BUILD_VERSION).bin deployment/docker/$(PROJECT_NAME).bin; \
 	cp -R web/dist deployment/docker/web/; \
+	cp -R templates deployment/docker/; \
 	cp -R configs deployment/docker/;
 
 docker_build:
@@ -52,6 +54,7 @@ docker_postbuild:
 	cd deployment/docker; \
 	rm -rf $(PROJECT_NAME).bin 2> /dev/null;\
 	rm -rf web 2> /dev/null; \
+	rm -rf templates 2> /dev/null; \
 	rm -rf configs 2> /dev/null;
 
 docker: docker_prebuild docker_build docker_postbuild
