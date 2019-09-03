@@ -98,3 +98,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     vertical-align: baseline;
   }
 }
+
+.el-loading-spinner .circular {
+  height: 30px;
+  width: 30px;
+  -webkit-animation: loading-rotate 2s linear infinite;
+  animation: loading-rotate 2s linear infinite;
+}

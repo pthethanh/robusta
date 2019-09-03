@@ -1,7 +1,7 @@
 <template>
   <div class="comment-wrapper">
     <div class="comment-info">
-      <span class="info-txt">{{comments.length}} Comments</span>
+      <span v-loading="_loading" class="info-txt">{{comments.length}} Comments</span>
     </div>
     <div class="comment-box">
       <el-form :model="comment" :rules="rules" ref="commentForm">
@@ -88,7 +88,10 @@ export default {
   computed: {
     ...mapGetters([
       'user'
-    ])
+    ]),
+    _loading () {
+      return this.loading
+    }
   },
   watch: {
     // whenever new targetID is passed, we need to reload the comments.
@@ -111,7 +114,8 @@ export default {
           message: 'Please leave your comment',
           trigger: 'blur'
         }]
-      }
+      },
+      loading: true
     }
   },
   created () {
@@ -120,6 +124,7 @@ export default {
   },
   methods: {
     async loadComments () {
+      this.loading = true
       this.comments = []
       let self = this
       var query = 'target=' + this.targetID + '&sort_by=level&sort_by=-created_at'
@@ -127,6 +132,8 @@ export default {
         if (response.data !== null && response.data.length > 0) {
           self.buildCommentTree(response.data)
         }
+      }).finally(function () {
+        self.loading = false
       })
     },
     buildCommentTree (loadedComments) {
@@ -297,6 +304,7 @@ export default {
     margin-top: 10px;
     padding-left: 5px;
     border-left: 0.8px solid lightgrey;
+
     .avatar {
       display: inline-block;
       vertical-align: text-bottom

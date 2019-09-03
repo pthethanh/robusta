@@ -164,11 +164,4 @@ export default {
   font-size: 11px;
   line-height: 1.3em;
 }
-
-.el-loading-spinner .circular {
-  height: 30px;
-  width: 30px;
-  -webkit-animation: loading-rotate 2s linear infinite;
-  animation: loading-rotate 2s linear infinite;
-}
 </style>
