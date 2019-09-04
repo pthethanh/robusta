@@ -22,8 +22,19 @@
         },
         "vue-format.html_indent_root": true
     },
-    "go.formatTool": "goimports",
     "go.useLanguageServer": true,
+    "[go]": {
+        "editor.snippetSuggestions": "none",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "gopls": {
+        "usePlaceholders": true,
+        "wantCompletionDocumentation": true
+    },
+    "files.eol": "\n",
     "cSpell.words": [
         "bson",
         "bsonutil",
