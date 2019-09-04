@@ -50,7 +50,8 @@
     "vue-page-title": "^1.1.4",
     "vue-router": "^3.0.1",
     "vue-shortkey": "^3.1.7",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vue-codemirror": "^4.0.6"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.5.5",

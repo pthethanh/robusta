@@ -1,24 +1,32 @@
 <template>
-    <div>
-        <el-row type="flex" justify="center">
-            <el-col :span="14">
-                <view-me :data="data"></view-me>
-            </el-col>
-        </el-row>
-    </div>
+  <div>
+    <el-row type="flex" justify="center">
+      <el-col :span="14">
+        <play-ground :code="code"></play-ground>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-import ViewMe from '@/components/ViewMe'
-import * as configs from './play.js'
+import PlayGround from '@/components/PlayGround'
 
 export default {
   components: {
-    ViewMe
+    PlayGround
   },
   data () {
     return {
-      data: configs.playground
+      code: `package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println("Hello, playground")
+}
+`
     }
   }
 }
