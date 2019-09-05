@@ -1,6 +1,25 @@
 <template>
-  <div>
-    <codemirror ref="myCm" :value="code" :options="cmOptions" mode="text/x-go" class="code-editor" />
+  <div id="play-ground-editor">
+    <el-row type="flex">
+      <el-col :span="18">
+        <el-row>
+          <div class="btn-group">
+            <el-button type="primary" size="mini" icon="el-icon-document-copy"></el-button>
+            <el-button type="primary" size="mini">Run</el-button>
+          </div>
+          <codemirror ref="myCm" :value="code" :options="cmOptions" mode="text/x-go" class="editor" />
+        </el-row>
+
+      </el-col>
+      <el-col :span="6">
+        <div class="output" v-if="output !== ''">
+          <pre>
+<span>{{output}}</span>
+<span v-if="exit" style="color:yellow; font-style:italic">Program exited.</span>
+        </pre>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -140,7 +159,31 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @import '~codemirror/lib/codemirror.css';
 @import '~codemirror/theme/eclipse.css';
+
+.playground {
+  .btn-group {
+    position: absolute;
+    right: 0px;
+    z-index: 99999;
+    top: 5px;
+  }
+
+  .output {
+    border-top: 1px solid lightgrey;
+    text-align: start;
+    background-color: #1E1E1E;
+    color: white;
+
+    .pre {
+      display: block;
+      font-family: monospace;
+      white-space: pre;
+      font-size: 11px;
+      line-height: 1.3em;
+    }
+  }
+}
 </style>
