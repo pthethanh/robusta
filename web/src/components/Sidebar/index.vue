@@ -3,7 +3,7 @@
     <el-menu default-active="1" v-bind:class="{
       'el-menu-vertical-demo': !isCollapse,
       'el-menu-vertical-demo hidden-sm-and-down': isCollapse
-      }" @open="handleOpen" @close="handleClose" :collapse="isCollapse" :router=true>
+      }" @select="onSelect" :collapse="isCollapse" :router=true background-color="whitesmoke">
       <el-menu-item index="1" route="/">
         <i class="el-icon-s-home"></i>
         <span slot="title">Blog</span>
@@ -60,13 +60,8 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      // eslint-disable-next-line
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      // eslint-disable-next-line
-      console.log(key, keyPath)
+    onSelect (index, indexPath) {
+      this.$store.dispatch('ToggleSideBar')
     },
     onLogin () {
       this.$store.dispatch('ToggleLogin', true)
