@@ -82,7 +82,7 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	authHandler := newAuthHandler(jwtSignVerifier, map[string]auth.Authenticator{
 		"local": userSrv,
 	})
-	
+
 	// close notifier after close other services as the other services might generate notification
 	// while they are shutting down
 	closer.Append(notifierCloser)

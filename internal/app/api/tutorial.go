@@ -14,8 +14,7 @@ func newTutorialHandler(policySrv tutorial.PolicyService) (*tutorial.Handler, *c
 	}
 	closer.Append(mongoCloser)
 	repo := tutorial.NewMongoRepository(s)
-	internalSrv := tutorial.NewInternalService(repo)
-	externalSrv := tutorial.NewExternalService(internalSrv, policySrv)
-	handler := tutorial.NewHTTPHandler(externalSrv)
+	srv := tutorial.NewService(repo, policySrv)
+	handler := tutorial.NewHTTPHandler(srv)
 	return handler, closer, nil
 }
