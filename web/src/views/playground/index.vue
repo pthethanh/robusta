@@ -2,7 +2,7 @@
   <div class="playground">
     <el-row type="flex" justify="center">
       <el-col :span="4" class="left">
-        <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
           <el-submenu v-for="(topic, index) in course.topics" :index="index + ''" :key="topic.id">
             <template slot="title">
               <span>{{topic.title}}</span>
@@ -19,7 +19,7 @@
         <div class="description" v-if="selected !== null">
           <div class="title">{{selected.title}}</div>
           <div class="content">
-            {{selected.content}}
+            {{selected.description}}
           </div>
         </div>
         <play-ground v-if="selected !== null" :code="selected.code" class="editor"></play-ground>
@@ -47,7 +47,7 @@ export default {
           exercises: [{
             id: 1,
             title: 'Exercise 1',
-            content: 'Print "Hello world" to standard output'
+            description: 'Print "Hello world" to standard output'
           }]
         },
         {
@@ -56,24 +56,18 @@ export default {
           exercises: [{
             id: 1,
             title: 'Exercise 1',
-            content: 'Declare x as float64 and init its value to 3.14'
+            description: 'Declare x as float64 and init its value to 3.14'
           },
           {
             id: 2,
             title: 'Exercise 2',
-            content: 'Print "Hello world" to standard output'
+            description: 'Print "Hello world" to standard output'
           }]
         }]
       }
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    },
     onClick (ex) {
       this.selected = ex
     }
