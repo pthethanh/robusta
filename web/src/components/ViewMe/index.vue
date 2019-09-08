@@ -111,7 +111,7 @@ export default {
 
 <style scoped>
 .viewme {
-  margin-bottom: 100px;
+  margin-bottom: 50px;
   word-break: keep-all;
 }
 </style>

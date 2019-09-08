@@ -124,7 +124,7 @@ export default {
   }
 
   .content {
-    max-height: 150px;
+    max-height: 250px;
     overflow-y: hidden;
     margin-bottom: 5px;
   }
