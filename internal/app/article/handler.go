@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
+	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/log"
