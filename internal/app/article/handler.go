@@ -52,7 +52,7 @@ func (h *Handler) Find(w http.ResponseWriter, r *http.Request) {
 	req := FindRequest{
 		Offset:      handlerutil.IntFromQuery("offset", queries, 0),
 		Limit:       handlerutil.IntFromQuery("limit", queries, 15),
-		Status:      StatusPublished, // query only public articles
+		Status:      StatusPublic, // query only public articles
 		Tags:        queries["tags"],
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
@@ -123,17 +123,26 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	// don't allow to find by ID for deleted article
-	if a.Status != StatusPublished {
+	if a.Status == StatusPublic {
 		respond.JSON(w, http.StatusOK, types.BaseResponse{
-			AppError: ErrNotFound,
-			Data:     a,
+			Data: a,
 		})
 		return
 	}
+	// if it's the owner of the article return a result event if it's a draft
+	user := auth.FromContext(r.Context())
+	if a.Status == StatusDraft && user != nil && user.UserID == a.CreatedByID {
+		respond.JSON(w, http.StatusOK, types.BaseResponse{
+			Data: a,
+		})
+		return
+	}
+	// don't allow to find by ID for deleted article
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
-		Data: a,
+		AppError: ErrNotFound,
+		Data:     a,
 	})
+	return
 }
 
 func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {

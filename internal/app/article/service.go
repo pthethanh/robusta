@@ -92,7 +92,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 		return errors.Wrap(err, "invalid article")
 	}
 
-	a.Status = StatusPublished
+	a.Status = StatusPublic
 	user := auth.FromContext(ctx)
 	if user != nil {
 		a.CreatedByID = user.UserID

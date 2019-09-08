@@ -59,9 +59,9 @@ type (
 )
 
 const (
-	StatusPublished Status = "public"
-	StatusDraft     Status = "draft"
-	StatusDeleted   Status = "deleted"
+	StatusPublic  Status = "public"
+	StatusDraft   Status = "draft"
+	StatusDeleted Status = "deleted"
 
 	ContentTypeEditorJS ContentType = "editor_js"
 )
