@@ -13,7 +13,7 @@ import (
 
 type (
 	service interface {
-		Run(ctx context.Context, r *PlaygroundRequest) (*PlaygroundResponse, error)
+		Run(ctx context.Context, r *Request) (*Response, error)
 	}
 
 	Handler struct {
@@ -28,7 +28,7 @@ func New(s service) *Handler {
 }
 
 func (h *Handler) Run(w http.ResponseWriter, r *http.Request) {
-	var req PlaygroundRequest
+	var req Request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, errors.Wrap(err, "invalid request"), http.StatusBadRequest)
 		return

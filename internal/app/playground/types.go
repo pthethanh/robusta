@@ -1,11 +1,11 @@
 package playground
 
 type (
-	PlaygroundRequest struct {
+	Request struct {
 		Code string `json:"code"`
 	}
 
-	PlaygroundResponse struct {
+	Response struct {
 		Code   int    `json:"code"`
 		Errors string `json:"errors"`
 		Events []struct {
