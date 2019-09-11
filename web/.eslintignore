@@ -1,0 +1,2 @@
+dist/*.js
+src/components/Editor/plugins/code-example/dist/bundle.js
