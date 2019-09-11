@@ -86,7 +86,7 @@ services:
     volumes:
       - ../../web:/home/robusta
     working_dir: /home/robusta/
-    command: [ sh, -c, "npm rebuild node-sass && npm run serve" ]
+    command: [ sh, -c, "npm install && npm rebuild node-sass && npm run serve" ]
     depends_on:
       - backend
     restart: always
