@@ -1,16 +1,19 @@
 package playground
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
+	"github.com/pthethanh/robusta/internal/pkg/uuid"
 )
 
 type (
@@ -47,14 +50,14 @@ func LoadConfigFromEnv() Config {
 }
 
 // Run run the code in the target playground server
-func (s *Client) Run(ctx context.Context, r *Request) (*Response, error) {
+func (c *Client) Run(ctx context.Context, r *Request) (*Response, error) {
 	code := url.QueryEscape(r.Code)
-	playURL := fmt.Sprintf("%s/compile?version=%d&body=%s", s.conf.Host, 2, code)
+	playURL := fmt.Sprintf("%s/compile?version=%d&body=%s", c.conf.Host, 2, code)
 	req, err := http.NewRequest(http.MethodPost, playURL, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request")
 	}
-	res, err := s.client.Do(req)
+	res, err := c.client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to request to playground server")
 	}
@@ -64,4 +67,36 @@ func (s *Client) Run(ctx context.Context, r *Request) (*Response, error) {
 		return nil, errors.Wrap(err, "failed to decode response")
 	}
 	return &v, err
+}
+
+// Evaluate evalute the given solution against Go lint rules and run the test.
+func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateResponse, error) {
+	f, err := MergePackageFiles("main", generatedFileName(), map[string]io.Reader{
+		generatedFileName(): bytes.NewBuffer(r.Solution),
+		generatedFileName(): bytes.NewBuffer(r.Test),
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to merge files")
+	}
+	problems, err := LintFile(generatedFileName(), f)
+	res, err := c.Run(ctx, &Request{
+		Code: string(f),
+	})
+	if err != nil {
+		return &EvaluateResponse{
+			Problems:     problems,
+			IsTestFailed: false,
+			Error:        err.Error(),
+		}, err
+	}
+	return &EvaluateResponse{
+		Problems:     problems,
+		IsTestFailed: res.TestsFailed > 0,
+		Error:        res.Errors,
+	}, nil
+}
+
+// return generated file name.
+func generatedFileName() string {
+	return fmt.Sprintf("%v.go", uuid.New())
 }

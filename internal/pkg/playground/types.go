@@ -1,6 +1,9 @@
 package playground
 
-import "context"
+import (
+	"context"
+	"golang.org/x/lint"
+)
 
 type (
 	Request struct {
@@ -22,5 +25,16 @@ type (
 
 	Runner interface {
 		Run(ctx context.Context, r *Request) (*Response, error)
+	}
+
+	EvaluateRequest struct {
+		Solution []byte
+		Test     []byte
+	}
+
+	EvaluateResponse struct {
+		Problems     []lint.Problem
+		IsTestFailed bool
+		Error        string
 	}
 )
