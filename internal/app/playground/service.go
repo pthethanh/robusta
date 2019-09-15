@@ -15,7 +15,7 @@ type (
 	}
 
 	SolutionService interface {
-		Save(ctx context.Context, s *types.Solution) (*types.Solution, error)
+		Create(ctx context.Context, s *types.Solution) error
 	}
 
 	// Service is a composite service that provide ability to run code and challenges.
@@ -60,7 +60,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 	if res.IsTestFailed {
 		status = types.SolutionStatusFailed
 	}
-	if _, err := s.solutionSrv.Save(ctx, &types.Solution{
+	if err := s.solutionSrv.Create(ctx, &types.Solution{
 		Content: r.Solution,
 		Status:  status,
 	}); err != nil {

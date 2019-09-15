@@ -1,1 +1,55 @@
 package challenge
+
+import (
+	"context"
+
+	"github.com/pkg/errors"
+	"github.com/pthethanh/robusta/internal/app/auth"
+	"github.com/pthethanh/robusta/internal/app/policy"
+	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/pkg/validator"
+)
+
+type (
+	PolicyService interface {
+		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
+		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+	}
+
+	Repository interface {
+		Insert(ctx context.Context, c *types.Challenge) error
+		FindByID(ctx context.Context, id string) (*types.Challenge, error)
+		FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error)
+	}
+	Service struct {
+		repo   Repository
+		policy PolicyService
+	}
+)
+
+func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
+	if err := validator.Validate(c); err != nil {
+		return err
+	}
+	user := auth.FromContext(ctx)
+	if user != nil {
+		c.CreatedByID = user.UserID
+		c.CreatedByName = user.GetName()
+		c.CreatedByAvatar = user.AvatarURL
+	}
+	if err := s.repo.Insert(ctx, c); err != nil {
+		return errors.Wrap(err, "failed to insert challenge")
+	}
+	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.ChallengeObject(c.ID)); err != nil {
+		return errors.Wrap(err, "failed to set permission")
+	}
+	return nil
+}
+
+func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) {
+	c, err := s.repo.FindByID(ctx, id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to find the challenge")
+	}
+	return c, nil
+}
