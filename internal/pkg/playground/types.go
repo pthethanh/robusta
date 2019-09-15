@@ -6,11 +6,11 @@ import (
 )
 
 type (
-	Request struct {
+	RunRequest struct {
 		Code string `json:"code"`
 	}
 
-	Response struct {
+	RunResponse struct {
 		Code   int    `json:"Code"`
 		Errors string `json:"Errors"`
 		Events []struct {
@@ -24,7 +24,10 @@ type (
 	}
 
 	Runner interface {
-		Run(ctx context.Context, r *Request) (*Response, error)
+		// Run run the code in the target playground server.
+		Run(ctx context.Context, r *RunRequest) (*RunResponse, error)
+		// Evaluate evalute the given solution against Go lint rules and run the test.
+		Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateResponse, error)
 	}
 
 	EvaluateRequest struct {

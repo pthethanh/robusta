@@ -49,8 +49,8 @@ func LoadConfigFromEnv() Config {
 	return conf
 }
 
-// Run run the code in the target playground server
-func (c *Client) Run(ctx context.Context, r *Request) (*Response, error) {
+// Run run the code in the target playground server.
+func (c *Client) Run(ctx context.Context, r *RunRequest) (*RunResponse, error) {
 	code := url.QueryEscape(r.Code)
 	playURL := fmt.Sprintf("%s/compile?version=%d&body=%s", c.conf.Host, 2, code)
 	req, err := http.NewRequest(http.MethodPost, playURL, nil)
@@ -62,7 +62,7 @@ func (c *Client) Run(ctx context.Context, r *Request) (*Response, error) {
 		return nil, errors.Wrap(err, "failed to request to playground server")
 	}
 	defer res.Body.Close()
-	var v Response
+	var v RunResponse
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
 		return nil, errors.Wrap(err, "failed to decode response")
 	}
@@ -79,7 +79,7 @@ func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateRes
 		return nil, errors.Wrap(err, "failed to merge files")
 	}
 	problems, err := LintFile(generatedFileName(), f)
-	res, err := c.Run(ctx, &Request{
+	res, err := c.Run(ctx, &RunRequest{
 		Code: string(f),
 	})
 	if err != nil {

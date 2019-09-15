@@ -17,4 +17,9 @@ type (
 		IsTest      bool `json:"is_test"`
 		TestsFailed int  `json:"tests_failed"`
 	}
+
+	EvaluateRequest struct {
+		ChallengeID string `json:"challenge_id"`
+		Solution    string `json:"solution"`
+	}
 )

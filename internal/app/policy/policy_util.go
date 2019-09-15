@@ -33,6 +33,11 @@ func CommentObject(id string) Object {
 	return Object(fmt.Sprintf("comment_%s", id))
 }
 
+// SolutionObject return name of comment object
+func SolutionObject(id string) Object {
+	return Object(fmt.Sprintf("solution_%s", id))
+}
+
 // IsCurrentUserAllowed is a util to check if the current user is allowed to do something
 // the user context is expected to be existed in the given context
 func IsCurrentUserAllowed(ctx context.Context, srv interface {
@@ -44,7 +49,7 @@ func IsCurrentUserAllowed(ctx context.Context, srv interface {
 	}
 	isAllowed := srv.IsAllowed(ctx, UserSubject(user.UserID), obj, act)
 	if !isAllowed {
-		log.WithContext(ctx).WithFields(log.Fields{"user_id": user.UserID, "action": act, "obj": obj}).Errorf("the user is not authroized to do the action")
+		log.WithContext(ctx).WithFields(log.Fields{"user_id": user.UserID, "action": act, "obj": obj}).Errorf("the user is not authorized to do the action")
 		return ErrNotAllowed
 	}
 	return nil
