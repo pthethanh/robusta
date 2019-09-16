@@ -50,7 +50,7 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 	if len(req.SortBy) == 0 {
 		sortBy = []string{"-created_at"}
 	}
-	var solutions []*types.Solution
+	solutions := make([]*types.Solution, 0)
 	s := r.session.Clone()
 	defer s.Close()
 	if err := s.DB("").C(solutionCollectionName).Find(m).Sort(sortBy...).Skip(req.Offset).Limit(req.Limit).All(&solutions); err != nil {

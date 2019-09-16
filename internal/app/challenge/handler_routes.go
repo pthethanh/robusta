@@ -3,6 +3,7 @@ package challenge
 import (
 	"net/http"
 
+	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/pkg/http/router"
 )
 
@@ -14,9 +15,10 @@ func (h *Handler) Routes() []router.Route {
 			Handler: h.FindAll,
 		},
 		{
-			Path:    "/api/v1/challenges",
-			Method:  http.MethodPost,
-			Handler: h.Create,
+			Path:        "/api/v1/challenges",
+			Method:      http.MethodPost,
+			Handler:     h.Create,
+			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
 			Path:    "/api/v1/challenges/{id:[a-z0-9-\\-]+}",

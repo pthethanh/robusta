@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
+	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/util/handlerutil"
 )
 
@@ -60,11 +61,14 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	if err := h.srv.Create(r.Context(), &c); err != nil {
+		log.WithContext(r.Context()).Errorf("failed to create challenge, err: %v", err)
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
-		Data: c,
+		Data: types.IDResponse{
+			ID: c.ID,
+		},
 	})
 }
 

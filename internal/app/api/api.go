@@ -73,7 +73,18 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	if err != nil {
 		return nil, closer, err
 	}
-	playgroundHandler := newPlaygroundHandler()
+
+	challengeHandler, challengeSrv, challengeCloser, err := newChallengeHandler(policySrv)
+	if err != nil {
+		return nil, closer, err
+	}
+	closer.Append(challengeCloser)
+	solutionHandler, solutionSrv, solutionCloser, err := newSolutionHandler(policySrv)
+	if err != nil {
+		return nil, closer, err
+	}
+	closer.Append(solutionCloser)
+	playgroundHandler := newPlaygroundHandler(challengeSrv, solutionSrv)
 
 	jwtSignVerifier := newJWTSignVerifier()
 	oauthHandler := newOAuth2Handler(jwtSignVerifier, userSrv)
@@ -113,6 +124,8 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	routes = append(routes, playgroundHandler.Routes()...)
 	routes = append(routes, commentHandler.Routes()...)
 	routes = append(routes, reactionHandler.Routes()...)
+	routes = append(routes, challengeHandler.Routes()...)
+	routes = append(routes, solutionHandler.Routes()...)
 
 	// setting up router
 	conf := router.LoadConfigFromEnv()

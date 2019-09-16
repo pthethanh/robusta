@@ -26,10 +26,11 @@ type (
 	}
 )
 
-func NewService(runner playground.Runner) *Service {
-	// TODO inject challenge
+func NewService(runner playground.Runner, challenge ChallengeService, solution SolutionService) *Service {
 	return &Service{
-		runner: runner,
+		runner:       runner,
+		challengeSrv: challenge,
+		solutionSrv:  solution,
 	}
 }
 
