@@ -27,6 +27,13 @@ type (
 	}
 )
 
+func NewService(repo Repository, policy PolicyService) *Service {
+	return &Service{
+		repo:   repo,
+		policy: policy,
+	}
+}
+
 func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 	if err := validator.Validate(c); err != nil {
 		return err
@@ -52,4 +59,12 @@ func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) 
 		return nil, errors.Wrap(err, "failed to find the challenge")
 	}
 	return c, nil
+}
+
+func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error) {
+	challenges, err := s.repo.FindAll(ctx, r)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to find challenges")
+	}
+	return challenges, nil
 }

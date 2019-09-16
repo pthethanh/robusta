@@ -13,5 +13,10 @@ func (h *Handler) Routes() []router.Route {
 			Method:  http.MethodPost,
 			Handler: h.Run,
 		},
+		{
+			Path:    "/api/v1/playground/evaluate",
+			Method:  http.MethodPost,
+			Handler: h.Evaluate,
+		},
 	}
 }
