@@ -3,26 +3,17 @@
     <el-row type="flex" justify="center">
       <el-col :span="4" class="left">
         <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-          <el-submenu v-for="(topic, index) in course.topics" :index="index + ''" :key="topic.id">
-            <template slot="title">
-              <span>{{topic.title}}</span>
-            </template>
-            <el-menu-item v-for="(ex, exIdx) in topic.exercises" :index="index + '-' + exIdx" :key="ex.id" @click="onClick(ex)">{{ex.title}}</el-menu-item>
-          </el-submenu>
+          <el-menu-item v-for="challenge in  challenges" :key="challenge.id" @click="onClick(challenge)">{{challenge.title}}</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="20" class="right">
-        <div v-if="selected === null" class="course-info">
-          <div class="title"> {{course.title}}</div>
-          <div class="content">{{course.introduction}}</div>
-        </div>
         <div class="description" v-if="selected !== null">
           <div class="title">{{selected.title}}</div>
           <div class="content">
             {{selected.description}}
           </div>
         </div>
-        <play-ground v-if="selected !== null" :code="selected.code" class="editor"></play-ground>
+        <play-ground v-if="selected !== null" :code="selected.sample" class="editor"></play-ground>
       </el-col>
     </el-row>
   </div>
@@ -30,6 +21,9 @@
 
 <script>
 import PlayGround from '@/components/PlayGround'
+import {
+  listChallenges
+} from '@/api/challenge'
 
 export default {
   components: {
@@ -37,39 +31,24 @@ export default {
   },
   data () {
     return {
+      offset: 0,
+      limit: 15,
       selected: null,
-      course: {
-        title: 'Go basic',
-        introduction: 'Hello',
-        topics: [{
-          id: 1,
-          title: 'Hello world',
-          exercises: [{
-            id: 1,
-            title: 'Exercise 1',
-            description: 'Print "Hello world" to standard output'
-          }]
-        },
-        {
-          id: 2,
-          title: 'Variables',
-          exercises: [{
-            id: 1,
-            title: 'Exercise 1',
-            description: 'Declare x as float64 and init its value to 3.14'
-          },
-          {
-            id: 2,
-            title: 'Exercise 2',
-            description: 'Print "Hello world" to standard output'
-          }]
-        }]
-      }
+      challenges: []
     }
   },
+  mounted () {
+    listChallenges(this.getQueryStr()).then(response => {
+      this.challenges = response.data
+    })
+  },
   methods: {
-    onClick (ex) {
-      this.selected = ex
+    onClick (challenge) {
+      this.selected = challenge
+    },
+    getQueryStr () {
+      let query = 'offset=' + this.offset + '&limit=' + this.limit
+      return query
     }
   }
 }
