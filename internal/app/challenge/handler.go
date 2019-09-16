@@ -48,6 +48,9 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
+	for _, c := range challenges {
+		c.Test = ""
+	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: challenges,
 	})
@@ -83,6 +86,7 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
+	c.Test = ""
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: c,
 	})

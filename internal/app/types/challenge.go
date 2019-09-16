@@ -24,7 +24,7 @@ type (
 		Type                ChallengeType       `json:"type" bson:"type"`
 		ProgrammingLanguage ProgrammingLanguage `json:"programming_language" bson:"programming_language"`
 		Tags                []string            `json:"tags" bson:"tags"`
-		Test                string              `json:"test" bson:"test"`
+		Test                string              `json:"test,omitempty" bson:"test"`
 		CreatedAt           *time.Time          `json:"created_at" bson:"created_at"`
 		UpdatedAt           *time.Time          `json:"updated_at" bson:"updated_at"`
 		CreatedByID         string              `json:"created_by_id,omitempty" bson:"created_by_id"`
