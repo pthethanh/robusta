@@ -76,7 +76,7 @@ export default {
       this.$emit('code-change', this.code)
     },
     copyFullCode () {
-      let self = this;
+      let self = this
       this.$copyText(this.code).then(
         function (e) {
           self.$message({
@@ -90,7 +90,7 @@ export default {
             message: 'Failed to copy full runable code to clipboard'
           })
         }
-      );
+      )
     },
     runTest () {
       this.loading = true
