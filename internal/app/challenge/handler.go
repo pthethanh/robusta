@@ -40,7 +40,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
 	}
-	maxLimit := 15
+	maxLimit := 50
 	if req.Limit > maxLimit {
 		req.Limit = maxLimit
 	}
