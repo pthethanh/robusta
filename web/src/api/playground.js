@@ -7,3 +7,11 @@ export function runCode (data) {
     data
   })
 }
+
+export function evaluate (data) {
+  return request({
+    url: '/api/v1/playground/evaluate',
+    method: 'POST',
+    data
+  })
+}

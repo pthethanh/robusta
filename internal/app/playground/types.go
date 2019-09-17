@@ -19,7 +19,7 @@ type (
 	}
 
 	EvaluateRequest struct {
-		ChallengeID string `json:"challenge_id"`
-		Solution    string `json:"solution"`
+		ChallengeID string `json:"challenge_id" validate:"required"`
+		Solution    string `json:"solution" validate:"min=15"`
 	}
 )

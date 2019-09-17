@@ -20,6 +20,7 @@ type (
 		Insert(ctx context.Context, c *types.Challenge) error
 		FindByID(ctx context.Context, id string) (*types.Challenge, error)
 		FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error)
+		Delete(cxt context.Context, id string) error
 	}
 	Service struct {
 		repo   Repository
@@ -67,4 +68,11 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 		return nil, errors.Wrap(err, "failed to find challenges")
 	}
 	return challenges, nil
+}
+
+func (s *Service) Delete(ctx context.Context, id string) error {
+	if err := policy.IsCurrentUserAllowed(ctx, s.policy, policy.ChallengeObject(id), policy.ActionDelete); err != nil {
+		return err
+	}
+	return s.repo.Delete(ctx, id)
 }

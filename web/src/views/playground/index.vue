@@ -2,7 +2,7 @@
   <div class="playground">
     <el-row type="flex" justify="center">
       <el-col :span="4" class="left">
-        <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu default-active="1">
           <el-menu-item v-for="challenge in  challenges" :key="challenge.id" @click="onClick(challenge)">{{challenge.title}}</el-menu-item>
         </el-menu>
       </el-col>
@@ -13,21 +13,21 @@
             {{selected.description}}
           </div>
         </div>
-        <play-ground v-if="selected !== null" :code="selected.sample" class="editor"></play-ground>
+        <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import PlayGround from '@/components/PlayGround'
+import ChallengePlayer from '@/components/ChallengePlayer'
 import {
   listChallenges
 } from '@/api/challenge'
 
 export default {
   components: {
-    PlayGround
+    ChallengePlayer
   },
   data () {
     return {

@@ -2,6 +2,7 @@ package playground
 
 import (
 	"context"
+
 	"golang.org/x/lint"
 )
 
@@ -36,8 +37,8 @@ type (
 	}
 
 	EvaluateResponse struct {
-		Problems     []lint.Problem
-		IsTestFailed bool
-		Error        string
+		Problems     []lint.Problem `json:"problems"`
+		IsTestFailed bool           `json:"is_test_failed"`
+		Error        string         `json:"error"`
 	}
 )

@@ -50,6 +50,9 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 		log.WithContext(ctx).Errorf("failed to save solution, err: %v", err)
 		return errors.Wrap(err, "failed to save solution")
 	}
+	if user == nil {
+		return nil
+	}
 	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.SolutionObject(solution.ID)); err != nil {
 		return err
 	}

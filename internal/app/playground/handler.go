@@ -7,6 +7,7 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
+	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/playground"
 
 	"github.com/pkg/errors"
@@ -54,6 +55,7 @@ func (h *Handler) Evaluate(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	res, err := h.srv.Evaluate(r.Context(), &req)
 	if err != nil {
+		log.WithContext(r.Context()).Errorf("evaluate failed, err: %v", err)
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}

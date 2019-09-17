@@ -15,6 +15,7 @@ var (
 	}
 	ErrNotFound     = NewAppError(http.StatusNotFound, errors.New("notfound"))
 	ErrUnauthorized = NewAppError(http.StatusUnauthorized, errors.New("unauthorized"))
+	ErrBadRequest   = NewAppError(http.StatusBadRequest, errors.New("bad request"))
 )
 
 // NewAppError return new AppError instance which implements error interface

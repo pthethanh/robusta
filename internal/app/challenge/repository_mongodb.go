@@ -69,3 +69,12 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 	}
 	return challenges, nil
 }
+
+func (r *MongoDBRepository) Delete(cxt context.Context, id string) error {
+	s := r.session.Clone()
+	defer s.Close()
+	if err := s.DB("").C(challengeCollectionName).Remove(bson.M{"_id": id}); err != nil {
+		return err
+	}
+	return nil
+}

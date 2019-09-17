@@ -17,6 +17,7 @@ type (
 	service interface {
 		Create(ctx context.Context, c *types.Challenge) error
 		Get(ctx context.Context, id string) (*types.Challenge, error)
+		Delete(ctx context.Context, id string) error
 		FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error)
 	}
 	Handler struct {
@@ -89,5 +90,22 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	c.Test = ""
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: c,
+	})
+}
+
+func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	if id == "" {
+		respond.Error(w, errors.New("invalid id"), http.StatusBadRequest)
+		return
+	}
+	if err := h.srv.Delete(r.Context(), id); err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.BaseResponse{
+		Data: types.IDResponse{
+			ID: id,
+		},
 	})
 }

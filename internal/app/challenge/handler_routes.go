@@ -25,5 +25,10 @@ func (h *Handler) Routes() []router.Route {
 			Method:  http.MethodGet,
 			Handler: h.Get,
 		},
+		{
+			Path:    "/api/v1/challenges/{id:[a-z0-9-\\-]+}",
+			Method:  http.MethodDelete,
+			Handler: h.Delete,
+		},
 	}
 }
