@@ -66,7 +66,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		return nil, errors.Wrap(err, "failed to evaluate solution")
 	}
 	status := types.SolutionStatusSuccess
-	if res.IsTestFailed {
+	if res.IsTestFailed || res.Error != "" {
 		status = types.SolutionStatusFailed
 	}
 	res.Problems = filterImportantProblems(res.Problems)
