@@ -68,7 +68,7 @@ export default {
 
   .right {
     position: fixed;
-    top: 10px;
+    top: 50px;
     height: 100%;
     min-width: 70%;
 
