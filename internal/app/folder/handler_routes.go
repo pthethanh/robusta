@@ -1,4 +1,4 @@
-package challenge
+package folder
 
 import (
 	"net/http"
@@ -10,25 +10,25 @@ import (
 func (h *Handler) Routes() []router.Route {
 	return []router.Route{
 		{
-			Path:        "/api/v1/challenges",
+			Path:        "/api/v1/folders",
 			Method:      http.MethodGet,
 			Handler:     h.FindAll,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
-			Path:        "/api/v1/challenges",
+			Path:        "/api/v1/folders",
 			Method:      http.MethodPost,
 			Handler:     h.Create,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
-			Path:        "/api/v1/challenges/{id:[a-z0-9-\\-]+}",
+			Path:        "/api/v1/folders/{id:[a-z0-9-\\-]+}",
 			Method:      http.MethodGet,
 			Handler:     h.Get,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
-			Path:        "/api/v1/challenges/{id:[a-z0-9-\\-]+}",
+			Path:        "/api/v1/folders/{id:[a-z0-9-\\-]+}",
 			Method:      http.MethodDelete,
 			Handler:     h.Delete,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},

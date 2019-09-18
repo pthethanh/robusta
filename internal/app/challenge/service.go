@@ -7,6 +7,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
 
@@ -37,7 +38,8 @@ func NewService(repo Repository, policy PolicyService) *Service {
 
 func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 	if err := validator.Validate(c); err != nil {
-		return err
+		log.WithContext(ctx).Errorf("invalid input, err: %v", err)
+		return types.ErrBadRequest
 	}
 	user := auth.FromContext(ctx)
 	if user != nil {
@@ -63,6 +65,9 @@ func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) 
 }
 
 func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error) {
+	if err := validator.Validate(r); err != nil {
+		return nil, err
+	}
 	challenges, err := s.repo.FindAll(ctx, r)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find challenges")

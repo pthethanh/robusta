@@ -42,6 +42,10 @@ func ChallengeObject(id string) Object {
 	return Object(fmt.Sprintf("challenge_%s", id))
 }
 
+func FolderObject(id string) Object {
+	return Object(fmt.Sprintf("folder_%s", id))
+}
+
 // IsCurrentUserAllowed is a util to check if the current user is allowed to do something
 // the user context is expected to be existed in the given context
 func IsCurrentUserAllowed(ctx context.Context, srv interface {

@@ -8,19 +8,23 @@
         <i class="el-icon-s-home"></i>
         <span slot="title">Blog</span>
       </el-menu-item>
-      <el-menu-item index="2" route="/resources">
+      <el-menu-item index="2" route="/challenges">
+        <i class="el-icon-coffee-cup"></i>
+        <span slot="title">Challenges</span>
+      </el-menu-item>
+      <el-menu-item index="3" route="/resources">
         <i class="el-icon-reading"></i>
         <span slot="title">Resources</span>
       </el-menu-item>
-      <el-menu-item index="3" route="/articles/new">
+      <el-menu-item index="4" route="/articles/new">
         <i class="el-icon-circle-plus"></i>
         <span slot="title">Post</span>
       </el-menu-item>
-      <el-menu-item index="4" route="/about">
+      <el-menu-item index="5" route="/about">
         <i class="el-icon-info"></i>
         <span slot="title">About</span>
       </el-menu-item>
-      <el-menu-item index="5" @click="onLogin()" v-if="!user.authenticated">
+      <el-menu-item index="6" @click="onLogin()" v-if="!user.authenticated">
         <i class="el-icon-s-custom"></i>
         <span slot="title">Sign in</span>
       </el-menu-item>

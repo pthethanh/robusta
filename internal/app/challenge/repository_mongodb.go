@@ -57,6 +57,11 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 			"$in": req.Tags,
 		}
 	}
+	if len(req.IDs) > 0 {
+		m["_id"] = bson.M{
+			"$in": req.IDs,
+		}
+	}
 	sortBy := req.SortBy
 	if len(req.SortBy) == 0 {
 		sortBy = []string{"-created_at"}

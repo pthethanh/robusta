@@ -120,6 +120,21 @@ export const constantRouterMap = [
       component: () => import('@/views/user/registration/index')
     }]
   },
+  {
+    path: '/challenges',
+    name: 'Challenges',
+    component: Layout,
+    hidden: true,
+    redirect: '/challenges/home',
+    children: [{
+      path: 'home',
+      component: () => import('@/views/challenge/home/index')
+    },
+    {
+      path: 'groups/:id',
+      component: () => import('@/views/challenge/group/index')
+    }]
+  },
   { path: '/home', redirect: '/', hidden: true },
   { path: '*', redirect: '/', hidden: true }
 ]

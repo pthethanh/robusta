@@ -1,4 +1,4 @@
-package challenge
+package folder
 
 import (
 	"context"
@@ -15,10 +15,10 @@ import (
 
 type (
 	service interface {
-		Create(ctx context.Context, c *types.Challenge) error
-		Get(ctx context.Context, id string) (*types.Challenge, error)
+		Create(ctx context.Context, f *Folder) error
+		Get(ctx context.Context, id string) (*Folder, error)
 		Delete(ctx context.Context, id string) error
-		FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error)
+		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	}
 	Handler struct {
 		srv service
@@ -36,43 +36,39 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 	req := FindRequest{
 		Offset:      handlerutil.IntFromQuery("offset", queries, 0),
 		Limit:       handlerutil.IntFromQuery("limit", queries, 15),
-		Tags:        queries["tags"],
+		Type:        Type(queries.Get("type")),
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
-		IDs:         queries["ids"],
 	}
 	maxLimit := 50
 	if req.Limit > maxLimit {
 		req.Limit = maxLimit
 	}
-	challenges, err := h.srv.FindAll(r.Context(), req)
+	folders, err := h.srv.FindAll(r.Context(), req)
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	for _, c := range challenges {
-		c.Test = ""
-	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
-		Data: challenges,
+		Data: folders,
 	})
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var c types.Challenge
-	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
+	var f Folder
+	if err := json.NewDecoder(r.Body).Decode(&f); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
-	if err := h.srv.Create(r.Context(), &c); err != nil {
-		log.WithContext(r.Context()).Errorf("failed to create challenge, err: %v", err)
+	if err := h.srv.Create(r.Context(), &f); err != nil {
+		log.WithContext(r.Context()).Errorf("failed to create folder, err: %v", err)
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: types.IDResponse{
-			ID: c.ID,
+			ID: f.ID,
 		},
 	})
 }
@@ -83,14 +79,13 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, errors.New("invalid id"), http.StatusBadRequest)
 		return
 	}
-	c, err := h.srv.Get(r.Context(), id)
+	f, err := h.srv.Get(r.Context(), id)
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	c.Test = ""
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
-		Data: c,
+		Data: f,
 	})
 }
 
