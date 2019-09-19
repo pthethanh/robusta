@@ -30,8 +30,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
 	Config struct {
@@ -106,7 +106,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 	}
 
 	// make her the owner of the article
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.ArticleObject(a.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, user.UserID, a.ID); err != nil {
 		return err
 	}
 	return nil
@@ -154,8 +154,8 @@ func (s *Service) FindByArticleID(ctx context.Context, articleID string) (*Artic
 	return a, nil
 }
 
-func (s *Service) isAllowed(ctx context.Context, id string, act policy.Action) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, policy.ArticleObject(id), act)
+func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
+	return policy.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying background process to finish

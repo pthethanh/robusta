@@ -10,8 +10,8 @@ import (
 
 type (
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
 	Repository interface {
@@ -65,7 +65,7 @@ func (s *Service) Create(ctx context.Context, a *Tutorial) error {
 		return err
 	}
 	authUser := auth.FromContext(ctx)
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(authUser.UserID), policy.TutorialObject(a.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, authUser.UserID, a.ID); err != nil {
 		return err
 	}
 	return nil
@@ -105,6 +105,6 @@ func (s *Service) View(ctx context.Context, id string) error {
 	return s.repo.Increase(ctx, id, "views", 1)
 }
 
-func (s *Service) isAllowed(ctx context.Context, id string, act policy.Action) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, policy.TutorialObject(id), act)
+func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
+	return policy.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }

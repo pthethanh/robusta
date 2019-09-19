@@ -10,6 +10,7 @@ type (
 		Description string   `json:"description" bson:"description" validate:"min=5,max=256"`
 		Type        Type     `json:"type" bson:"type" validate:"required"`
 		Children    []string `json:"children" bson:"children"`
+		IsPublic    bool     `json:"is_public" bson:"is_public"`
 
 		CreatedByID     string `json:"created_by_id" bson:"created_by_id"`
 		CreatedByName   string `json:"created_by_name" bson:"created_by_name"`
@@ -30,4 +31,17 @@ type (
 
 const (
 	TypeChallenges Type = "challenge"
+)
+
+// Actions policy
+const (
+	ActionCreate = "folder:create"
+	ActionDelete = "folder:delete"
+	ActionUpdate = "folder:update"
+	ActionRead   = "folder:read"
+)
+
+// Policy object name
+const (
+	PolicyObject = "folder"
 )

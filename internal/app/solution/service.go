@@ -6,7 +6,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
@@ -19,8 +18,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
 	Service struct {
@@ -53,7 +52,7 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 	if user == nil {
 		return nil
 	}
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.SolutionObject(solution.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, user.UserID, solution.ID); err != nil {
 		return err
 	}
 	return nil

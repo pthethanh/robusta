@@ -6,13 +6,15 @@ import (
 	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/policy"
+	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
 
 type (
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
+		AddPolicy(ctx context.Context, sub string, obj string, act string, eft string) error
 	}
 
 	Repository interface {
@@ -36,6 +38,9 @@ func NewService(repo Repository, policy PolicyService) *Service {
 }
 
 func (s *Service) Create(ctx context.Context, f *Folder) error {
+	if err := s.isAllowed(ctx, PolicyObject, ActionCreate); err != nil {
+		return err
+	}
 	if err := validator.Validate(f); err != nil {
 		return err
 	}
@@ -48,13 +53,22 @@ func (s *Service) Create(ctx context.Context, f *Folder) error {
 	if err := s.repo.Insert(ctx, f); err != nil {
 		return errors.Wrap(err, "failed to insert folder")
 	}
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.FolderObject(f.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, user.UserID, f.ID); err != nil {
 		return errors.Wrap(err, "failed to set permission")
+	}
+	if f.IsPublic {
+		// it's public, grant read permission for everyone.
+		if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, ActionRead, policy.EffectAllow); err != nil {
+			return errors.Wrap(err, "failed to grant read permission")
+		}
 	}
 	return nil
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
+	if err := s.isAllowed(ctx, id, ActionRead); err != nil {
+		return nil, err
+	}
 	f, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find the folder")
@@ -67,12 +81,30 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find folder")
 	}
-	return folders, nil
+	// TODO might need to benchmark performance of checking permission.
+	rs := make([]*Folder, 0)
+	for _, f := range folders {
+		if f.IsPublic {
+			rs = append(rs, f)
+			continue
+		}
+		if err := s.isAllowed(ctx, f.ID, ActionRead); err != nil {
+			// user doesn't have read permission on this one, ignore.
+			continue
+		}
+		rs = append(rs, f)
+	}
+	return rs, nil
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := policy.IsCurrentUserAllowed(ctx, s.policy, policy.FolderObject(id), policy.ActionDelete); err != nil {
+	if err := s.isAllowed(ctx, id, ActionDelete); err != nil {
+		log.WithContext(ctx).Errorf("cannot delete folder, err: %v", err)
 		return err
 	}
 	return s.repo.Delete(ctx, id)
+}
+
+func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
+	return policy.IsCurrentUserAllowed(ctx, s.policy, id, action)
 }

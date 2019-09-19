@@ -13,8 +13,8 @@ import (
 
 type (
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
 	Repository interface {
@@ -50,7 +50,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 	if err := s.repo.Insert(ctx, c); err != nil {
 		return errors.Wrap(err, "failed to insert challenge")
 	}
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.ChallengeObject(c.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, user.UserID, c.ID); err != nil {
 		return errors.Wrap(err, "failed to set permission")
 	}
 	return nil
@@ -76,7 +76,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := policy.IsCurrentUserAllowed(ctx, s.policy, policy.ChallengeObject(id), policy.ActionDelete); err != nil {
+	if err := policy.IsCurrentUserAllowed(ctx, s.policy, id, policy.ActionDelete); err != nil {
 		return err
 	}
 	return s.repo.Delete(ctx, id)

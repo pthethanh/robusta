@@ -62,14 +62,10 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 			"$in": req.IDs,
 		}
 	}
-	sortBy := req.SortBy
-	if len(req.SortBy) == 0 {
-		sortBy = []string{"-created_at"}
-	}
 	challenges := make([]*types.Challenge, 0)
 	s := r.session.Clone()
 	defer s.Close()
-	if err := s.DB("").C(challengeCollectionName).Find(m).Sort(sortBy...).Skip(req.Offset).Limit(req.Limit).All(&challenges); err != nil {
+	if err := s.DB("").C(challengeCollectionName).Find(m).Sort(req.SortBy...).Skip(req.Offset).Limit(req.Limit).All(&challenges); err != nil {
 		return nil, err
 	}
 	return challenges, nil

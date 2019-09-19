@@ -27,8 +27,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub policy.Subject, obj policy.Object, act policy.Action) bool
-		MakeOwner(ctx context.Context, sub policy.Subject, obj policy.Object) error
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
 	Config struct {
@@ -89,7 +89,7 @@ func (s *Service) Create(ctx context.Context, cm *types.Comment) error {
 		return err
 	}
 	// make the user the owner of the comment
-	if err := s.policy.MakeOwner(ctx, policy.UserSubject(user.UserID), policy.CommentObject(cm.ID)); err != nil {
+	if err := s.policy.MakeOwner(ctx, user.UserID, cm.ID); err != nil {
 		log.WithContext(ctx).Errorf("failed to make owner for the comment, err: %v", err)
 		return err
 	}
@@ -133,8 +133,8 @@ func (s *Service) FindByID(ctx context.Context, id string) (types.Comment, error
 	return s.repo.FindByID(ctx, id)
 }
 
-func (s *Service) isAllowed(ctx context.Context, id string, act policy.Action) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, policy.CommentObject(id), act)
+func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
+	return policy.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying services
