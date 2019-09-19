@@ -3,6 +3,7 @@ package policy
 import (
 	"context"
 
+	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db/mongodb"
 
 	"github.com/casbin/casbin"
@@ -17,15 +18,6 @@ type (
 	Service struct {
 		enforcer *casbin.Enforcer
 	}
-)
-
-const (
-	ObjectAny = "*"
-
-	EffectAllow = "allow"
-	EffectDeny  = "deny"
-
-	ActionAny = "*"
 )
 
 // New return a new instance of policy service
@@ -79,5 +71,5 @@ func (s *Service) IsAllowed(ctx context.Context, sub string, obj string, act str
 
 // MakeOwner make the sub to be owner of the obj
 func (s *Service) MakeOwner(ctx context.Context, sub string, obj string) error {
-	return s.AddPolicy(ctx, sub, obj, ActionAny, EffectAllow)
+	return s.AddPolicy(ctx, sub, obj, types.PolicyAnyAction, types.PolicyEffectAllow)
 }

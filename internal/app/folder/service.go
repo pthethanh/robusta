@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/policy"
+	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -13,7 +15,6 @@ import (
 type (
 	PolicyService interface {
 		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		MakeOwner(ctx context.Context, sub string, obj string) error
 		AddPolicy(ctx context.Context, sub string, obj string, act string, eft string) error
 	}
 
@@ -53,25 +54,22 @@ func (s *Service) Create(ctx context.Context, f *Folder) error {
 	if err := s.repo.Insert(ctx, f); err != nil {
 		return errors.Wrap(err, "failed to insert folder")
 	}
-	if err := s.policy.MakeOwner(ctx, user.UserID, f.ID); err != nil {
+	if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, types.PolicyAnyAction, types.PolicyEffectAllow); err != nil {
 		return errors.Wrap(err, "failed to set permission")
-	}
-	if f.IsPublic {
-		// it's public, grant read permission for everyone.
-		if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, ActionRead, policy.EffectAllow); err != nil {
-			return errors.Wrap(err, "failed to grant read permission")
-		}
 	}
 	return nil
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
-	if err := s.isAllowed(ctx, id, ActionRead); err != nil {
-		return nil, err
-	}
 	f, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find the folder")
+	}
+	if f.IsPublic {
+		return f, nil
+	}
+	if err := s.isAllowed(ctx, id, ActionRead); err != nil {
+		return nil, err
 	}
 	return f, nil
 }
@@ -84,6 +82,10 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	// TODO might need to benchmark performance of checking permission.
 	rs := make([]*Folder, 0)
 	for _, f := range folders {
+		if f.IsPublic {
+			rs = append(rs, f)
+			continue
+		}
 		if err := s.isAllowed(ctx, f.ID, ActionRead); err != nil {
 			// user doesn't have read permission on this one, ignore.
 			continue

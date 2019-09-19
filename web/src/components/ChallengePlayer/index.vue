@@ -17,13 +17,12 @@
 
 <script>
 import {
-  runCode,
   evaluate
-} from "@/api/playground"
-import "codemirror/mode/go/go.js"
+} from '@/api/playground'
+import 'codemirror/mode/go/go.js'
 import {
   codemirror
-} from "vue-codemirror"
+} from 'vue-codemirror'
 
 export default {
   components: {
@@ -42,7 +41,6 @@ export default {
   data () {
     return {
       output: '',
-      loading: false,
       playing: null,
       showOutput: false,
       loading: false,
@@ -62,17 +60,17 @@ export default {
           }
         }
       }
-    };
+    }
   },
   methods: {
     fullScreen () {
       this.codemirror.setOption(
         'fullScreen',
         !this.codemirror.getOption('fullScreen')
-      );
+      )
     },
     onCodeChange (newCode) {
-      this.code = newCode;
+      this.code = newCode
       this.$emit('code-change', this.code)
     },
     copyFullCode () {

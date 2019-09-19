@@ -48,7 +48,7 @@ export default {
       limit: 50,
       selected: null,
       folder: null,
-      challenges: [],
+      challenges: []
     }
   },
   mounted () {

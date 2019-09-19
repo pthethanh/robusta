@@ -1,11 +1,13 @@
 <template>
   <div class="folders">
     <el-row type="flex" justify="center">
-      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14">
+      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-infinite-scroll="fetchData" infinite-scroll-disabled="disabled">
         <el-card v-for="folder in folders" :key="folder.id" class="folder" @click="goToFolder(folder)">
           <div class="name" @click="goToFolder(folder)">{{folder.name}} </div>
           <div class="description">{{folder.description}}</div>
         </el-card>
+        <div v-if="loading" class="loading">Loading...</div>
+        <div v-if="!loading&&noMore" class="loading">¯\_(ツ)_/¯</div>
       </el-col>
     </el-row>
   </div>
@@ -18,6 +20,8 @@ import {
 export default {
   data () {
     return {
+      loading: false,
+      noMoreData: false,
       offset: 0,
       limit: 50,
       folders: []
@@ -26,11 +30,26 @@ export default {
   created () {
     this.fetchData()
   },
+  computed: {
+    disabled () {
+      return this.loading || this.noMore
+    },
+    noMore () {
+      return this.noMoreData === true
+    }
+  },
   methods: {
     fetchData () {
-      this.folders = []
+      this.loading = true
       listFolders(this.getQueryStr()).then((response) => {
-        this.folders = response.data
+        if (response.data === null || response.data.length === 0) {
+          this.noMoreData = true
+          return
+        }
+        this.folders = this.folders.concat(response.data)
+        this.offset += response.data.length
+      }).finally(() => {
+        this.loading = false
       })
     },
     getQueryStr () {
@@ -46,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 .folders {
-  margin-top: 20px;
+  height: 100%;
 
   .folder {
     margin: 5px 0px;
@@ -62,6 +81,11 @@ export default {
       overflow-y: hidden;
       margin-bottom: 5px;
     }
+  }
+
+  .loading {
+    text-align: center;
+    font-weight: 600;
   }
 }
 </style>
