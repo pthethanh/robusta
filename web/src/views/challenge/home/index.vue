@@ -48,6 +48,9 @@ export default {
         }
         this.folders = this.folders.concat(response.data)
         this.offset += response.data.length
+        if (response.data.length < this.limit) {
+          this.noMoreData = true
+        }
       }).finally(() => {
         this.loading = false
       })

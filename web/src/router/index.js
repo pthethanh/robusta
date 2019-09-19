@@ -88,17 +88,6 @@ export const constantRouterMap = [
     }]
   },
   {
-    path: '/playground',
-    name: 'Playground',
-    component: Layout,
-    hidden: true,
-    redirect: '/playground/play',
-    children: [{
-      path: 'play',
-      component: () => import('@/views/playground/index')
-    }]
-  },
-  {
     path: '/resources',
     name: 'Resources',
     component: Layout,
