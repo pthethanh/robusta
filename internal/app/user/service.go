@@ -121,5 +121,12 @@ func (s *Service) FindAll(ctx context.Context) ([]*types.User, error) {
 }
 
 func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, error) {
-	return s.repo.FindByUserID(ctx, id)
+	user, err := s.repo.FindByUserID(ctx, id)
+	if err != nil && db.IsErrNotFound(err) {
+		return nil, types.ErrNotFound
+	}
+	if err != nil && !db.IsErrNotFound(err) {
+		return nil, err
+	}
+	return user, nil
 }

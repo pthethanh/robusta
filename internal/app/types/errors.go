@@ -13,7 +13,7 @@ var (
 		XCode:    http.StatusOK,
 		XMessage: "success",
 	}
-	ErrNotFound     = NewAppError(http.StatusNotFound, errors.New("notfound"))
+	ErrNotFound     = NewAppError(http.StatusNotFound, errors.New("not found"))
 	ErrUnauthorized = NewAppError(http.StatusUnauthorized, errors.New("unauthorized"))
 	ErrBadRequest   = NewAppError(http.StatusBadRequest, errors.New("bad request"))
 )

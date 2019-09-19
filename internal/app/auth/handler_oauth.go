@@ -104,6 +104,7 @@ func (h *OAuth2Handler) Callback(w http.ResponseWriter, r *http.Request) {
 	user := remoteUserToUser(&remoteUser)
 	existingUser, err := h.upsertUser(r.Context(), user)
 	if err != nil {
+		log.WithContext(r.Context()).Errorf("failed to upsert user, err: %v", err)
 		http.Redirect(w, r, redirectURI, http.StatusInternalServerError)
 		return
 	}
@@ -168,7 +169,8 @@ func (h *OAuth2Handler) Login(w http.ResponseWriter, r *http.Request) {
 // upsertUser perform an update if user already exist, otherwise new user will be created
 func (h *OAuth2Handler) upsertUser(ctx context.Context, newUser *types.User) (*types.User, error) {
 	existingUser, err := h.userService.FindByUserID(ctx, newUser.UserID)
-	if err != nil {
+	if err != nil && err != types.ErrNotFound {
+		log.WithContext(ctx).Errorf("failed to find user, err: %v", err)
 		return nil, err
 	}
 	log.WithContext(ctx).WithFields(log.Fields{"provider": newUser.Provider, "user_id": newUser.UserID, "email": newUser.Email, "is_new": existingUser == nil}).Debugf("upsert user")
