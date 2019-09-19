@@ -10,3 +10,16 @@ type (
 		SortBy      []string `json:"sort_by"`
 	}
 )
+
+// Actions policy
+const (
+	ActionCreate = "challenge:create"
+	ActionDelete = "challenge:delete"
+	ActionUpdate = "challenge:update"
+	ActionRead   = "challenge:read"
+)
+
+// Policy object name
+const (
+	PolicyObject = "challenge"
+)

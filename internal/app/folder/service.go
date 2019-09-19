@@ -84,10 +84,6 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	// TODO might need to benchmark performance of checking permission.
 	rs := make([]*Folder, 0)
 	for _, f := range folders {
-		if f.IsPublic {
-			rs = append(rs, f)
-			continue
-		}
 		if err := s.isAllowed(ctx, f.ID, ActionRead); err != nil {
 			// user doesn't have read permission on this one, ignore.
 			continue

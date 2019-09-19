@@ -54,3 +54,16 @@ const (
 
 	ContentTypeEditorJS ContentType = "editor_js"
 )
+
+// Actions policy
+const (
+	ActionCreate = "tutorial:create"
+	ActionDelete = "tutorial:delete"
+	ActionUpdate = "tutorial:update"
+	ActionRead   = "tutorial:read"
+)
+
+// Policy object name
+const (
+	PolicyObject = "tutorial"
+)

@@ -25,11 +25,7 @@ const (
 	EffectAllow = "allow"
 	EffectDeny  = "deny"
 
-	ActionAny    = "*"
-	ActionCreate = "create"
-	ActionUpdate = "update"
-	ActionRead   = "read"
-	ActionDelete = "delete"
+	ActionAny = "*"
 )
 
 // New return a new instance of policy service

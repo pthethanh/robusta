@@ -76,7 +76,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := policy.IsCurrentUserAllowed(ctx, s.policy, id, policy.ActionDelete); err != nil {
+	if err := policy.IsCurrentUserAllowed(ctx, s.policy, id, ActionDelete); err != nil {
 		return err
 	}
 	return s.repo.Delete(ctx, id)

@@ -1,8 +1,6 @@
 package article
 
 import (
-	"fmt"
-	"os"
 	"time"
 )
 
@@ -66,8 +64,15 @@ const (
 	ContentTypeEditorJS ContentType = "editor_js"
 )
 
-// GetLink return full link to the article.
-// This method requires HTTP_HOST environment variable is set
-func (a Article) GetLink() string {
-	return fmt.Sprintf("%s/articles/detail/%s", os.Getenv("HTTP_HOST"), a.ArticleID)
-}
+// Actions policy
+const (
+	ActionCreate = "article:create"
+	ActionDelete = "article:delete"
+	ActionUpdate = "article:update"
+	ActionRead   = "article:read"
+)
+
+// Policy object name
+const (
+	PolicyObject = "article"
+)

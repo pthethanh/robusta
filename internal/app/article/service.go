@@ -114,7 +114,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 
 // ChangeStatus delete the given article
 func (s *Service) ChangeStatus(ctx context.Context, id string, status Status) error {
-	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
 		return err
 	}
 	return s.repo.ChangeStatus(ctx, id, status)
@@ -125,7 +125,7 @@ func (s *Service) Update(ctx context.Context, id string, a *Article) error {
 	if err := validator.Validate(a); err != nil {
 		return errors.Wrap(err, "invalid article")
 	}
-	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, a)

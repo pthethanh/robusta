@@ -111,14 +111,14 @@ func (s *Service) Update(ctx context.Context, id string, cm *types.Comment) erro
 	if err := validator.Validate(cm); err != nil {
 		return errors.Wrap(err, "invalid comment")
 	}
-	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, cm)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
 		return err
 	}
 	deletedComment, err := s.repo.Delete(ctx, id)

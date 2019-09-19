@@ -73,7 +73,7 @@ func (s *Service) Create(ctx context.Context, a *Tutorial) error {
 
 // Delete delete the given tutorial
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, policy.ActionDelete); err != nil {
+	if err := s.isAllowed(ctx, id, ActionDelete); err != nil {
 		return err
 	}
 	return s.repo.Delete(ctx, id)
@@ -81,7 +81,7 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 
 // Update the existing tutorial
 func (s *Service) Update(ctx context.Context, id string, a *Tutorial) error {
-	if err := s.isAllowed(ctx, id, policy.ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, a)
