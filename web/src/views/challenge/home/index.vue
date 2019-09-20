@@ -27,7 +27,7 @@ export default {
       folders: []
     }
   },
-  created () {
+  mounted () {
     this.fetchData()
   },
   computed: {
@@ -39,7 +39,7 @@ export default {
     }
   },
   methods: {
-    fetchData () {
+    async fetchData () {
       this.loading = true
       listFolders(this.getQueryStr()).then((response) => {
         if (response.data === null || response.data.length === 0) {
