@@ -86,7 +86,7 @@ export default {
         }).finally(() => {
           this.ready = true
         })
-      }).catch((error) => {
+      }).catch(() => {
         this.ready = true
       })
     },
@@ -96,7 +96,7 @@ export default {
       for (var i = 0; i < children.length; i++) {
         ids += '&ids=' + children[i]
       }
-      let query = 'offset=' + this.offset + '&limit=' + this.limit + ids
+      let query = 'folder_id=' + this.folder.id + '&offset=' + this.offset + '&limit=' + this.limit + ids
       return query
     }
   }

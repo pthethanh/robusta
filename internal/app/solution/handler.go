@@ -11,7 +11,7 @@ import (
 
 type (
 	service interface {
-		FindAll(ctx context.Context, req FindRequest) ([]*types.Solution, error)
+		FindSolutionInfo(ctx context.Context, req FindRequest) ([]SolutionInfo, error)
 	}
 	Handler struct {
 		srv service
@@ -24,7 +24,7 @@ func NewHandler(srv service) *Handler {
 	}
 }
 
-func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) FindSolutionInfo(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
 	req := FindRequest{
 		Offset:      handlerutil.IntFromQuery("offset", queries, 0),
@@ -37,7 +37,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 	if req.Limit > maxLimit {
 		req.Limit = maxLimit
 	}
-	solutions, err := h.srv.FindAll(r.Context(), req)
+	solutions, err := h.srv.FindSolutionInfo(r.Context(), req)
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return

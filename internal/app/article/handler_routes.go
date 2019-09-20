@@ -34,8 +34,8 @@ func (h *Handler) Routes() []router.Route {
 		{
 			Path:    "/api/v1/articles/{id:[a-z0-9-\\-]+}",
 			Method:  http.MethodPut,
-			Handler: h.UpdateByAction,
-			Queries: []string{"action", "{action}"},
+			Handler: h.UpdateView,
+			Queries: []string{"action", "update_view"},
 		},
 		{
 			Path:        "/api/v1/articles/{id:[a-z0-9-\\-]+}",

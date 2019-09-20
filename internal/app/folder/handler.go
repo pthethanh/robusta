@@ -15,7 +15,7 @@ import (
 
 type (
 	service interface {
-		Create(ctx context.Context, f *Folder) error
+		Create(ctx context.Context, f *CreateRequest) error
 		Get(ctx context.Context, id string) (*Folder, error)
 		Delete(ctx context.Context, id string) error
 		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
@@ -55,7 +55,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
-	var f Folder
+	var f CreateRequest
 	if err := json.NewDecoder(r.Body).Decode(&f); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return

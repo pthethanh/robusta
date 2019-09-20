@@ -41,6 +41,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
 		IDs:         queries["ids"],
+		FolderID:    queries.Get("folder_id"),
 	}
 	maxLimit := 50
 	if req.Limit > maxLimit {
@@ -78,6 +79,8 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Get return full information of a challenge (including its test detail).
+// This API requires read permission on the requested challenge.
 func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	if id == "" {
@@ -89,7 +92,6 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	c.Test = ""
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: c,
 	})

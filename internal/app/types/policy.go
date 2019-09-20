@@ -2,8 +2,9 @@ package types
 
 // Policy any
 const (
-	PolicyAnyObject = "*"
-	PolicyAnyAction = "*"
+	PolicyAnyObject  = "*"
+	PolicyAnyAction  = "*"
+	PolicyAnySubject = "*"
 )
 
 // Policy effects

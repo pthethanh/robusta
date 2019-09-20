@@ -58,11 +58,25 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 	return nil
 }
 
-func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*types.Solution, error) {
+// FindSolutionInfo return information of a list of solution base on the given request.
+// The content and detail of solution are striped from the result, hence this method
+// is safe to call without checking permission.
+func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]SolutionInfo, error) {
 	solutions, err := s.repo.FindAll(ctx, req)
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to find solutions from database, err: %v", err)
 		return nil, errors.Wrap(err, "failed to find solutions from database")
 	}
-	return solutions, nil
+	info := make([]SolutionInfo, 0)
+	for _, s := range solutions {
+		info = append(info, SolutionInfo{
+			ID:              s.ID,
+			Status:          s.Status,
+			CreatedAt:       s.CreatedAt,
+			CreatedByID:     s.CreatedByID,
+			CreatedByName:   s.CreatedByName,
+			CreatedByAvatar: s.CreatedByAvatar,
+		})
+	}
+	return info, nil
 }

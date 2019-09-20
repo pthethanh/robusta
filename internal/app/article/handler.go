@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -188,16 +187,6 @@ func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 			ID: id,
 		},
 	})
-}
-
-func (h *Handler) UpdateByAction(w http.ResponseWriter, r *http.Request) {
-	action := mux.Vars(r)["action"]
-	switch action {
-	case "update_view":
-		h.UpdateView(w, r)
-	default:
-		respond.Error(w, errors.New("not supported action"), http.StatusBadRequest)
-	}
 }
 
 // convertArticlesToReviewMode convert the given articles to preview mode

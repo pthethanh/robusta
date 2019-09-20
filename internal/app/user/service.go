@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/log"
