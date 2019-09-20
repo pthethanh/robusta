@@ -8,7 +8,7 @@
       <codemirror ref="myCm" :value="code" :options="cmOptions" mode="text/x-go" class="editor" @input="onCodeChange" />
       <div class="output" v-if="output !== ''">
         <pre>
-<span>{{output}}</span>
+<span>{{_output}}</span>
         </pre>
       </div>
     </el-row>
@@ -131,6 +131,14 @@ export default {
   computed: {
     codemirror () {
       return this.$refs.myCm.codemirror
+    },
+    _output() {
+      var max = 100
+      var v = this.output
+      if (v.length > max) {
+        v = this.output.substring(0, max) + '...'
+      }
+      return v
     }
   }
 }
