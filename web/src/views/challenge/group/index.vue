@@ -17,11 +17,11 @@
           <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
         </div>
       </el-col>
-
     </el-row>
-    <el-row type="flex" justify="center" v-if="ready && challenges.length == 0">
-      <div>
-        No Challenges Found
+    <el-row type="flex" justify="center">
+      <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
+      <div v-if="ready && challenges.length == 0" class="error">
+        There is no challenges in this folder.
       </div>
     </el-row>
   </div>
@@ -54,6 +54,11 @@ export default {
   mounted () {
     this.fetchData()
   },
+  computed: {
+    _loading () {
+      return !this.ready;
+    }
+  },
   methods: {
     onClick (challenge) {
       this.selected = challenge
@@ -68,8 +73,10 @@ export default {
           if (this.challenges.length > 0) {
             this.selected = this.challenges[0]
           }
+        }).finally(() => {
+          this.ready = true
         })
-      }).finally(() => {
+      }).catch((error) => {
         this.ready = true
       })
     },
@@ -89,6 +96,17 @@ export default {
 <style lang="scss" scoped>
 .playground {
   line-height: 1.5em;
+
+  .loading {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .error {
+    margin-top: 10px;
+    font-size: 1.2em;
+    font-weight: 700;
+  }
 
   .left {
     border: 1px solid lightgrey;
