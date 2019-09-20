@@ -63,12 +63,6 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	}
 	closer.Append(articleCloser)
 
-	tutorialHandler, tutorialCloser, err := newTutorialHandler(policySrv)
-	if err != nil {
-		return nil, nil, err
-	}
-	closer.Append(tutorialCloser)
-
 	editorHandler, err := newEditorHandler()
 	if err != nil {
 		return nil, closer, err
@@ -125,7 +119,6 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	routes = append(routes, oauthHandler.Routes()...)
 	routes = append(routes, userHandler.Routes()...)
 	routes = append(routes, articleHandler.Routes()...)
-	routes = append(routes, tutorialHandler.Routes()...)
 	routes = append(routes, editorHandler.Routes()...)
 	routes = append(routes, playgroundHandler.Routes()...)
 	routes = append(routes, commentHandler.Routes()...)

@@ -46,29 +46,6 @@ export const constantRouterMap = [
     }]
   },
   {
-    path: '/tutorials',
-    name: 'Tutorials',
-    component: Layout,
-    redirect: '/tutorials/latest',
-    hidden: true,
-    children: [{
-      path: 'latest',
-      component: () => import('@/views/tutorial/home/index')
-    },
-    {
-      path: 'new',
-      component: () => import('@/views/tutorial/new/index')
-    },
-    {
-      path: 'detail/:id',
-      component: () => import('@/views/tutorial/view/index')
-    },
-    {
-      path: 'edit/:id',
-      component: () => import('@/views/tutorial/edit/index')
-    }]
-  },
-  {
     path: '/articles',
     name: 'Articles',
     component: Layout,
