@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-infinite-scroll="fetchData" infinite-scroll-disabled="disabled">
         <el-card v-for="folder in folders" :key="folder.id" class="folder" @click="goToFolder(folder)">
           <div class="name" @click="goToFolder(folder)">{{folder.name}} </div>
-          <div class="description">{{folder.description}}</div>
+          <div class="description" @click="goToFolder(folder)">{{folder.description}}</div>
         </el-card>
         <div v-if="loading" class="loading">Loading...</div>
         <div v-if="!loading&&noMore" class="loading">¯\_(ツ)_/¯</div>
