@@ -42,11 +42,11 @@ import {
   Avatar,
   InfiniteScroll,
   Tabs,
-  TabPane
+  TabPane,
+  Table,
+  TableColumn
   // Breadcrumb,
   // BreadcrumbItem,
-  // Table,
-  // TableColumn,
   // DatePicker,
   // TimeSelect,
   // TimePicker,
@@ -120,6 +120,8 @@ Vue.use(Avatar)
 Vue.use(InfiniteScroll)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Table)
+Vue.use(TableColumn)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
 // Vue.use(Calendar)
@@ -144,8 +146,6 @@ Vue.use(TabPane)
 // Vue.use(Select)
 // Vue.use(Option)
 // Vue.use(OptionGroup)
-// Vue.use(Table)
-// Vue.use(TableColumn)
 // Vue.use(DatePicker)
 // Vue.use(TimeSelect)
 // Vue.use(TimePicker)

@@ -79,6 +79,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		Content:        r.Solution,
 		Status:         status,
 		EvaluateResult: string(v),
+		ChallengeID:    r.ChallengeID,
 	}); err != nil {
 		return nil, errors.Wrap(err, "failed to save solution")
 	}

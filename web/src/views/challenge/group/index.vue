@@ -7,8 +7,8 @@
         </el-menu>
       </el-col>
       <el-col :span="19" class="right">
-        <el-tabs type="border-card">
-          <el-tab-pane label="Detail">
+        <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
+          <el-tab-pane label="Detail" name="detail">
             <div>
               <div class="description" v-if="selected !== null">
                 <div class="title">{{selected.title}}</div>
@@ -19,10 +19,18 @@
               <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="Submissions">
-            List of submissions. This feature will be coming very soon.
+          <el-tab-pane label="Submissions" name="submissions">
+            <div v-if="_submissions.length==0">No submission found.</div>
+            <el-table :data="submissions" style="width: 100%">
+              <el-table-column prop="created_by_name" label="Name">
+              </el-table-column>
+              <el-table-column prop="created_at_date" label="Submitted at">
+              </el-table-column>
+              <el-table-column prop="status" label="Status">
+              </el-table-column>
+            </el-table>
           </el-tab-pane>
-          <el-tab-pane label="Tips">
+          <el-tab-pane label="Tips" name="tips">
             Articles, tips. This feature will be coming very soon.
           </el-tab-pane>
         </el-tabs>
@@ -45,6 +53,9 @@ import {
 import {
   getFolder
 } from '@/api/folder'
+import {
+  listSolutionInfo
+} from '@/api/solution'
 
 export default {
   components: {
@@ -58,7 +69,9 @@ export default {
       limit: 50,
       selected: null,
       folder: null,
-      challenges: []
+      challenges: [],
+      submissions: [],
+      activeTab: 'detail'
     }
   },
   mounted () {
@@ -67,13 +80,16 @@ export default {
   computed: {
     _loading () {
       return !this.ready
+    },
+    _submissions () {
+      return this.submissions
     }
   },
   methods: {
     onClick (challenge) {
       this.selected = challenge
     },
-    fetchData () {
+    async fetchData () {
       this.ready = false
       this.id = this.$route.params.id
       getFolder(this.id).then((response) => {
@@ -90,6 +106,14 @@ export default {
         this.ready = true
       })
     },
+    async fetchSubmissions () {
+      listSolutionInfo('challenge_id=' + this.selected.id).then((response) => {
+        this.submissions = response.data
+        for (var i = 0; i < this.submissions.length; i++) {
+          this.submissions[i].created_at_date = this.submissions[i].created_at.substring(0, 10)
+        }
+      })
+    },
     getQueryStr () {
       var ids = ''
       var children = this.folder.children
@@ -98,6 +122,14 @@ export default {
       }
       let query = 'folder_id=' + this.folder.id + '&offset=' + this.offset + '&limit=' + this.limit + ids
       return query
+    },
+    handleTabClick (tab, event) {
+      if (this.activeTab === 'submissions') {
+        this.handleOpenDetailTab()
+      }
+    },
+    handleOpenDetailTab () {
+      this.fetchSubmissions()
     }
   }
 }

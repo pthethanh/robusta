@@ -1,4 +1,4 @@
-FROM golang:1.12.6-alpine3.10
+FROM golang:1.13.0-alpine3.10
 
 ENV REALIZE_VERSION=2.0.2
 
