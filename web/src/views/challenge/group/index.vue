@@ -1,21 +1,31 @@
 <template>
   <div class="playground">
-    <el-row type="flex" justify="center" v-if="ready && challenges.length > 0">
-      <el-col :span="4" class="left">
+    <el-row type="flex" justify="left" v-if="ready && challenges.length > 0">
+      <el-col :span="5" class="left">
         <el-menu default-active="0" v-if="ready">
           <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">{{index + 1 + '. ' + challenge.title}}</el-menu-item>
         </el-menu>
       </el-col>
-      <el-col :span="20">
-        <div class="right">
-          <div class="description" v-if="selected !== null">
-            <div class="title">{{selected.title}}</div>
-            <div class="content">
-              {{selected.description}}
+      <el-col :span="19" class="right">
+        <el-tabs type="border-card">
+          <el-tab-pane label="Detail">
+            <div>
+              <div class="description" v-if="selected !== null">
+                <div class="title">{{selected.title}}</div>
+                <div class="content">
+                  {{selected.description}}
+                </div>
+              </div>
+              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
             </div>
-          </div>
-          <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
-        </div>
+          </el-tab-pane>
+          <el-tab-pane label="Submissions">
+            List of submissions. This feature will be coming very soon.
+          </el-tab-pane>
+          <el-tab-pane label="Tips">
+            Articles, tips. This feature will be coming very soon.
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
     <el-row type="flex" justify="center">
@@ -56,7 +66,7 @@ export default {
   },
   computed: {
     _loading () {
-      return !this.ready;
+      return !this.ready
     }
   },
   methods: {
@@ -110,15 +120,14 @@ export default {
 
   .left {
     border: 1px solid lightgrey;
-    min-width: 200px;
-    overflow-x: scroll;
+    overflow: scroll;
   }
 
   .right {
     position: fixed;
-    top: 50px;
     height: 100%;
-    min-width: 70%;
+    right: 20px;
+    padding-left: 20px; // same with right above
 
     .description {
       padding: 10px 25px 20px 25px;

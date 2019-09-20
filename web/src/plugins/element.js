@@ -40,7 +40,9 @@ import {
   Message,
   Notification,
   Avatar,
-  InfiniteScroll
+  InfiniteScroll,
+  Tabs,
+  TabPane
   // Breadcrumb,
   // BreadcrumbItem,
   // Table,
@@ -76,8 +78,6 @@ import {
   // Upload,
   // Slider,
   // Tree,
-  // Tabs,
-  // TabPane,
   // Tooltip,
 } from 'element-ui'
 
@@ -118,6 +118,8 @@ Vue.use(Image)
 Vue.use(PageHeader)
 Vue.use(Avatar)
 Vue.use(InfiniteScroll)
+Vue.use(Tabs)
+Vue.use(TabPane)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
 // Vue.use(Calendar)
@@ -128,8 +130,6 @@ Vue.use(InfiniteScroll)
 // Vue.use(Upload)
 // Vue.use(Slider)
 // Vue.use(Tree)
-// Vue.use(Tabs)
-// Vue.use(TabPane)
 // Vue.use(Tooltip)
 // Vue.use(Autocomplete)
 // Vue.use(Pagination)
