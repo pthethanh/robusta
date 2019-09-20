@@ -59,6 +59,10 @@ services:
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_DEFAULT_FROM=${SMTP_DEFAULT_FROM}
+      # GORPOXY
+      # enable below line and  related volumes for using proxy from file system.
+      #- GOPROXY=file:///goproxy
+      - GOPROXY=${GOPROXY}
     volumes:
       - ../../.realize.yaml:/go/src/github.com/pthethanh/robusta/.realize.yaml
       - ../../main.go:/go/src/github.com/pthethanh/robusta/main.go
@@ -70,6 +74,7 @@ services:
       - ../../templates:/go/src/github.com/pthethanh/robusta/templates
       - ../scripts:/scripts
       - ../certs:/certs
+      #- $HOME/go/pkg/mod/cache/download:/goproxy
     working_dir: /go/src/github.com/pthethanh/robusta
     entrypoint: [ "sh", "-c", "/scripts/wait-for.sh mongodb:27017 --timeout=5 -- realize start" ]
     depends_on:
