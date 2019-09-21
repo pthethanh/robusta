@@ -20,6 +20,7 @@ type (
 
 	EvaluateRequest struct {
 		ChallengeID string `json:"challenge_id" validate:"required"`
+		FolderID    string `json:"folder_id" validate:"required"`
 		Solution    string `json:"solution" validate:"min=15"`
 	}
 )

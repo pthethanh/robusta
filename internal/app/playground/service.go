@@ -15,7 +15,7 @@ import (
 
 type (
 	ChallengeService interface {
-		Get(ctx context.Context, id string) (*types.Challenge, error)
+		FindFolderChallengeByID(ctx context.Context, id string, folderID string) (*types.Challenge, error)
 	}
 
 	SolutionService interface {
@@ -54,7 +54,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		log.WithContext(ctx).Errorf("validation failed, err: %v", err)
 		return nil, types.ErrBadRequest
 	}
-	challenge, err := s.challengeSrv.Get(ctx, r.ChallengeID)
+	challenge, err := s.challengeSrv.FindFolderChallengeByID(ctx, r.ChallengeID, r.FolderID)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find challenge")
 	}

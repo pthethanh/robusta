@@ -36,6 +36,10 @@ export default {
     challenge_id: {
       type: String,
       required: true
+    },
+    folder_id: {
+      type: String,
+      required: true
     }
   },
   data () {
@@ -96,6 +100,7 @@ export default {
       evaluate(
         JSON.stringify({
           challenge_id: this.challenge_id,
+          folder_id: this.folder_id,
           solution: this.code
         })
       ).then(response => {

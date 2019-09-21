@@ -103,3 +103,17 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
 	return policy.IsCurrentUserAllowed(ctx, s.policy, id, action)
 }
+
+// FindFolderChallengeByID find the challenge by the given id.
+// User must have folder:read permission to be able to get it.
+func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folderID string) (*types.Challenge, error) {
+	if err := s.isAllowed(ctx, folderID, folder.ActionRead); err != nil {
+		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
+		return nil, err
+	}
+	c, err := s.repo.FindByID(ctx, id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to find the challenge")
+	}
+	return c, nil
+}

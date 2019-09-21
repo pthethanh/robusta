@@ -50,11 +50,6 @@ service.interceptors.response.use(
         store.dispatch('ToggleLogin', true)
         return Promise.reject(error)
       }
-      Message({
-        message: res.data.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
       // eslint-disable-next-line
       console.log(res)
       return Promise.reject(res.data.message)

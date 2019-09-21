@@ -13,7 +13,6 @@ func (h *Handler) Routes() []router.Route {
 			Path:        "/api/v1/challenges",
 			Method:      http.MethodGet,
 			Handler:     h.FindAll,
-			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
 			Path:        "/api/v1/challenges",

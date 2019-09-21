@@ -10,10 +10,9 @@ import (
 func (h *Handler) Routes() []router.Route {
 	return []router.Route{
 		{
-			Path:        "/api/v1/folders",
-			Method:      http.MethodGet,
-			Handler:     h.FindAll,
-			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
+			Path:    "/api/v1/folders",
+			Method:  http.MethodGet,
+			Handler: h.FindAll,
 		},
 		{
 			Path:        "/api/v1/folders",
@@ -22,10 +21,9 @@ func (h *Handler) Routes() []router.Route {
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
-			Path:        "/api/v1/folders/{id:[a-z0-9-\\-]+}",
-			Method:      http.MethodGet,
-			Handler:     h.Get,
-			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
+			Path:    "/api/v1/folders/{id:[a-z0-9-\\-]+}",
+			Method:  http.MethodGet,
+			Handler: h.Get,
 		},
 		{
 			Path:        "/api/v1/folders/{id:[a-z0-9-\\-]+}",

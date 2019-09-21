@@ -16,7 +16,7 @@
                   {{selected.description}}
                 </div>
               </div>
-              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" class="editor"></challenge-player>
+              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor"></challenge-player>
             </div>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions">
@@ -114,6 +114,9 @@ export default {
         this.submissions = response.data
         for (var i = 0; i < this.submissions.length; i++) {
           this.submissions[i].created_at_date = this.submissions[i].created_at.substring(0, 10)
+          if (this.submissions[i].created_by_name === undefined) {
+            this.submissions[i].created_by_name = 'Gopher'
+          }
         }
       })
     },
