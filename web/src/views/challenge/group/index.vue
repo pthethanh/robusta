@@ -27,7 +27,7 @@
             <el-table v-if="submissions.length > 0" :data="submissions" style="width: 100%">
               <el-table-column prop="created_by_name" label="Name">
               </el-table-column>
-              <el-table-column prop="created_at_date" label="Submitted at">
+              <el-table-column prop="created_at_date" label="Date">
               </el-table-column>
               <el-table-column prop="status" label="Status">
               </el-table-column>
