@@ -22,7 +22,8 @@ func newChallengeHandler(policy challenge.PolicyService) (*challenge.Handler, *c
 	}
 	closer.Append(mongoCloser)
 	repo := challenge.NewMongoDBRepository(s)
-	srv := challenge.NewService(repo, policy)
+	conf := challenge.LoadConfigFromEnv()
+	srv := challenge.NewService(conf, repo, policy)
 	handler := challenge.NewHandler(srv)
 
 	return handler, srv, closer, nil
@@ -36,7 +37,8 @@ func newSolutionHandler(policy solution.PolicyService) (*solution.Handler, *solu
 	}
 	closer.Append(mongoCloser)
 	repo := solution.NewMongoDBRepository(s)
-	srv := solution.NewService(repo, policy)
+	conf := solution.LoadConfigFromEnv()
+	srv := solution.NewService(conf, repo, policy)
 	handler := solution.NewHandler(srv)
 
 	return handler, srv, closer, nil

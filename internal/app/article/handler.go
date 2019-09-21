@@ -32,7 +32,6 @@ type (
 )
 
 const (
-	maxLimit    = 15
 	previewMode = "preview"
 )
 
@@ -56,9 +55,6 @@ func (h *Handler) Find(w http.ResponseWriter, r *http.Request) {
 		Tags:        queries["tags"],
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
-	}
-	if req.Limit > maxLimit {
-		req.Limit = maxLimit
 	}
 	mode := queries.Get("mode")
 	// fetch the list of articles from db

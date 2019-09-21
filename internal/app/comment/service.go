@@ -36,6 +36,7 @@ type (
 		ReactionTopic     string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
 		NotificationTopic string `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
 		EventWorkers      int    `envconfig:"COMMENT_EVENT_WORKERS" default:"10"`
+		MaxPageSize       int    `envconfig:"COMMENT_MAX_PAGE_SIZE" default:"100"`
 	}
 
 	Service struct {
@@ -104,6 +105,9 @@ func (s *Service) Create(ctx context.Context, cm *types.Comment) error {
 }
 
 func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*types.Comment, error) {
+	if req.Limit > s.conf.MaxPageSize {
+		req.Limit = s.conf.MaxPageSize
+	}
 	return s.repo.FindAll(ctx, req)
 }
 

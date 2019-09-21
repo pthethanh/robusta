@@ -13,7 +13,8 @@ func newFolderHandler(policy folder.PolicyService) (*folder.Handler, *closeutil.
 	}
 	closer.Append(mongoCloser)
 	repo := folder.NewMongoDBRepository(s)
-	srv := folder.NewService(repo, policy)
+	conf := folder.LoadConfigFromEnv()
+	srv := folder.NewService(conf, repo, policy)
 	handler := folder.NewHandler(srv)
 
 	return handler, closer, nil

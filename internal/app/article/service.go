@@ -39,6 +39,7 @@ type (
 		ReactionTopic     string `envconfig:"REACTION_TOPIC" default:"r_topic_reaction"`
 		NotificationTopic string `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
 		EventWorkers      int    `envconfig:"ARTICLE_EVENT_WORKERS" default:"10"`
+		MaxPageSize       int    `envconfig:"ARTICLE_MAX_PAGE_SIZE" default:"15"`
 	}
 
 	// Service is an article Service
@@ -78,7 +79,9 @@ func LoadConfigFromEnv() Config {
 func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*Article, error) {
 	recorder := timeutil.NewRecorder("find all articles")
 	defer log.WithContext(ctx).Info(recorder)
-
+	if req.Limit > s.conf.MaxPageSize {
+		req.Limit = s.conf.MaxPageSize
+	}
 	articles, err := s.repo.FindAll(ctx, req)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find all articles")

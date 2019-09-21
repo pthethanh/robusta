@@ -8,6 +8,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
+	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -25,16 +26,28 @@ type (
 		Delete(cxt context.Context, id string) error
 	}
 	Service struct {
+		conf   Config
 		repo   Repository
 		policy PolicyService
 	}
+
+	Config struct {
+		MaxPageSize int `envconfig:"CHALLENGE_MAX_PAGE_SIZE" default:"50"`
+	}
 )
 
-func NewService(repo Repository, policy PolicyService) *Service {
+func NewService(conf Config, repo Repository, policy PolicyService) *Service {
 	return &Service{
+		conf:   conf,
 		repo:   repo,
 		policy: policy,
 	}
+}
+
+func LoadConfigFromEnv() Config {
+	var conf Config
+	envconfig.Load(&conf)
+	return conf
 }
 
 // Create create a challenge.
@@ -79,6 +92,9 @@ func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) 
 func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error) {
 	if err := validator.Validate(r); err != nil {
 		return nil, err
+	}
+	if r.Limit > s.conf.MaxPageSize {
+		r.Limit = s.conf.MaxPageSize
 	}
 	if err := s.isAllowed(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)

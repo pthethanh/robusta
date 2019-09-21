@@ -42,10 +42,6 @@ func (h *Handler) Find(w http.ResponseWriter, r *http.Request) {
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
 	}
-	maxLimit := 100
-	if req.Limit > maxLimit {
-		req.Limit = maxLimit
-	}
 	list, err := h.srv.FindAll(r.Context(), req)
 	if err != nil {
 		log.WithContext(r.Context()).Infof("failed to execute FinAll, err: %v", err)

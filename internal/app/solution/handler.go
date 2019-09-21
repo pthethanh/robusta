@@ -33,10 +33,6 @@ func (h *Handler) FindSolutionInfo(w http.ResponseWriter, r *http.Request) {
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
 	}
-	maxLimit := 15
-	if req.Limit > maxLimit {
-		req.Limit = maxLimit
-	}
 	solutions, err := h.srv.FindSolutionInfo(r.Context(), req)
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)

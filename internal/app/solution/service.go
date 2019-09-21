@@ -8,6 +8,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
+	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -24,17 +25,28 @@ type (
 		MakeOwner(ctx context.Context, sub string, obj string) error
 	}
 
+	Config struct {
+		MaxPageSize int `envconfig:"SOLUTION_MAX_PAGE_SIZE" default:"50"`
+	}
 	Service struct {
+		conf   Config
 		repo   Repository
 		policy PolicyService
 	}
 )
 
-func NewService(repo Repository, policy PolicyService) *Service {
+func NewService(conf Config, repo Repository, policy PolicyService) *Service {
 	return &Service{
+		conf:   conf,
 		repo:   repo,
 		policy: policy,
 	}
+}
+
+func LoadConfigFromEnv() Config {
+	var conf Config
+	envconfig.Load(&conf)
+	return conf
 }
 
 func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
@@ -64,6 +76,9 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 // The content and detail of solution are striped from the result, hence this method
 // is safe to call without checking permission.
 func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]SolutionInfo, error) {
+	if req.Limit > s.conf.MaxPageSize {
+		req.Limit = s.conf.MaxPageSize
+	}
 	solutions, err := s.repo.FindAll(ctx, req)
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to find solutions from database, err: %v", err)

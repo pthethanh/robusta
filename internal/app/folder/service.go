@@ -8,6 +8,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
+	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -24,18 +25,27 @@ type (
 		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 		Delete(cxt context.Context, id string) error
 	}
-
+	Config struct {
+		MaxPageSize int `envconfig:"FOLDER_MAX_PAGE_SIZE" default:"50"`
+	}
 	Service struct {
+		conf   Config
 		repo   Repository
 		policy PolicyService
 	}
 )
 
-func NewService(repo Repository, policy PolicyService) *Service {
+func NewService(conf Config, repo Repository, policy PolicyService) *Service {
 	return &Service{
 		repo:   repo,
 		policy: policy,
 	}
+}
+
+func LoadConfigFromEnv() Config {
+	var conf Config
+	envconfig.Load(&conf)
+	return conf
 }
 
 func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
@@ -93,6 +103,9 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	folders, err := s.repo.FindAll(ctx, r)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find folder")
+	}
+	if r.Limit > s.conf.MaxPageSize {
+		r.Limit = s.conf.MaxPageSize
 	}
 	rs := make([]*Folder, 0)
 	for _, f := range folders {

@@ -40,10 +40,6 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		CreatedByID: queries.Get("created_by_id"),
 		SortBy:      queries["sort_by"],
 	}
-	maxLimit := 50
-	if req.Limit > maxLimit {
-		req.Limit = maxLimit
-	}
 	folders, err := h.srv.FindAll(r.Context(), req)
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
