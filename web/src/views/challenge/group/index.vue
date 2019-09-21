@@ -89,7 +89,7 @@ export default {
     onClick (challenge) {
       this.selected = challenge
       if (this.activeTab === 'submissions') {
-        handleOpenSubmissionsTab()
+        this.handleOpenSubmissionsTab()
       }
     },
     async fetchData () {
