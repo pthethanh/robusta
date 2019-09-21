@@ -6,9 +6,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/folder"
-	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -63,7 +62,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 // Get return full information of the requested challenge.
 // The requested user must have read permission, otherwise the request will be rejected.
 func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) {
-	if err := s.isAllowed(ctx, id, ActionRead); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionChallengeRead); err != nil {
 		log.WithContext(ctx).Errorf("failed to read challenge due to permission issue, err: %v", err)
 		return nil, err
 	}
@@ -81,7 +80,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 	if err := validator.Validate(r); err != nil {
 		return nil, err
 	}
-	if err := s.isAllowed(ctx, r.FolderID, folder.ActionRead); err != nil {
+	if err := s.isAllowed(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}
@@ -94,20 +93,20 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 
 // Delete delete the given challenge.
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := policy.IsCurrentUserAllowed(ctx, s.policy, id, ActionDelete); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionChallengeDelete); err != nil {
 		return err
 	}
 	return s.repo.Delete(ctx, id)
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, id, action)
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, action)
 }
 
 // FindFolderChallengeByID find the challenge by the given id.
 // User must have folder:read permission to be able to get it.
 func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folderID string) (*types.Challenge, error) {
-	if err := s.isAllowed(ctx, folderID, folder.ActionRead); err != nil {
+	if err := s.isAllowed(ctx, folderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}

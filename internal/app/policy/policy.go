@@ -71,5 +71,5 @@ func (s *Service) IsAllowed(ctx context.Context, sub string, obj string, act str
 
 // MakeOwner make the sub to be owner of the obj
 func (s *Service) MakeOwner(ctx context.Context, sub string, obj string) error {
-	return s.AddPolicy(ctx, sub, obj, types.PolicyAnyAction, types.PolicyEffectAllow)
+	return s.AddPolicy(ctx, sub, obj, types.PolicyActionAny, types.PolicyEffectAllow)
 }

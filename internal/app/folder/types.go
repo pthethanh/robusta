@@ -47,16 +47,3 @@ type (
 const (
 	TypeChallenges Type = "challenge"
 )
-
-// Actions policy
-const (
-	ActionCreate = "folder:create"
-	ActionDelete = "folder:delete"
-	ActionUpdate = "folder:update"
-	ActionRead   = "folder:read"
-)
-
-// Policy object name
-const (
-	PolicyObject = "folder"
-)

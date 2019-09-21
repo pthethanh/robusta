@@ -10,9 +10,9 @@ import (
 func (h *Handler) Routes() []router.Route {
 	return []router.Route{
 		{
-			Path:        "/api/v1/challenges",
-			Method:      http.MethodGet,
-			Handler:     h.FindAll,
+			Path:    "/api/v1/challenges",
+			Method:  http.MethodGet,
+			Handler: h.FindAll,
 		},
 		{
 			Path:        "/api/v1/challenges",

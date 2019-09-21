@@ -6,8 +6,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -42,7 +42,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	if err := s.isAllowed(ctx, PolicyObject, ActionCreate); err != nil {
+	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderCreate); err != nil {
 		return err
 	}
 	f := &Folder{
@@ -66,12 +66,12 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	if err := s.repo.Insert(ctx, f); err != nil {
 		return errors.Wrap(err, "failed to insert folder")
 	}
-	if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, types.PolicyAnyAction, types.PolicyEffectAllow); err != nil {
+	if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, types.PolicyActionAny, types.PolicyEffectAllow); err != nil {
 		return errors.Wrap(err, "failed to set permission")
 	}
 	if req.IsPublic {
 		// make everyone permission to read this folder.
-		if err := s.policy.AddPolicy(ctx, types.PolicyAnySubject, f.ID, ActionRead, types.PolicyEffectAllow); err != nil {
+		if err := s.policy.AddPolicy(ctx, types.PolicySubjectAny, f.ID, types.PolicyActionFolderRead, types.PolicyEffectAllow); err != nil {
 			return errors.Wrap(err, "failed to make the folder public read")
 		}
 	}
@@ -79,12 +79,12 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
+	if err := s.isAllowed(ctx, id, types.PolicyActionFolderRead); err != nil {
+		return nil, err
+	}
 	f, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find the folder")
-	}
-	if err := s.isAllowed(ctx, id, ActionRead); err != nil {
-		return nil, err
 	}
 	return f, nil
 }
@@ -96,7 +96,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	}
 	rs := make([]*Folder, 0)
 	for _, f := range folders {
-		if err := s.isAllowed(ctx, f.ID, ActionRead); err != nil {
+		if err := s.isAllowed(ctx, f.ID, types.PolicyActionFolderRead); err != nil {
 			log.WithContext(ctx).Debugf("user doesn't have permission on foldder %s, err: %v", f.ID, err)
 			continue
 		}
@@ -106,7 +106,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, ActionDelete); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionFolderDelete); err != nil {
 		log.WithContext(ctx).Errorf("cannot delete folder, err: %v", err)
 		return err
 	}
@@ -114,5 +114,5 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, id, action)
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, action)
 }

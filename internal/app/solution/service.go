@@ -7,6 +7,7 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
@@ -15,6 +16,7 @@ type (
 	Repository interface {
 		Insert(ctx context.Context, s *types.Solution) error
 		FindAll(ctx context.Context, req FindRequest) ([]*types.Solution, error)
+		FindByID(ctx context.Context, id string) (*types.Solution, error)
 	}
 
 	PolicyService interface {
@@ -79,4 +81,15 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 		})
 	}
 	return info, nil
+}
+
+func (s *Service) Get(ctx context.Context, id string) (*types.Solution, error) {
+	if err := s.isAllowed(ctx, id, types.PolicyActionSolutionRead); err != nil {
+		return nil, err
+	}
+	return s.repo.FindByID(ctx, id)
+}
+
+func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }

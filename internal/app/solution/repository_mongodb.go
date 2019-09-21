@@ -58,3 +58,13 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 	}
 	return solutions, nil
 }
+
+func (r *MongoDBRepository) FindByID(ctx context.Context, id string) (*types.Solution, error) {
+	s := r.session.Clone()
+	defer s.Close()
+	var solution types.Solution
+	if err := s.DB("").C(solutionCollectionName).Find(bson.M{"_id": id}).One(&solution); err != nil {
+		return nil, err
+	}
+	return &solution, nil
+}

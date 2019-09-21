@@ -11,16 +11,3 @@ type (
 		SortBy      []string `json:"sort_by,omitempty"`
 	}
 )
-
-// Actions policy
-const (
-	ActionCreate = "comment:create"
-	ActionDelete = "comment:delete"
-	ActionUpdate = "comment:update"
-	ActionRead   = "coment:read"
-)
-
-// Policy object name
-const (
-	PolicyObject = "comment"
-)

@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -114,7 +114,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 
 // ChangeStatus delete the given article
 func (s *Service) ChangeStatus(ctx context.Context, id string, status Status) error {
-	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionArticleUpdate); err != nil {
 		return err
 	}
 	return s.repo.ChangeStatus(ctx, id, status)
@@ -125,7 +125,7 @@ func (s *Service) Update(ctx context.Context, id string, a *Article) error {
 	if err := validator.Validate(a); err != nil {
 		return errors.Wrap(err, "invalid article")
 	}
-	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionArticleUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, a)
@@ -155,7 +155,7 @@ func (s *Service) FindByArticleID(ctx context.Context, articleID string) (*Artic
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, id, act)
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying background process to finish

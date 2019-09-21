@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
-	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -111,14 +111,14 @@ func (s *Service) Update(ctx context.Context, id string, cm *types.Comment) erro
 	if err := validator.Validate(cm); err != nil {
 		return errors.Wrap(err, "invalid comment")
 	}
-	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionCommentUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, cm)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, ActionUpdate); err != nil {
+	if err := s.isAllowed(ctx, id, types.PolicyActionCommentUpdate); err != nil {
 		return err
 	}
 	deletedComment, err := s.repo.Delete(ctx, id)
@@ -134,7 +134,7 @@ func (s *Service) FindByID(ctx context.Context, id string) (types.Comment, error
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
-	return policy.IsCurrentUserAllowed(ctx, s.policy, id, act)
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying services
