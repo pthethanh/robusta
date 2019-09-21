@@ -43,8 +43,13 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 	if req.CreatedByID != "" {
 		m["created_by_id"] = req.CreatedByID
 	}
-	if req.ChallengeID != "" {
-		m["challenge_id"] = req.ChallengeID
+	if len(req.ChallengeIDs) > 0 {
+		m["challenge_id"] = bson.M{
+			"$in": req.ChallengeIDs,
+		}
+	}
+	if req.Status != "" {
+		m["status"] = req.Status
 	}
 	sortBy := req.SortBy
 	if len(req.SortBy) == 0 {

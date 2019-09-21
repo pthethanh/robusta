@@ -3,7 +3,10 @@
     <el-row type="flex" justify="left" v-if="ready && challenges.length > 0">
       <el-col :span="5" class="left">
         <el-menu default-active="0" v-if="ready">
-          <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">{{index + 1 + '. ' + challenge.title}}</el-menu-item>
+          <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
+            <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
+            <span>{{index + 1 + '. ' + challenge.title}}</span>
+          </el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="19" class="right">
@@ -16,11 +19,11 @@
                   {{selected.description}}
                 </div>
               </div>
-              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor"></challenge-player>
+              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
             </div>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions">
-            <div v-if="submissions.length === 0">No submission found.</div>
+            <div v-if="submissions.length === 0">No success submission found.</div>
             <el-table v-if="submissions.length > 0" :data="submissions" style="width: 100%">
               <el-table-column prop="created_by_name" label="Name">
               </el-table-column>
@@ -31,7 +34,8 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="Tips" name="tips">
-            Articles, tips. This feature will be coming very soon.
+            <div v-if="selected.tips !== ''">{{selected.tips}}</div>
+            <div v-if="selected.tips === ''">No tips are provided.</div>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -56,7 +60,9 @@ import {
 import {
   listSolutionInfo
 } from '@/api/solution'
-
+import {
+  mapGetters
+} from 'vuex'
 export default {
   components: {
     ChallengePlayer
@@ -83,7 +89,10 @@ export default {
     },
     _submissions () {
       return this.submissions
-    }
+    },
+    ...mapGetters([
+      'user'
+    ])
   },
   methods: {
     onClick (challenge) {
@@ -98,10 +107,17 @@ export default {
       getFolder(this.id).then((response) => {
         this.folder = response.data
         listChallenges(this.getQueryStr()).then(response => {
-          this.challenges = response.data
-          if (this.challenges.length > 0) {
-            this.selected = this.challenges[0]
+          var data = response.data
+          for (var i = 0; i < data.length; i++) {
+            data[i].completed = false // populate property for Vuejs watch
+            this.challenges.push(data[i])
           }
+          if (this.challenges.length <= 0) {
+            return
+          }
+          this.selected = this.challenges[0]
+          // call async to load completion
+          this.updateChallengeCompletion()
         }).finally(() => {
           this.ready = true
         })
@@ -110,7 +126,7 @@ export default {
       })
     },
     async fetchSubmissions () {
-      listSolutionInfo('challenge_id=' + this.selected.id).then((response) => {
+      listSolutionInfo('challenge_ids=' + this.selected.id + '&status=success').then((response) => {
         this.submissions = response.data
         for (var i = 0; i < this.submissions.length; i++) {
           this.submissions[i].created_at_date = this.submissions[i].created_at.substring(0, 10)
@@ -136,6 +152,31 @@ export default {
     },
     handleOpenSubmissionsTab () {
       this.fetchSubmissions()
+    },
+    async updateChallengeCompletion () {
+      if (!this.user.authenticated) {
+        return
+      }
+      // TODO update offset & limit.
+      var q = 'status=success&offset=0&limit=100&created_by_id=' + this.user.info.user_id
+      var children = this.folder.children
+      for (var i = 0; i < children.length; i++) {
+        q += '&challenge_ids=' + children[i]
+      }
+      listSolutionInfo(q).then((response) => {
+        var completed = response.data
+        for (var i = 0; i < completed.length; i++) {
+          for (var j = 0; j < this.challenges.length; j++) {
+            if (completed[i].challenge_id === this.challenges[j].id) {
+              this.challenges[j].completed = true
+              continue
+            }
+          }
+        }
+      })
+    },
+    handlePlayerRunCompleted(passed) {
+      this.selected.completed = passed
     }
   }
 }
@@ -159,6 +200,11 @@ export default {
   .left {
     border: 1px solid lightgrey;
     overflow: scroll;
+
+    .challenge-completed {
+      color: green;
+      font-weight: 700;
+    }
   }
 
   .right {

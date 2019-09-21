@@ -8,16 +8,18 @@ import (
 
 type (
 	FindRequest struct {
-		Offset      int      `json:"offset"`
-		Limit       int      `json:"limit"`
-		ChallengeID string   `json:"challenge_id"`
-		CreatedByID string   `json:"created_by_id"`
-		SortBy      []string `json:"sort_by"`
+		Offset       int      `json:"offset"`
+		Limit        int      `json:"limit"`
+		ChallengeIDs []string `json:"challenge_ids"`
+		CreatedByID  string   `json:"created_by_id"`
+		Status       string   `json:"status"`
+		SortBy       []string `json:"sort_by"`
 	}
 
 	SolutionInfo struct {
 		ID              string               `json:"id"`
-		Status          types.SolutionStatus `json:"status" validate:"required"`
+		ChallengeID     string               `json:"challenge_id"`
+		Status          types.SolutionStatus `json:"status"`
 		CreatedAt       *time.Time           `json:"created_at"`
 		CreatedByID     string               `json:"created_by_id,omitempty"`
 		CreatedByName   string               `json:"created_by_name,omitempty"`

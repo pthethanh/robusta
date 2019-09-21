@@ -88,6 +88,7 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 	for _, s := range solutions {
 		info = append(info, SolutionInfo{
 			ID:              s.ID,
+			ChallengeID:     s.ChallengeID,
 			Status:          s.Status,
 			CreatedAt:       s.CreatedAt,
 			CreatedByID:     s.CreatedByID,

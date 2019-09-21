@@ -121,6 +121,7 @@ export default {
             this.output += 'prog.go:' + problems[i].Position.Line + ':' + problems[i].Position.Column + ': ' + problems[i].Text + '\n'
           }
         }
+        this.$emit('run-completed', status === 'PASSED')
       }).catch((error) => {
         var res = error.response
         if (res !== undefined && res !== null) {
@@ -128,6 +129,7 @@ export default {
           return
         }
         this.output += 'Error: ' + error + '\n'
+        this.$emit('run-completed', false)
       }).finally(() => {
         this.loading = false
       })
@@ -137,7 +139,7 @@ export default {
     codemirror () {
       return this.$refs.myCm.codemirror
     },
-    _output() {
+    _output () {
       var max = 100
       var v = this.output
       if (v.length > max) {
