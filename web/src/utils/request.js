@@ -46,10 +46,15 @@ service.interceptors.response.use(
     var res = error.response
     if (res !== undefined && res !== null) {
       var code = res.data.code
-      if (code === 401) {
+      if (code === 401 && store.getters.token) {
         store.dispatch('ToggleLogin', true)
         return Promise.reject(error)
       }
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
       // eslint-disable-next-line
       console.log(res)
       return Promise.reject(error)
