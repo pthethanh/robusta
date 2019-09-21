@@ -20,8 +20,8 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions">
-            <div v-if="_submissions.length==0">No submission found.</div>
-            <el-table :data="submissions" style="width: 100%">
+            <div v-if="submissions.length === 0">No submission found.</div>
+            <el-table v-if="submissions.length > 0" :data="submissions" style="width: 100%">
               <el-table-column prop="created_by_name" label="Name">
               </el-table-column>
               <el-table-column prop="created_at_date" label="Submitted at">
@@ -88,6 +88,9 @@ export default {
   methods: {
     onClick (challenge) {
       this.selected = challenge
+      if (this.activeTab === 'submissions') {
+        handleOpenSubmissionsTab()
+      }
     },
     async fetchData () {
       this.ready = false
@@ -125,10 +128,10 @@ export default {
     },
     handleTabClick (tab, event) {
       if (this.activeTab === 'submissions') {
-        this.handleOpenDetailTab()
+        this.handleOpenSubmissionsTab()
       }
     },
-    handleOpenDetailTab () {
+    handleOpenSubmissionsTab () {
       this.fetchSubmissions()
     }
   }
