@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
+	"github.com/pthethanh/robusta/internal/app/folder"
 	"github.com/pthethanh/robusta/internal/app/policy"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -80,7 +81,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 	if err := validator.Validate(r); err != nil {
 		return nil, err
 	}
-	if err := s.isAllowed(ctx, r.FolderID, ActionRead); err != nil {
+	if err := s.isAllowed(ctx, r.FolderID, folder.ActionRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}
