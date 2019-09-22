@@ -24,6 +24,7 @@ type (
 		FindByID(ctx context.Context, id string) (*Folder, error)
 		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 		Delete(cxt context.Context, id string) error
+		AddChildren(ctx context.Context, id string, children []string) error
 	}
 	Config struct {
 		MaxPageSize int `envconfig:"FOLDER_MAX_PAGE_SIZE" default:"50"`
@@ -124,6 +125,20 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 		return err
 	}
 	return s.repo.Delete(ctx, id)
+}
+
+func (s *Service) AddChildren(ctx context.Context, req AddChildrenRequest) error {
+	if err := validator.Validate(req); err != nil {
+		return err
+	}
+	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
+		return err
+	}
+	if err := s.repo.AddChildren(ctx, req.ID, req.Children); err != nil {
+		return errors.Wrap(err, "failed to add children")
+	}
+	log.WithContext(ctx).Info("added...")
+	return nil
 }
 
 func (s *Service) isAllowed(ctx context.Context, id string, action string) error {

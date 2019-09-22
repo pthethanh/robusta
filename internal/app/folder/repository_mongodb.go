@@ -75,3 +75,12 @@ func (r *MongoDBRepository) Delete(cxt context.Context, id string) error {
 	}
 	return nil
 }
+
+func (r *MongoDBRepository) AddChildren(ctx context.Context, id string, children []string) error {
+	s := r.session.Clone()
+	defer s.Close()
+	if err := s.DB("").C(folderCollectionName).Update(bson.M{"_id": id}, bson.M{"$push": bson.M{"children": bson.M{"$each": children}}}); err != nil {
+		return err
+	}
+	return nil
+}

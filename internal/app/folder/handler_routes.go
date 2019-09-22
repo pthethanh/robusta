@@ -31,5 +31,11 @@ func (h *Handler) Routes() []router.Route {
 			Handler:     h.Delete,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
+		{
+			Path:    "/api/v1/folders/{id:[a-z0-9-\\-]+}",
+			Method:  http.MethodPut,
+			Handler: h.AddChildren,
+			Queries: []string{"action", "add-children"},
+		},
 	}
 }

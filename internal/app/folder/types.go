@@ -42,6 +42,11 @@ type (
 		Type        Type     `json:"type"`
 		SortBy      []string `json:"sort_by"`
 	}
+
+	AddChildrenRequest struct {
+		ID       string   `json:"id" validate:"required"`
+		Children []string `json:"children" validate:"required"`
+	}
 )
 
 const (
