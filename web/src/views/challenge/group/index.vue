@@ -23,8 +23,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions">
-            <div v-if="submissions.length === 0">No success submission found.</div>
-            <el-table v-if="submissions.length > 0" :data="submissions" style="width: 100%">
+            <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
               <el-table-column prop="created_by_name" label="Name">
               </el-table-column>
               <el-table-column prop="created_at_date" label="Date">
@@ -77,7 +76,8 @@ export default {
       folder: null,
       challenges: [],
       submissions: [],
-      activeTab: 'detail'
+      activeTab: 'detail',
+      loadingSolution: true
     }
   },
   mounted () {
@@ -126,6 +126,7 @@ export default {
       })
     },
     async fetchSubmissions () {
+      this.loadingSolution = true
       listSolutionInfo('challenge_ids=' + this.selected.id + '&status=success').then((response) => {
         this.submissions = response.data
         for (var i = 0; i < this.submissions.length; i++) {
@@ -134,6 +135,8 @@ export default {
             this.submissions[i].created_by_name = 'Gopher'
           }
         }
+      }).finally(() => {
+        this.loadingSolution = false
       })
     },
     getQueryStr () {
@@ -175,7 +178,7 @@ export default {
         }
       })
     },
-    handlePlayerRunCompleted(passed) {
+    handlePlayerRunCompleted (passed) {
       this.selected.completed = passed
     }
   }
