@@ -79,14 +79,23 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 	if req.Limit > s.conf.MaxPageSize {
 		req.Limit = s.conf.MaxPageSize
 	}
+	user := auth.FromContext(ctx)
+	isOwner := user.UserID == req.CreatedByID
+	// if not the owner get his/her solutions, need to check permissions
+	if req.IncludeDetail && !isOwner {
+		if err := s.isAllowed(ctx, types.PolicyObjectSolution, types.PolicyActionSolutionReadListDetail); err != nil {
+			log.WithContext(ctx).Errorf("failed to read solution detail, err: %v", err)
+			return nil, err
+		}
+	}
 	solutions, err := s.repo.FindAll(ctx, req)
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to find solutions from database, err: %v", err)
 		return nil, errors.Wrap(err, "failed to find solutions from database")
 	}
-	info := make([]SolutionInfo, 0)
+	infos := make([]SolutionInfo, 0)
 	for _, s := range solutions {
-		info = append(info, SolutionInfo{
+		info := SolutionInfo{
 			ID:              s.ID,
 			ChallengeID:     s.ChallengeID,
 			Status:          s.Status,
@@ -94,9 +103,13 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 			CreatedByID:     s.CreatedByID,
 			CreatedByName:   s.CreatedByName,
 			CreatedByAvatar: s.CreatedByAvatar,
-		})
+		}
+		if req.IncludeDetail {
+			info.Content = s.Content
+		}
+		infos = append(infos, info)
 	}
-	return info, nil
+	return infos, nil
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*types.Solution, error) {

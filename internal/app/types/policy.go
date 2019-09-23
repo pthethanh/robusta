@@ -51,5 +51,7 @@ const (
 
 // Policy of solution
 const (
-	PolicyActionSolutionRead = "solution:read"
+	PolicyObjectSolution               = "solution"
+	PolicyActionSolutionRead           = "solution:read"
+	PolicyActionSolutionReadListDetail = "solution:read-list-detail"
 )

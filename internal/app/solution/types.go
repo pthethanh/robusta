@@ -8,12 +8,13 @@ import (
 
 type (
 	FindRequest struct {
-		Offset       int      `json:"offset"`
-		Limit        int      `json:"limit"`
-		ChallengeIDs []string `json:"challenge_ids"`
-		CreatedByID  string   `json:"created_by_id"`
-		Status       string   `json:"status"`
-		SortBy       []string `json:"sort_by"`
+		Offset        int      `json:"offset"`
+		Limit         int      `json:"limit"`
+		ChallengeIDs  []string `json:"challenge_ids"`
+		CreatedByID   string   `json:"created_by_id"`
+		Status        string   `json:"status"`
+		SortBy        []string `json:"sort_by"`
+		IncludeDetail bool     `json:"include_detail"`
 	}
 
 	SolutionInfo struct {
@@ -24,5 +25,6 @@ type (
 		CreatedByID     string               `json:"created_by_id,omitempty"`
 		CreatedByName   string               `json:"created_by_name,omitempty"`
 		CreatedByAvatar string               `json:"created_by_avatar,omitempty"`
+		Content         string               `json:"content,omitempty"`
 	}
 )

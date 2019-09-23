@@ -161,7 +161,7 @@ export default {
         return
       }
       // TODO update offset & limit.
-      var q = 'status=success&offset=0&limit=100&created_by_id=' + this.user.info.user_id
+      var q = 'status=success&offset=0&limit=100&include_detail=true&created_by_id=' + this.user.info.user_id
       var children = this.folder.children
       for (var i = 0; i < children.length; i++) {
         q += '&challenge_ids=' + children[i]

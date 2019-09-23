@@ -27,12 +27,13 @@ func NewHandler(srv service) *Handler {
 func (h *Handler) FindSolutionInfo(w http.ResponseWriter, r *http.Request) {
 	queries := r.URL.Query()
 	req := FindRequest{
-		Offset:       handlerutil.IntFromQuery("offset", queries, 0),
-		Limit:        handlerutil.IntFromQuery("limit", queries, 15),
-		ChallengeIDs: queries["challenge_ids"],
-		CreatedByID:  queries.Get("created_by_id"),
-		SortBy:       queries["sort_by"],
-		Status:       queries.Get("status"),
+		Offset:        handlerutil.IntFromQuery("offset", queries, 0),
+		Limit:         handlerutil.IntFromQuery("limit", queries, 15),
+		ChallengeIDs:  queries["challenge_ids"],
+		CreatedByID:   queries.Get("created_by_id"),
+		SortBy:        queries["sort_by"],
+		Status:        queries.Get("status"),
+		IncludeDetail: queries.Get("include_detail") == "true",
 	}
 	solutions, err := h.srv.FindSolutionInfo(r.Context(), req)
 	if err != nil {
