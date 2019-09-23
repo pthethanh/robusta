@@ -87,12 +87,14 @@ func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateRes
 			Problems:     problems,
 			IsTestFailed: false,
 			Error:        err.Error(),
+			TestsFailed:  res.TestsFailed,
 		}, err
 	}
 	return &EvaluateResponse{
 		Problems:     problems,
 		IsTestFailed: res.TestsFailed > 0,
 		Error:        res.Errors,
+		TestsFailed:  res.TestsFailed,
 	}, nil
 }
 

@@ -40,5 +40,6 @@ type (
 		Problems     []lint.Problem `json:"problems"`
 		IsTestFailed bool           `json:"is_test_failed"`
 		Error        string         `json:"error"`
+		TestsFailed  int            `json:"tests_failed"`
 	}
 )
