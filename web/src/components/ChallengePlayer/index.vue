@@ -124,7 +124,7 @@ export default {
             this.output += 'prog.go:' + problems[i].Position.Line + ':' + problems[i].Position.Column + ': ' + problems[i].Text + '\n'
           }
         }
-        this.$emit('run-completed', status === 'PASSED')
+        this.$emit('run-completed', status === 'PASSED', this.code)
       }).catch((error) => {
         var res = error.response
         if (res !== undefined && res !== null) {
@@ -132,7 +132,7 @@ export default {
           return
         }
         this.output += 'Error: ' + error + '\n'
-        this.$emit('run-completed', false)
+        this.$emit('run-completed', false, this.code)
       }).finally(() => {
         this.loading = false
       })

@@ -172,14 +172,16 @@ export default {
           for (var j = 0; j < this.challenges.length; j++) {
             if (completed[i].challenge_id === this.challenges[j].id) {
               this.challenges[j].completed = true
+              this.challenges[j].sample = completed[i].content
               continue
             }
           }
         }
       })
     },
-    handlePlayerRunCompleted (passed) {
+    handlePlayerRunCompleted (passed, code) {
       this.selected.completed = passed
+      this.selected.sample = code
     }
   }
 }
