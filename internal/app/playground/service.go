@@ -63,7 +63,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		Test:     []byte(challenge.Test),
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to evaluate solution")
+		return nil, errors.Wrap(err, "compile failed")
 	}
 	status := types.SolutionStatusSuccess
 	if res.IsTestFailed || res.Error != "" {

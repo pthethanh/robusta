@@ -114,6 +114,9 @@ export default {
           status = 'FAILED'
         }
         this.output = 'Status: ' + status + '\n'
+        if (data.tests_failed > 0) {
+          this.output += data.tests_failed + ' tests failed\n'
+        }
         var problems = data.problems
         if (problems.length > 0) {
           this.output += 'Warnings: \n'
