@@ -23,5 +23,11 @@ func (h *Handler) Routes() []router.Route {
 			Queries:     []string{"action", "add-group-policy"},
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
+		{
+			Path:        "/api/v1/policies/actions",
+			Method:      http.MethodGet,
+			Handler:     h.ListActions,
+			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
+		},
 	}
 }

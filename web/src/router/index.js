@@ -101,6 +101,17 @@ export const constantRouterMap = [
       component: () => import('@/views/challenge/group/index')
     }]
   },
+  {
+    path: '/policies',
+    name: 'Policies',
+    component: Layout,
+    hidden: true,
+    redirect: '/policies/home',
+    children: [{
+      path: 'home',
+      component: () => import('@/views/policy/home/index')
+    }]
+  },
   { path: '/home', redirect: '/', hidden: true },
   { path: '*', redirect: '/', hidden: true }
 ]

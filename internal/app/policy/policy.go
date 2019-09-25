@@ -113,3 +113,39 @@ func (s *Service) AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRe
 	}
 	return nil
 }
+
+func (s *Service) ListActions(ctx context.Context) ([]string, error) {
+	user := auth.FromContext(ctx)
+	if user == nil {
+		return nil, types.ErrUnauthorized
+	}
+	if !s.IsAllowed(ctx, user.UserID, Object, ActionPolicyUpdate) {
+		return nil, types.ErrUnauthorized
+	}
+	return []string{
+		types.PolicyActionArticleCreate,
+		types.PolicyActionArticleDelete,
+		types.PolicyActionArticleUpdate,
+		types.PolicyActionArticleRead,
+
+		types.PolicyActionChallengeCreate,
+		types.PolicyActionChallengeDelete,
+		types.PolicyActionChallengeUpdate,
+		types.PolicyActionChallengeRead,
+
+		types.PolicyActionCommentCreate,
+		types.PolicyActionCommentDelete,
+		types.PolicyActionCommentUpdate,
+		types.PolicyActionCommentRead,
+
+		types.PolicyActionFolderCreate,
+		types.PolicyActionFolderDelete,
+		types.PolicyActionFolderUpdate,
+		types.PolicyActionFolderRead,
+
+		types.PolicyActionSolutionRead,
+		types.PolicyActionSolutionReadListDetail,
+
+		types.PolicyActionUserReadList,
+	}, nil
+}

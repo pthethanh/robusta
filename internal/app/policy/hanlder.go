@@ -13,6 +13,7 @@ type (
 	service interface {
 		AssignPolicy(ctx context.Context, req AssignPolicyRequest) error
 		AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRequest) error
+		ListActions(ctx context.Context) ([]string, error)
 	}
 	Handler struct {
 		srv service
@@ -49,4 +50,15 @@ func (h *Handler) AssignGroupPolicy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{})
+}
+
+func (h *Handler) ListActions(w http.ResponseWriter, r *http.Request) {
+	actions, err := h.srv.ListActions(r.Context())
+	if err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.BaseResponse{
+		Data: actions,
+	})
 }

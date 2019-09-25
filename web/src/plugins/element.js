@@ -44,7 +44,9 @@ import {
   Tabs,
   TabPane,
   Table,
-  TableColumn
+  TableColumn,
+  Select,
+  Option
   // Breadcrumb,
   // BreadcrumbItem,
   // DatePicker,
@@ -58,8 +60,6 @@ import {
   // CheckboxButton,
   // CheckboxGroup,
   // Switch,
-  // Select,
-  // Option,
   // OptionGroup,
   // Pagination,
   // Autocomplete,
@@ -122,6 +122,8 @@ Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Select)
+Vue.use(Option)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
 // Vue.use(Calendar)
@@ -143,8 +145,6 @@ Vue.use(TableColumn)
 // Vue.use(CheckboxButton)
 // Vue.use(CheckboxGroup)
 // Vue.use(Switch)
-// Vue.use(Select)
-// Vue.use(Option)
 // Vue.use(OptionGroup)
 // Vue.use(DatePicker)
 // Vue.use(TimeSelect)

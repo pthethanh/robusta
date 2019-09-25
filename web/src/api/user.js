@@ -7,3 +7,10 @@ export function register(data) {
     data
   })
 }
+
+export function listUsers() {
+  return request({
+    url: '/api/v1/users',
+    method: 'GET'
+  })
+}
