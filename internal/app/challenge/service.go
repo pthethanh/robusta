@@ -24,6 +24,7 @@ type (
 		FindByID(ctx context.Context, id string) (*types.Challenge, error)
 		FindAll(ctx context.Context, r FindRequest) ([]*types.Challenge, error)
 		Delete(cxt context.Context, id string) error
+		Update(cxt context.Context, req UpdateRequest) error
 	}
 	Service struct {
 		conf   Config
@@ -131,4 +132,18 @@ func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folder
 		return nil, errors.Wrap(err, "failed to find the challenge")
 	}
 	return c, nil
+}
+
+func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
+	if err := validator.Validate(req); err != nil {
+		return types.ErrBadRequest
+	}
+	if err := s.isAllowed(ctx, req.ID, types.PolicyActionChallengeUpdate); err != nil {
+		log.WithContext(ctx).Errorf("failed to update challenge due to permission issue, err: %v", err)
+		return err
+	}
+	if err := s.repo.Update(ctx, req); err != nil {
+		return errors.Wrap(err, "failed to update challenge")
+	}
+	return nil
 }

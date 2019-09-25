@@ -79,3 +79,19 @@ func (r *MongoDBRepository) Delete(cxt context.Context, id string) error {
 	}
 	return nil
 }
+
+func (r *MongoDBRepository) Update(cxt context.Context, req UpdateRequest) error {
+	s := r.session.Clone()
+	defer s.Close()
+	if err := s.DB("").C(challengeCollectionName).Update(bson.M{"_id": req.ID}, bson.M{
+		"$set": bson.M{
+			"title":       req.Title,
+			"description": req.Description,
+			"sample":      req.Sample,
+			"test":        req.Test,
+		},
+	}); err != nil {
+		return err
+	}
+	return nil
+}

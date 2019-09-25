@@ -25,3 +25,11 @@ export function createChallenge (data) {
     data
   })
 }
+
+export function updateChallenge (id, data) {
+  return request({
+    url: '/api/v1/challenges/' + id,
+    method: 'PUT',
+    data
+  })
+}

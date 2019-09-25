@@ -15,9 +15,7 @@
             <div>
               <div class="description" v-if="selected !== null">
                 <div class="title">{{selected.title}}</div>
-                <div class="content">
-                  {{selected.description}}
-                </div>
+                <view-me :data="selected.description" class="description"></view-me>
               </div>
               <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
             </div>
@@ -50,6 +48,7 @@
 
 <script>
 import ChallengePlayer from '@/components/ChallengePlayer'
+import ViewMe from '@/components/ViewMe'
 import {
   listChallenges
 } from '@/api/challenge'
@@ -64,7 +63,8 @@ import {
 } from 'vuex'
 export default {
   components: {
-    ChallengePlayer
+    ChallengePlayer,
+    ViewMe
   },
   data () {
     return {
@@ -219,7 +219,6 @@ export default {
     padding-left: 20px; // same with right above
 
     .description {
-      padding: 10px 25px 20px 25px;
       font-family: 'Open Sans', sans-serif;
       word-break: normal;
 

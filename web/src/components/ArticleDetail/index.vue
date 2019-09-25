@@ -26,7 +26,7 @@
             {{ tag.label }}
           </el-tag>
         </div>
-        <Comments :targetID="article.id" targetType='article'></Comments>
+        <Comments :targetID="article.id" targetType='article' class="comments"></Comments>
       </el-col>
     </el-row>
   </div>
@@ -138,9 +138,11 @@ export default {
         font-family: 'Courier New', Courier, monospace;
         font-style: normal;
         margin-left: 10px;
+
         &__author {
           font-weight: 700;
         }
+
         span {
           display: block;
         }
@@ -169,6 +171,10 @@ export default {
     .tag {
       margin-left: 5px;
     }
+  }
+
+  .comments {
+    margin-top: 50px;
   }
 }
 </style>

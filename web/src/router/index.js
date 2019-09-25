@@ -97,6 +97,14 @@ export const constantRouterMap = [
       component: () => import('@/views/challenge/home/index')
     },
     {
+      path: 'edit/:id',
+      component: () => import('@/views/challenge/edit/index')
+    },
+    {
+      path: 'new',
+      component: () => import('@/views/challenge/new/index')
+    },
+    {
       path: 'groups/:id',
       component: () => import('@/views/challenge/group/index')
     }]

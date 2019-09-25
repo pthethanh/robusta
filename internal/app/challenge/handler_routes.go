@@ -22,6 +22,12 @@ func (h *Handler) Routes() []router.Route {
 		},
 		{
 			Path:        "/api/v1/challenges/{id:[a-z0-9-\\-]+}",
+			Method:      http.MethodPut,
+			Handler:     h.Update,
+			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
+		},
+		{
+			Path:        "/api/v1/challenges/{id:[a-z0-9-\\-]+}",
 			Method:      http.MethodGet,
 			Handler:     h.Get,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},

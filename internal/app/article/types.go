@@ -2,6 +2,8 @@ package article
 
 import (
 	"time"
+
+	"github.com/pthethanh/robusta/internal/app/types"
 )
 
 type (
@@ -18,26 +20,17 @@ type (
 type (
 	Status      string
 	ContentType string
-	Block       struct {
-		Type string                 `json:"type" bson:"type" validate:"required"`
-		Data map[string]interface{} `json:"data" bson:"data"`
-	}
-	Content struct {
-		Time    int64   `json:"time,omitempty" bson:"time" validate:"required"`
-		Blocks  []Block `json:"blocks,omitempty" bson:"blocks" validate:"required,gte=1"`
-		Version string  `json:"version,omitempty" bson:"version" validate:"required"`
-	}
-	Article struct {
-		ID          string      `json:"id" bson:"_id"`
-		ArticleID   string      `json:"article_id" bson:"article_id"`
-		Title       string      `json:"title" bson:"title" validate:"required"`
-		Content     Content     `json:"content" bson:"content" validate:"required"`
-		ContentType ContentType `json:"content_type" bson:"content_type"`
-		Abstract    string      `json:"abstract" bson:"abstract"`
-		Source      string      `json:"source" bson:"source"`
-		Status      Status      `json:"status" bson:"status"`
-		PublishDate *time.Time  `json:"publish_date" bson:"publish_date"`
-		Tags        []string    `json:"tags" bson:"tags"`
+	Article     struct {
+		ID          string                `json:"id" bson:"_id"`
+		ArticleID   string                `json:"article_id" bson:"article_id"`
+		Title       string                `json:"title" bson:"title" validate:"required"`
+		Content     types.EditorJSContent `json:"content" bson:"content" validate:"required"`
+		ContentType ContentType           `json:"content_type" bson:"content_type"`
+		Abstract    string                `json:"abstract" bson:"abstract"`
+		Source      string                `json:"source" bson:"source"`
+		Status      Status                `json:"status" bson:"status"`
+		PublishDate *time.Time            `json:"publish_date" bson:"publish_date"`
+		Tags        []string              `json:"tags" bson:"tags"`
 
 		Promoted     bool `json:"promoted" bson:"promoted"`
 		PromotedRank int  `json:"promoted_rank" bson:"promoted_rank"`
