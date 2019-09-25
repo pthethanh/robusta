@@ -12,6 +12,7 @@ import (
 type (
 	service interface {
 		Register(ctx context.Context, req *types.RegisterRequest) (*types.User, error)
+		FindAll(ctx context.Context) ([]*types.UserInfo, error)
 	}
 	Handler struct {
 		srv service
@@ -38,5 +39,16 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: user,
+	})
+}
+
+func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
+	users, err := h.srv.FindAll(r.Context())
+	if err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.BaseResponse{
+		Data: users,
 	})
 }

@@ -55,3 +55,9 @@ const (
 	PolicyActionSolutionRead           = "solution:read"
 	PolicyActionSolutionReadListDetail = "solution:read-list-detail"
 )
+
+// Policy of user
+const (
+	PolicyObjectUser         = "user"
+	PolicyActionUserReadList = "solution:read-list"
+)

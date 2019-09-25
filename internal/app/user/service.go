@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/uuid"
@@ -25,15 +26,21 @@ type (
 		FindByEmail(ctx context.Context, email string) (*types.User, error)
 	}
 
+	PolicyService interface {
+		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+	}
+
 	Service struct {
-		repo Repository
+		repo   Repository
+		policy PolicyService
 	}
 )
 
 // New return a new user service
-func New(repo Repository) *Service {
+func New(repo Repository, policy PolicyService) *Service {
 	return &Service{
-		repo: repo,
+		repo:   repo,
+		policy: policy,
 	}
 }
 
@@ -115,9 +122,26 @@ func (s *Service) FindBySample(ctx context.Context, user *types.User) ([]*types.
 	return users, err
 }
 
-func (s *Service) FindAll(ctx context.Context) ([]*types.User, error) {
+func (s *Service) FindAll(ctx context.Context) ([]*types.UserInfo, error) {
+	if err := s.isAllowed(ctx, types.PolicyObjectUser, types.PolicyActionUserReadList); err != nil {
+		return nil, err
+	}
 	users, err := s.repo.FindAll(ctx)
-	return users, err
+	info := make([]*types.UserInfo, 0)
+	for _, usr := range users {
+		info = append(info, &types.UserInfo{
+			ID:          usr.ID,
+			Email:       usr.Email,
+			FirstName:   usr.FirstName,
+			LastName:    usr.LastName,
+			Name:        usr.Name,
+			NickName:    usr.NickName,
+			Description: usr.Description,
+			UserID:      usr.UserID,
+			AvatarURL:   usr.AvatarURL,
+		})
+	}
+	return info, err
 }
 
 func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, error) {
@@ -129,4 +153,8 @@ func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, err
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *Service) isAllowed(ctx context.Context, obj string, act string) error {
+	return policyutil.IsCurrentUserAllowed(ctx, s.policy, obj, act)
 }

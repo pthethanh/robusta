@@ -3,11 +3,15 @@ package policy
 import (
 	"context"
 
+	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db/mongodb"
+	"github.com/pthethanh/robusta/internal/pkg/log"
+	"github.com/pthethanh/robusta/internal/pkg/validator"
 
 	"github.com/casbin/casbin"
 	mongodbadapter "github.com/casbin/mongodb-adapter"
+	"github.com/pkg/errors"
 )
 
 type (
@@ -72,4 +76,40 @@ func (s *Service) IsAllowed(ctx context.Context, sub string, obj string, act str
 // MakeOwner make the sub to be owner of the obj
 func (s *Service) MakeOwner(ctx context.Context, sub string, obj string) error {
 	return s.AddPolicy(ctx, sub, obj, types.PolicyActionAny, types.PolicyEffectAllow)
+}
+
+func (s *Service) AssignPolicy(ctx context.Context, req AssignPolicyRequest) error {
+	if err := validator.Validate(req); err != nil {
+		return err
+	}
+	user := auth.FromContext(ctx)
+	if user == nil {
+		return types.ErrUnauthorized
+	}
+	if !s.IsAllowed(ctx, user.UserID, req.Object, ActionPolicyUpdate) {
+		return types.ErrUnauthorized
+	}
+	if err := s.AddPolicy(ctx, req.Subject, req.Object, req.Action, req.Effect); err != nil {
+		log.WithContext(ctx).Errorf("failed to add policy, err: %v", err)
+		return errors.Wrap(err, "failed to add policy")
+	}
+	return nil
+}
+
+func (s *Service) AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRequest) error {
+	if err := validator.Validate(req); err != nil {
+		return err
+	}
+	user := auth.FromContext(ctx)
+	if user == nil {
+		return types.ErrUnauthorized
+	}
+	if !s.IsAllowed(ctx, user.UserID, req.Group, ActionPolicyUpdate) {
+		return types.ErrUnauthorized
+	}
+	if err := s.AddGroupingPolicy(ctx, req.Subject, req.Group); err != nil {
+		log.WithContext(ctx).Errorf("failed to add group policy, err: %v", err)
+		return errors.Wrap(err, "failed to add group policy")
+	}
+	return nil
 }

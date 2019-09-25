@@ -28,7 +28,13 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	es := event.NewMemoryEventStore(event.LoadConfigFromEnv())
 	closer.Add(es.Close)
 
-	userSrv, userCloser, err := newUserService()
+	policySrv, err := newPolicyService()
+	if err != nil {
+		return nil, closer, err
+	}
+	policyHandler := newPolicyHandler(policySrv)
+
+	userSrv, userCloser, err := newUserService(policySrv)
 	if err != nil {
 		return nil, closer, err
 	}
@@ -41,10 +47,6 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	}
 	go notifier.Start()
 
-	policySrv, err := newPolicyService()
-	if err != nil {
-		return nil, closer, err
-	}
 	reactionHandler, reactionCloser, err := createReactionHandler(es)
 	if err != nil {
 		return nil, closer, err
@@ -126,6 +128,7 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	routes = append(routes, challengeHandler.Routes()...)
 	routes = append(routes, solutionHandler.Routes()...)
 	routes = append(routes, folderHandler.Routes()...)
+	routes = append(routes, policyHandler.Routes()...)
 
 	// setting up router
 	conf := router.LoadConfigFromEnv()

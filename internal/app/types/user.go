@@ -35,6 +35,22 @@ type (
 		FirstName string `json:"first_name,omitempty"`
 		LastName  string `json:"last_name,omitempty"`
 	}
+
+	UserInfo struct {
+		ID          string `json:"id,omitempty"`
+		Email       string `json:"email,omitempty"`
+		FirstName   string `json:"first_name,omitempty"`
+		LastName    string `json:"last_name,omitempty"`
+		Name        string `json:"name,omitempty"`
+		NickName    string `json:"nickname,omitempty"`
+		Description string `json:"description,omitempty"`
+		UserID      string `json:"user_id,omitempty"`
+		AvatarURL   string `json:"avatar_url,omitempty"`
+		Location    string `json:"location,omitempty"`
+
+		CreatedAt *time.Time `json:"created_at,omitempty"`
+		UpdateAt  *time.Time `json:"updated_at,omitempty"`
+	}
 )
 
 const (

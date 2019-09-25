@@ -11,3 +11,7 @@ func newPolicyService() (*policy.Service, error) {
 	enforcer := policy.NewMongoDBCasbinEnforcer(conf)
 	return policy.New(enforcer)
 }
+
+func newPolicyHandler(srv *policy.Service) *policy.Handler {
+	return policy.NewHandler(srv)
+}
