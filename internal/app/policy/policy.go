@@ -93,6 +93,14 @@ func (s *Service) AssignPolicy(ctx context.Context, req AssignPolicyRequest) err
 		log.WithContext(ctx).Errorf("failed to add policy, err: %v", err)
 		return errors.Wrap(err, "failed to add policy")
 	}
+	if req.Effect == types.PolicyEffectDeny {
+		return nil
+	}
+	// cleanup existing old deny effect
+	if _, err := s.enforcer.RemovePolicySafe(req.Subject, req.Object, req.Action, types.PolicyEffectDeny); err != nil {
+		log.WithContext(ctx).Errorf("failed cleanup existing deny policy, err: %v", err)
+		return errors.Wrap(err, "failed cleanup existing deny policy")
+	}
 	return nil
 }
 
