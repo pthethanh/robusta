@@ -161,19 +161,26 @@ export default {
         return
       }
       // TODO update offset & limit.
-      var q = 'status=success&offset=0&limit=100&include_detail=true&created_by_id=' + this.user.info.user_id
+      var q = 'sort_by=-success&sort_by=-created_at&offset=0&limit=100&include_detail=true&created_by_id=' + this.user.info.user_id
       var children = this.folder.children
       for (var i = 0; i < children.length; i++) {
         q += '&challenge_ids=' + children[i]
       }
       listSolutionInfo(q).then((response) => {
         var completed = response.data
-        for (var i = 0; i < completed.length; i++) {
-          for (var j = 0; j < this.challenges.length; j++) {
-            if (completed[i].challenge_id === this.challenges[j].id) {
-              this.challenges[j].completed = true
-              this.challenges[j].sample = completed[i].content
-              continue
+        for (var i = 0; i < this.challenges.length; i++) {
+          var setLastFailure = false
+          for (var j = 0; j < completed.length; j++) {
+            if (this.challenges[i].id === completed[j].challenge_id) {
+              if (completed[j].status === 'success') {
+                this.challenges[i].completed = true
+                this.challenges[i].sample = completed[j].content
+                break
+              } else if (!setLastFailure) { // record last failures
+                setLastFailure = true
+                this.challenges[i].completed = false
+                this.challenges[i].sample = completed[j].content
+              }
             }
           }
         }
