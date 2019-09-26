@@ -136,6 +136,7 @@ func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folder
 
 func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 	if err := validator.Validate(req); err != nil {
+		log.WithContext(ctx).Errorf("bad request, err: %v", err)
 		return types.ErrBadRequest
 	}
 	if err := s.isAllowed(ctx, req.ID, types.PolicyActionChallengeUpdate); err != nil {
@@ -143,6 +144,7 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 		return err
 	}
 	if err := s.repo.Update(ctx, req); err != nil {
+		log.WithContext(ctx).Errorf("failed to update challenge, err: %v", err)
 		return errors.Wrap(err, "failed to update challenge")
 	}
 	return nil

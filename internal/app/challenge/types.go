@@ -18,7 +18,7 @@ type (
 		ID          string                `json:"id" validate:"required"`
 		Title       string                `json:"title" validate:"required"`
 		Description types.EditorJSContent `json:"description" validate:"required"`
-		Tips        string                `json:"tips" validate:"required"`
+		Tips        string                `json:"tips"`
 		Sample      string                `json:"sample" bson:"sample"`
 		Test        string                `json:"test,omitempty" bson:"test"`
 		Level       types.ChallengeLevel  `json:"level" bson:"level"`

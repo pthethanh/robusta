@@ -5,6 +5,8 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/pkg/errors"
+
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/util/timeutil"
@@ -91,7 +93,7 @@ func (r *MongoDBRepository) Update(cxt context.Context, req UpdateRequest) error
 			"test":        req.Test,
 		},
 	}); err != nil {
-		return err
+		return errors.Wrap(err, "failed to update article in db")
 	}
 	return nil
 }

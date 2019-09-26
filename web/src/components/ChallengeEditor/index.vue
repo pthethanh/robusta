@@ -12,11 +12,15 @@
           </el-form-item>
           <editor ref="editor" @save="save" class="editorjs" :initData="challenge.description"></editor>
           <el-form-item prop="sample">
-            <el-input type="textarea" :rows="10" placeholder="Please set sample" v-model="challenge.sample">
+            <el-input type="textarea" :rows="10" placeholder="Code sample" v-model="challenge.sample">
             </el-input>
           </el-form-item>
           <el-form-item prop="test">
-            <el-input type="textarea" :rows="15" placeholder="Please set test" v-model="challenge.test">
+            <el-input type="textarea" :rows="15" placeholder="Unit test" v-model="challenge.test">
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="tips">
+            <el-input type="textarea" :rows="15" placeholder="Tips" v-model="challenge.tips">
             </el-input>
           </el-form-item>
         </el-form>
