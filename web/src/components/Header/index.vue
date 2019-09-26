@@ -85,7 +85,7 @@ export default {
 .navbar {
   height: 48px;
   position: fixed;
-  z-index: 1;
+  z-index: 999;
   width: 100%;
 
   .right-menu-item {
