@@ -12,16 +12,18 @@ type (
 	}
 
 	RunResponse struct {
-		Code   int    `json:"Code"`
-		Errors string `json:"Errors"`
-		Events []struct {
-			Message string `json:"Message"`
-			Kind    string `json:"Kind"`
-			Delay   int64  `json:"Delay"`
-		} `json:"Events"`
-		Status      int  `json:"status"`
-		IsTest      bool `json:"IsTest"`
-		TestsFailed int  `json:"TestsFailed"`
+		Code        int     `json:"Code"`
+		Errors      string  `json:"Errors"`
+		Events      []Event `json:"Events"`
+		Status      int     `json:"status"`
+		IsTest      bool    `json:"IsTest"`
+		TestsFailed int     `json:"TestsFailed"`
+	}
+
+	Event struct {
+		Message string `json:"Message"`
+		Kind    string `json:"Kind"`
+		Delay   int64  `json:"Delay"`
 	}
 
 	Runner interface {
@@ -37,9 +39,16 @@ type (
 	}
 
 	EvaluateResponse struct {
+		Status       int            `json:"status"`
+		Events       []Event        `json:"events"`
 		Problems     []lint.Problem `json:"problems"`
 		IsTestFailed bool           `json:"is_test_failed"`
 		Error        string         `json:"error"`
 		TestsFailed  int            `json:"tests_failed"`
 	}
 )
+
+// IsSuccess report whether the evaluate result is success or failed.
+func (rs EvaluateResponse) IsSuccess() bool {
+	return rs.Status == 0 && rs.Error == "" && rs.TestsFailed == 0
+}

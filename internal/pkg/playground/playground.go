@@ -92,6 +92,8 @@ func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateRes
 	}
 	return &EvaluateResponse{
 		Problems:     problems,
+		Status:       res.Status,
+		Events:       res.Events,
 		IsTestFailed: res.TestsFailed > 0,
 		Error:        res.Errors,
 		TestsFailed:  res.TestsFailed,

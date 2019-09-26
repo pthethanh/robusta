@@ -107,15 +107,19 @@ export default {
         var data = response.data
         if (data.error !== '') {
           this.output += 'Error: ' + data.error + '\n'
+          this.$emit('run-completed', false, this.code)
           return
         }
         var status = 'PASSED'
-        if (data.is_test_failed) {
+        if (data.is_test_failed || data.status !== 0) {
           status = 'FAILED'
         }
         this.output = 'Status: ' + status + '\n'
         if (data.tests_failed > 0) {
           this.output += data.tests_failed + ' tests failed\n'
+        }
+        if (data.status > 1 && data.tests_failed === 0) {
+          this.output += 'Runtime error\n'
         }
         var problems = data.problems
         if (problems.length > 0) {

@@ -66,7 +66,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		return nil, errors.Wrap(err, "compile failed")
 	}
 	status := types.SolutionStatusSuccess
-	if res.IsTestFailed || res.Error != "" {
+	if !res.IsSuccess() {
 		status = types.SolutionStatusFailed
 	}
 	res.Problems = filterImportantProblems(res.Problems)
@@ -75,6 +75,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		log.WithContext(ctx).Errorf("failed to marshal evaluate result, err: %v", err)
 		v = []byte(err.Error())
 	}
+	res.Events = nil // remove events
 	if err := s.solutionSrv.Create(ctx, &types.Solution{
 		Content:        r.Solution,
 		Status:         status,
