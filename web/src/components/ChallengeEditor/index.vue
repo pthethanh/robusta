@@ -144,7 +144,7 @@ export default {
     },
     openReviewEditor () {
       this.$refs.editor.openReview()
-    },
+    }
   }
 }
 </script>

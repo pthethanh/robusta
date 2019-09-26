@@ -1,46 +1,48 @@
 <template>
   <div class="playground">
-    <split-pane :min-percent='5' :default-percent='20' split="vertical">
-      <template slot="paneL">
-        <el-menu default-active="0" v-if="ready" class="left">
-          <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
-            <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
-            <span>{{index + 1 + '. ' + challenge.title}}</span>
-          </el-menu-item>
-        </el-menu>
-      </template>
-      <template slot="paneR" class="right">
-        <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
-          <el-tab-pane label="Detail" name="detail">
-            <div class="description" v-if="selected !== null">
-              <div class="title">{{selected.title}}</div>
-              <view-me :data="selected.description" class="description"></view-me>
-            </div>
-            <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
-          </el-tab-pane>
-          <el-tab-pane label="Submissions" name="submissions">
-            <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
-              <el-table-column prop="created_by_name" label="Name">
-              </el-table-column>
-              <el-table-column prop="created_at_date" label="Date">
-              </el-table-column>
-              <el-table-column prop="status" label="Status">
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="Tips" name="tips">
-            <div v-if="selected.tips !== ''">{{selected.tips}}</div>
-            <div v-if="selected.tips === ''">No tips are provided.</div>
-          </el-tab-pane>
-        </el-tabs>
-        <el-row type="flex" justify="center">
-          <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
-          <div v-if="ready && challenges.length == 0" class="error">
-            There is no challenges in this folder.
-          </div>
-        </el-row>
-      </template>
-    </split-pane>
+    <el-row>
+      <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
+      <div v-if="ready && challenges.length == 0" class="error">
+        There is no challenges in this folder.
+      </div>
+    </el-row>
+    <el-row v-if="ready">
+      <split-pane :min-percent='5' :default-percent='20' split="vertical">
+        <template slot="paneL">
+          <el-menu default-active="0" class="left">
+            <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
+              <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
+              <span>{{index + 1 + '. ' + challenge.title}}</span>
+            </el-menu-item>
+          </el-menu>
+        </template>
+        <template slot="paneR" class="right">
+          <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
+            <el-tab-pane label="Detail" name="detail">
+              <div class="description" v-if="selected !== null">
+                <div class="title">{{selected.title}}</div>
+                <view-me :data="selected.description" class="description"></view-me>
+              </div>
+              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
+            </el-tab-pane>
+            <el-tab-pane label="Submissions" name="submissions">
+              <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
+                <el-table-column prop="created_by_name" label="Name">
+                </el-table-column>
+                <el-table-column prop="created_at_date" label="Date">
+                </el-table-column>
+                <el-table-column prop="status" label="Status">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="Tips" name="tips">
+              <div v-if="selected.tips !== ''">{{selected.tips}}</div>
+              <div v-if="selected.tips === ''">No tips are provided.</div>
+            </el-tab-pane>
+          </el-tabs>
+        </template>
+      </split-pane>
+    </el-row>
   </div>
 </template>
 
@@ -195,6 +197,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-tab-pane {
+  padding-bottom: 200px;
+}
+
 .playground {
   line-height: 1.5em;
   height: 100vh;
