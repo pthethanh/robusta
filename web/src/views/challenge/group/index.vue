@@ -1,24 +1,22 @@
 <template>
   <div class="playground">
-    <el-row type="flex" justify="left" v-if="ready && challenges.length > 0">
-      <el-col :span="5" class="left">
-        <el-menu default-active="0" v-if="ready">
+    <split-pane :min-percent='5' :default-percent='20' split="vertical">
+      <template slot="paneL">
+        <el-menu default-active="0" v-if="ready" class="left">
           <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
             <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
             <span>{{index + 1 + '. ' + challenge.title}}</span>
           </el-menu-item>
         </el-menu>
-      </el-col>
-      <el-col :span="19" class="right">
+      </template>
+      <template slot="paneR" class="right">
         <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
           <el-tab-pane label="Detail" name="detail">
-            <div>
-              <div class="description" v-if="selected !== null">
-                <div class="title">{{selected.title}}</div>
-                <view-me :data="selected.description" class="description"></view-me>
-              </div>
-              <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
+            <div class="description" v-if="selected !== null">
+              <div class="title">{{selected.title}}</div>
+              <view-me :data="selected.description" class="description"></view-me>
             </div>
+            <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions">
             <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
@@ -35,20 +33,21 @@
             <div v-if="selected.tips === ''">No tips are provided.</div>
           </el-tab-pane>
         </el-tabs>
-      </el-col>
-    </el-row>
-    <el-row type="flex" justify="center">
-      <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
-      <div v-if="ready && challenges.length == 0" class="error">
-        There is no challenges in this folder.
-      </div>
-    </el-row>
+        <el-row type="flex" justify="center">
+          <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
+          <div v-if="ready && challenges.length == 0" class="error">
+            There is no challenges in this folder.
+          </div>
+        </el-row>
+      </template>
+    </split-pane>
   </div>
 </template>
 
 <script>
 import ChallengePlayer from '@/components/ChallengePlayer'
 import ViewMe from '@/components/ViewMe'
+import SplitPane from 'vue-splitpane'
 import {
   listChallenges
 } from '@/api/challenge'
@@ -64,7 +63,8 @@ import {
 export default {
   components: {
     ChallengePlayer,
-    ViewMe
+    ViewMe,
+    SplitPane
   },
   data () {
     return {
@@ -197,6 +197,8 @@ export default {
 <style lang="scss" scoped>
 .playground {
   line-height: 1.5em;
+  height: 100vh;
+  width: 100vw;
 
   .loading {
     text-align: center;
@@ -211,7 +213,6 @@ export default {
 
   .left {
     border: 1px solid lightgrey;
-    overflow: scroll;
 
     .challenge-completed {
       color: green;
@@ -220,8 +221,6 @@ export default {
   }
 
   .right {
-    position: fixed;
-    height: 100%;
     right: 20px;
     padding-left: 20px; // same with right above
 

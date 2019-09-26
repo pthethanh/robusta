@@ -12596,6 +12596,11 @@ vue-shortkey@^3.1.7:
     custom-event-polyfill "^1.0.7"
     element-matches "^0.1.2"
 
+vue-splitpane@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/vue-splitpane/-/vue-splitpane-1.0.4.tgz#cdf744a8f31bedcb086e9545a9453565d360bd02"
+  integrity sha512-aSLmwNyqWCtn4q/JlEXa/UB9/zP1SLODfmMJof+qitL91Rz6g13cJKGmNEHJtBp6ivsk6p74fGfXUJUB3Izuig==
+
 vue-style-loader@^4.1.0:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.2.tgz#dedf349806f25ceb4e64f3ad7c0a44fba735fcf8"
