@@ -111,7 +111,7 @@ export default {
           return
         }
         var status = 'PASSED'
-        if (data.is_test_failed || data.status !== 0) {
+        if (data.tests_failed > 0 || data.status !== 0) {
           status = 'FAILED'
         }
         this.output = 'Status: ' + status + '\n'
@@ -119,7 +119,7 @@ export default {
           this.output += data.tests_failed + ' tests failed\n'
         }
         if (data.status > 1 && data.tests_failed === 0) {
-          this.output += 'Runtime error\n'
+          this.output += 'Error: Runtime error\n'
         }
         var problems = data.problems
         if (problems.length > 0) {
