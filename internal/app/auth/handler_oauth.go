@@ -115,6 +115,7 @@ func (h *OAuth2Handler) Callback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// gen token
+	user.Roles = existingUser.Roles
 	token, err := h.jwtSigner.Sign(userToClaims(user, jwt.DefaultLifeTime))
 	if err != nil {
 		log.WithContext(r.Context()).Errorf("failed to generate JWT token, err: %v", err)
