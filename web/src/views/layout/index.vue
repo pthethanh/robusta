@@ -5,7 +5,7 @@
         <Header></Header>
       </el-header>
       <el-container>
-        <Sidebar class="hidden-sm-and-up"></Sidebar>
+        <Sidebar></Sidebar>
         <el-main style="padding: 0px; height:100%">
           <router-view></router-view>
         </el-main>

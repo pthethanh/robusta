@@ -1,12 +1,12 @@
 <template>
   <div class="navbar">
     <el-menu mode="horizontal" :router="true" text-color="#383838" active-text-color="#509CFA" background-color="white" :default-active="activeMenuIndex" @select="onSelect">
-      <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal hidden-sm-and-up" />
+      <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal" />
       <Logo class="logo" @click="onSelect('1', ['1'])"></Logo>
-      <el-menu-item class="hidden-xs-only" index="1" route="/home">Blog</el-menu-item>
-      <el-menu-item class="hidden-xs-only" index="2" route="/challenges">Challenges</el-menu-item>
-      <el-menu-item class="hidden-xs-only" index="3" route="/resources">Resources</el-menu-item>
-      <el-menu-item class="hidden-xs-only" index="4" route="/about">About</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/home">Blog</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="2" route="/challenges">Challenges</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="3" route="/resources">Resources</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="4" route="/about">About</el-menu-item>
       <el-dropdown v-if="user.authenticated" class="right-menu-item el-menu-item el-menu-item--horizontal" trigger="click">
         <avatar size="small" :src="user.info.avatar_url" :names="[user.info.first_name, user.info.email]"></avatar>
         <el-dropdown-menu slot="dropdown">
@@ -18,8 +18,8 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <div v-if="!user.authenticated" index="7" class="el-menu-item right-menu-item" @click="onLogin">Sign in</div>
-      <el-menu-item index="6" route="/articles/new" class="right-menu-item">New Post</el-menu-item>
+      <div v-if="!user.authenticated" index="7" class="el-menu-item right-menu-item menu-item-bold" @click="onLogin">Sign in</div>
+      <el-menu-item index="6" route="/articles/new" class="right-menu-item menu-item-bold">New Post</el-menu-item>
     </el-menu>
   </div>
 </template>

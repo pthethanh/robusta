@@ -2,29 +2,24 @@
   <div class="sidebar">
     <el-menu default-active="1" v-bind:class="{
       'el-menu-vertical-demo': !isCollapse,
-      'el-menu-vertical-demo hidden-sm-and-down': isCollapse
-      }" @select="onSelect" :collapse="isCollapse" :router=true background-color="whitesmoke">
-      <el-menu-item index="1" route="/">
-        <i class="el-icon-s-home"></i>
-        <span slot="title">Blog</span>
-      </el-menu-item>
-      <el-menu-item index="2" route="/challenges">
-        <i class="el-icon-coffee-cup"></i>
-        <span slot="title">Challenges</span>
-      </el-menu-item>
-      <el-menu-item index="3" route="/resources">
-        <i class="el-icon-reading"></i>
-        <span slot="title">Resources</span>
-      </el-menu-item>
-      <el-menu-item index="4" route="/articles/new">
-        <i class="el-icon-circle-plus"></i>
-        <span slot="title">Post</span>
-      </el-menu-item>
-      <el-menu-item index="5" route="/about">
-        <i class="el-icon-info"></i>
-        <span slot="title">About</span>
-      </el-menu-item>
-      <el-menu-item index="6" @click="onLogin()" v-if="!user.authenticated">
+      'el-menu-vertical-demo hidden-lg-and-down': isCollapse
+      }" @select="onSelect" :collapse="isCollapse" :router=true background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+      <div v-for="(route,index) in routes()" :key="route.path">
+        <el-menu-item v-if="visibleChildren(route).length === 0 || visibleChildren(route).length === 1" :index="index + 1 + ''" :route="route.path">
+          <i v-bind:class="route.icon"></i>
+          <span slot="title">{{route.name}}</span>
+        </el-menu-item>
+        <el-submenu :index="index+1 + ''" v-if="visibleChildren(route).length > 1">
+          <template slot="title">
+            <i v-bind:class="route.icon"></i>
+            <span slot="title">{{route.name}}</span>
+          </template>
+          <el-menu-item v-for="(child,childIndex) in visibleChildren(route)" :key="childIndex" :index="index + '-' + childIndex" :route="route.path + '/' + child.path">
+            {{child.name}}
+          </el-menu-item>
+        </el-submenu>
+      </div>
+      <el-menu-item :index="(routes().length + 1) + ''" @click="onLogin()" v-if="!user.authenticated">
         <i class="el-icon-s-custom"></i>
         <span slot="title">Sign in</span>
       </el-menu-item>
@@ -34,7 +29,7 @@
 
 <style lang="scss" scoped>
 .sidebar {
-  z-index: 1;
+  z-index: 9999;
   position: fixed;
   height: 100%;
 
@@ -53,6 +48,9 @@
 import {
   mapGetters
 } from 'vuex'
+import {
+  routes
+} from '@/router'
 export default {
   computed: {
     ...mapGetters([
@@ -69,6 +67,48 @@ export default {
     },
     onLogin () {
       this.$store.dispatch('ToggleLogin', true)
+    },
+    routes () {
+      var visibleRoutes = []
+      for (var i = 0; i < routes.length; i++) {
+        if (routes[i].hidden) {
+          continue
+        }
+        var requiredRoles = routes[i].roles
+        if (requiredRoles === undefined) {
+          visibleRoutes.push(routes[i])
+          continue
+        }
+        // check roles
+        var currentUser = this.user
+        for (var j = 0; j < requiredRoles.length; j++) {
+          var done = false
+          for (var k = 0; k < currentUser.roles.length; k++) {
+            if (requiredRoles[j] === currentUser.roles[k]) {
+              visibleRoutes.push(routes[i])
+              done = true
+              break
+            }
+          }
+          if (done) {
+            break
+          }
+        }
+      }
+      return visibleRoutes
+    },
+    visibleChildren (route) {
+      if (route.children === undefined) {
+        return []
+      }
+      var result = []
+      for (var i = 0; i < route.children.length; i++) {
+        if (route.children[i].hidden) {
+          continue
+        }
+        result.push(route.children[i])
+      }
+      return result
     }
   }
 }
