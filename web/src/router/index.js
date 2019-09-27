@@ -63,6 +63,7 @@ export const routes = [
     {
       path: 'new',
       name: 'New Challenge',
+      roles: ['group-admin'],
       component: () => import('@/views/challenge/new/index')
     },
     {

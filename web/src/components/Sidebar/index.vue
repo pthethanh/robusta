@@ -71,28 +71,8 @@ export default {
     routes () {
       var visibleRoutes = []
       for (var i = 0; i < routes.length; i++) {
-        if (routes[i].hidden) {
-          continue
-        }
-        var requiredRoles = routes[i].roles
-        if (requiredRoles === undefined) {
+        if (this.isVisible(routes[i])) {
           visibleRoutes.push(routes[i])
-          continue
-        }
-        // check roles
-        var currentUser = this.user
-        for (var j = 0; j < requiredRoles.length; j++) {
-          var done = false
-          for (var k = 0; k < currentUser.roles.length; k++) {
-            if (requiredRoles[j] === currentUser.roles[k]) {
-              visibleRoutes.push(routes[i])
-              done = true
-              break
-            }
-          }
-          if (done) {
-            break
-          }
         }
       }
       return visibleRoutes
@@ -103,12 +83,28 @@ export default {
       }
       var result = []
       for (var i = 0; i < route.children.length; i++) {
-        if (route.children[i].hidden) {
-          continue
+        if (this.isVisible(route.children[i])) {
+          result.push(route.children[i])
         }
-        result.push(route.children[i])
       }
       return result
+    },
+    isVisible (route) {
+      if (route.hidden) {
+        return false
+      }
+      var requiredRoles = route.roles
+      if (requiredRoles === undefined) {
+        return true
+      }
+      var currentUser = this.user
+      for (var j = 0; j < requiredRoles.length; j++) {
+        for (var k = 0; k < currentUser.roles.length; k++) {
+          if (requiredRoles[j] === currentUser.roles[k]) {
+            return true
+          }
+        }
+      }
     }
   }
 }
