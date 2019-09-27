@@ -10,3 +10,14 @@ export function listSolutionInfo (query) {
     method: 'get'
   })
 }
+
+export function completionReport (query) {
+  let queryStr = ''
+  if (query !== undefined) {
+    queryStr += query + '&q=completion'
+  }
+  return request({
+    url: '/api/v1/solutions/reports?' + queryStr,
+    method: 'get'
+  })
+}

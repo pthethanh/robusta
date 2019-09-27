@@ -119,6 +119,45 @@ func (s *Service) Get(ctx context.Context, id string) (*types.Solution, error) {
 	return s.repo.FindByID(ctx, id)
 }
 
+// GetCompletionReport return last success/failure solutions
+func (s *Service) GetCompletionReport(ctx context.Context, r CompletionReportRequest) ([]SolutionInfo, error) {
+	if err := validator.Validate(r); err != nil {
+		log.WithContext(ctx).Errorf("invalid input, err: %v", err)
+		return nil, err
+	}
+	offset := 0
+	rs := make([]SolutionInfo, 0)
+	seen := make(map[string]bool)
+	for {
+		solutions, err := s.FindSolutionInfo(ctx, FindRequest{
+			Offset:        offset,
+			Limit:         s.conf.MaxPageSize,
+			ChallengeIDs:  r.ChallengeIDs,
+			CreatedByID:   r.CreatedByID,
+			Status:        r.Status,
+			SortBy:        []string{"challenge_id", "created_by_id", "-status", "-created_at"},
+			IncludeDetail: r.IncludeDetail,
+		})
+		if err != nil {
+			log.WithContext(ctx).Errorf("failed to find solutions, err: %v", err)
+			return nil, err
+		}
+		for _, s := range solutions {
+			k := s.ChallengeID + s.CreatedByID
+			if _, ok := seen[k]; !ok {
+				rs = append(rs, s)
+				seen[k] = true
+			}
+		}
+		if len(solutions) < s.conf.MaxPageSize {
+			// no more...
+			break
+		}
+		offset += len(solutions)
+	}
+	return rs, nil
+}
+
 func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
 	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }

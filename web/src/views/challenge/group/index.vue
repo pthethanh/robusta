@@ -55,7 +55,7 @@ import {
   getFolder
 } from '@/api/folder'
 import {
-  listSolutionInfo
+  completionReport
 } from '@/api/solution'
 import {
   mapGetters
@@ -127,7 +127,7 @@ export default {
     },
     async fetchSubmissions () {
       this.loadingSolution = true
-      listSolutionInfo('challenge_ids=' + this.selected.id + '&status=success').then((response) => {
+      completionReport('status=success&challenge_ids=' + this.selected.id).then((response) => {
         this.submissions = response.data
         for (var i = 0; i < this.submissions.length; i++) {
           this.submissions[i].created_at_date = this.submissions[i].created_at.substring(0, 10)
@@ -160,24 +160,20 @@ export default {
       if (!this.user.authenticated) {
         return
       }
-      // TODO update offset & limit.
-      var q = 'sort_by=-success&sort_by=-created_at&offset=0&limit=100&include_detail=true&created_by_id=' + this.user.info.user_id
+      var q = 'include_detail=true&created_by_id=' + this.user.info.user_id
       var children = this.folder.children
       for (var i = 0; i < children.length; i++) {
         q += '&challenge_ids=' + children[i]
       }
-      listSolutionInfo(q).then((response) => {
+      completionReport(q).then((response) => {
         var completed = response.data
         for (var i = 0; i < this.challenges.length; i++) {
-          var setLastFailure = false
           for (var j = 0; j < completed.length; j++) {
             if (this.challenges[i].id === completed[j].challenge_id) {
               if (completed[j].status === 'success') {
                 this.challenges[i].completed = true
                 this.challenges[i].sample = completed[j].content
-                break
-              } else if (!setLastFailure) { // record last failures
-                setLastFailure = true
+              } else {
                 this.challenges[i].completed = false
                 this.challenges[i].sample = completed[j].content
               }

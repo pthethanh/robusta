@@ -27,4 +27,11 @@ type (
 		CreatedByAvatar string               `json:"created_by_avatar,omitempty"`
 		Content         string               `json:"content,omitempty"`
 	}
+
+	CompletionReportRequest struct {
+		ChallengeIDs  []string `json:"challenge_ids" validate:"required"`
+		CreatedByID   string   `json:"created_by_id"`
+		IncludeDetail bool     `json:"include_detail"`
+		Status        string   `json:"status"`
+	}
 )

@@ -17,5 +17,13 @@ func (h *Handler) Routes() []router.Route {
 			Handler:     h.FindSolutionInfo,
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
+		{
+			Path:        "/api/v1/solutions/reports",
+			Desc:        "completion reports",
+			Method:      http.MethodGet,
+			Queries:     []string{"q", "completion"},
+			Handler:     h.GetCompletionReport,
+			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
+		},
 	}
 }
