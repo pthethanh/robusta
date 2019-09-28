@@ -45,8 +45,7 @@ func (s *Service) Run(ctx context.Context, r *Request) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	v := Response(*res)
-	return &v, nil
+	return res, nil
 }
 
 func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground.EvaluateResponse, error) {

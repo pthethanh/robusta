@@ -62,11 +62,32 @@ func (c *Client) Run(ctx context.Context, r *RunRequest) (*RunResponse, error) {
 		return nil, errors.Wrap(err, "failed to request to playground server")
 	}
 	defer res.Body.Close()
-	var v RunResponse
+	var v struct {
+		Code   int    `json:"Code"`
+		Errors string `json:"Errors"`
+		Events []struct {
+			Message string `json:"Message"`
+			Kind    string `json:"Kind"`
+			Delay   int64  `json:"Delay"`
+		} `json:"Events"`
+		Status      int  `json:"Status"`
+		IsTest      bool `json:"IsTest"`
+		TestsFailed int  `json:"TestsFailed"`
+	}
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
 		return nil, errors.Wrap(err, "failed to decode response")
 	}
-	return &v, err
+	rs := RunResponse{
+		Code:        v.Code,
+		Errors:      v.Errors,
+		Status:      v.Status,
+		IsTest:      v.IsTest,
+		TestsFailed: v.TestsFailed,
+	}
+	for _, ev := range v.Events {
+		rs.Events = append(rs.Events, Event(ev))
+	}
+	return &rs, err
 }
 
 // Evaluate evalute the given solution against Go lint rules and run the test.

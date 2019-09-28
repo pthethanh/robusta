@@ -12,18 +12,18 @@ type (
 	}
 
 	RunResponse struct {
-		Code        int     `json:"Code"`
-		Errors      string  `json:"Errors"`
-		Events      []Event `json:"Events"`
+		Code        int     `json:"code"`
+		Errors      string  `json:"errors"`
+		Events      []Event `json:"events"`
 		Status      int     `json:"status"`
-		IsTest      bool    `json:"IsTest"`
-		TestsFailed int     `json:"TestsFailed"`
+		IsTest      bool    `json:"is_test"`
+		TestsFailed int     `json:"tests_failed"`
 	}
 
 	Event struct {
-		Message string `json:"Message"`
-		Kind    string `json:"Kind"`
-		Delay   int64  `json:"Delay"`
+		Message string `json:"message"`
+		Kind    string `json:"kind"`
+		Delay   int64  `json:"delay"`
 	}
 
 	Runner interface {

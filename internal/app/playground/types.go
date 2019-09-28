@@ -7,14 +7,7 @@ type (
 		Code string `json:"code"`
 	}
 
-	Response struct {
-		Code        int                `json:"code"`
-		Errors      string             `json:"errors"`
-		Events      []playground.Event `json:"events"`
-		Status      int                `json:"status"`
-		IsTest      bool               `json:"is_test"`
-		TestsFailed int                `json:"tests_failed"`
-	}
+	Response = playground.RunResponse
 
 	EvaluateRequest struct {
 		ChallengeID string `json:"challenge_id" validate:"required"`
