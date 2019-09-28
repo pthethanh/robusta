@@ -92,7 +92,7 @@ func (c *Client) Run(ctx context.Context, r *RunRequest) (*RunResponse, error) {
 
 // Evaluate evalute the given solution against Go lint rules and run the test.
 func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateResponse, error) {
-	f, err := MergePackageFiles("main", generatedFileName(), map[string]io.Reader{
+	f, err := mergePackageFiles("main", generatedFileName(), map[string]io.Reader{
 		generatedFileName(): bytes.NewBuffer(r.Solution),
 		generatedFileName(): bytes.NewBuffer(r.Test),
 	})

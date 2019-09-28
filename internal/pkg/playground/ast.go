@@ -18,7 +18,8 @@ import (
 
 // MergePackageFiles merge multiple go files into 1 single file.
 // The readers will be closed if they implement io.Closer.
-func MergePackageFiles(pkgName string, fileName string, files map[string]io.Reader) ([]byte, error) {
+// Remove  the main function out of the result
+func mergePackageFiles(pkgName string, fileName string, files map[string]io.Reader) ([]byte, error) {
 	fset := token.NewFileSet()
 	astFiles := make(map[string]*ast.File)
 	imports := make([]*ast.ImportSpec, 0)
@@ -75,6 +76,15 @@ func MergePackageFiles(pkgName string, fileName string, files map[string]io.Read
 			name = imp.Name.Name
 		}
 		_ = astutil.AddNamedImport(pkgFset, pkgFile, name, path)
+	}
+
+	// remove main function as it will cause playground thinks it's not unit test
+	for i, decl := range pkgFile.Decls {
+		if gen, ok := decl.(*ast.FuncDecl); ok && gen.Name.Name == "main" {
+			copy(pkgFile.Decls[i:], pkgFile.Decls[i+1:])
+			pkgFile.Decls = pkgFile.Decls[:len(pkgFile.Decls)-1]
+			break
+		}
 	}
 
 	pkgBuf := bytes.Buffer{}
