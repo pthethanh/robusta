@@ -6,8 +6,6 @@ import (
 	"crypto/tls"
 	"io"
 	"net/http"
-	"path"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -16,6 +14,7 @@ import (
 	"github.com/pthethanh/robusta/internal/pkg/linkresolver"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/upload"
+	"github.com/pthethanh/robusta/internal/pkg/uuid"
 )
 
 type (
@@ -90,13 +89,13 @@ func (s *Service) UploadImageByURL(ctx context.Context, url string) (string, err
 	}
 	defer res.Body.Close()
 	r := io.LimitReader(res.Body, s.conf.MaxUploadSize)
-	name := strings.Split(path.Base(url), ".")[0] // just file name
+	name := uuid.New()
 	return s.uploadImages(ctx, name, r)
 }
 
 func (s *Service) UploadImageByFile(ctx context.Context, name string, r io.Reader) (string, error) {
-	nameOnly := strings.Split(name, ".")[0]
-	return s.uploadImages(ctx, nameOnly, r)
+	newName := uuid.New()
+	return s.uploadImages(ctx, newName, r)
 }
 
 func (s *Service) uploadImages(ctx context.Context, name string, r io.Reader) (string, error) {
