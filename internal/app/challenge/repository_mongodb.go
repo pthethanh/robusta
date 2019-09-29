@@ -2,6 +2,7 @@ package challenge
 
 import (
 	"context"
+	"time"
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -91,6 +92,7 @@ func (r *MongoDBRepository) Update(cxt context.Context, req UpdateRequest) error
 			"description": req.Description,
 			"sample":      req.Sample,
 			"test":        req.Test,
+			"updated_at":  time.Now(),
 		},
 	}); err != nil {
 		return errors.Wrap(err, "failed to update article in db")
