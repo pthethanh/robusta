@@ -42,11 +42,12 @@ const (
 
 // Policy of folder
 const (
-	PolicyObjectFolder       = "folder"
-	PolicyActionFolderCreate = "folder:create"
-	PolicyActionFolderDelete = "folder:delete"
-	PolicyActionFolderUpdate = "folder:update"
-	PolicyActionFolderRead   = "folder:read"
+	PolicyObjectFolder         = "folder"
+	PolicyActionFolderCreate   = "folder:create"
+	PolicyActionFolderDelete   = "folder:delete"
+	PolicyActionFolderUpdate   = "folder:update"
+	PolicyActionFolderRead     = "folder:read"
+	PolicyActionFolderReadList = "folder:read-list"
 )
 
 // Policy of solution

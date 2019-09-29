@@ -67,6 +67,12 @@ export const routes = [
       component: () => import('@/views/challenge/new/index')
     },
     {
+      path: 'admin',
+      name: 'Manage Challenges',
+      roles: ['group-admin'],
+      component: () => import('@/views/challenge/admin/index')
+    },
+    {
       path: 'edit/:id',
       hidden: true,
       component: () => import('@/views/challenge/edit/index')

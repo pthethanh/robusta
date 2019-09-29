@@ -58,6 +58,10 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 		log.WithContext(ctx).Errorf("invalid input, err: %v", err)
 		return types.ErrBadRequest
 	}
+	if err := s.isAllowed(ctx, types.PolicyObjectChallenge, types.PolicyActionChallengeCreate); err != nil {
+		log.WithContext(ctx).Errorf("failed to create challenge due to permission issue, err: %v", err)
+		return err
+	}
 	user := auth.FromContext(ctx)
 	if user != nil {
 		c.CreatedByID = user.UserID
@@ -97,10 +101,18 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 	if r.Limit > s.conf.MaxPageSize {
 		r.Limit = s.conf.MaxPageSize
 	}
-	if err := s.isAllowed(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
+	// if query across folders, user must have read-list permission.
+	// otherwise he/she must have read permission on the given folder.
+	if r.FolderID == "" {
+		if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderReadList); err != nil {
+			log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
+			return nil, err
+		}
+	} else if err := s.isAllowed(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}
+
 	challenges, err := s.repo.FindAll(ctx, r)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to find challenges")

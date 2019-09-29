@@ -33,3 +33,10 @@ export function updateChallenge (id, data) {
     data
   })
 }
+
+export function deleteChallenge (id) {
+  return request({
+    url: '/api/v1/challenges/' + id,
+    method: 'delete'
+  })
+}
