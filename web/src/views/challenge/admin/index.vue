@@ -10,6 +10,8 @@
           </el-table-column>
           <el-table-column label="Created At" prop="created_at" min-width="200">
           </el-table-column>
+          <el-table-column label="Updated At" prop="updated_at" min-width="200">
+          </el-table-column>
           <el-table-column align="right" min-width="200">
             <template slot="header">
               <el-input v-model="search" size="mini" placeholder="Type to search" />
