@@ -17,14 +17,14 @@
       </template>
       <template slot="paneR" class="right">
         <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
-          <el-tab-pane label="Detail" name="detail">
+          <el-tab-pane label="Detail" name="detail" style="height: 100vh; overflow: scroll;">
             <div class="description" v-if="selected !== null">
               <div class="title">{{selected.title}}</div>
               <view-me :data="selected.description" class="description"></view-me>
             </div>
             <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
           </el-tab-pane>
-          <el-tab-pane label="Submissions" name="submissions">
+          <el-tab-pane label="Submissions" name="submissions" style="height: 100vh; overflow: scroll;">
             <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
               <el-table-column prop="created_by_name" label="Name">
               </el-table-column>
@@ -34,7 +34,7 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="Tips" name="tips">
+          <el-tab-pane label="Tips" name="tips" style="height: 100vh; overflow: scroll;">
             <div v-if="selected.tips !== ''">{{selected.tips}}</div>
             <div v-if="selected.tips === ''">No tips are provided.</div>
           </el-tab-pane>
@@ -199,6 +199,7 @@ export default {
   line-height: 1.5em;
   height: 100vh;
   width: 100vw;
+  position: fixed;
 
   .loading {
     text-align: center;
@@ -213,6 +214,9 @@ export default {
 
   .left {
     border: 1px solid lightgrey;
+    height: 100vh;
+    overflow-y: scroll;
+    padding-bottom: 50px;
 
     .challenge-completed {
       color: green;
