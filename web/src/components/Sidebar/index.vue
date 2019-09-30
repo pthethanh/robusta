@@ -2,7 +2,7 @@
   <div class="sidebar">
     <el-menu default-active="1" v-bind:class="{
       'el-menu-vertical-demo': !isCollapse,
-      'el-menu-vertical-demo hidden-lg-and-down': isCollapse
+      'el-menu-vertical-demo hidden-all': isCollapse
       }" @select="onSelect" :collapse="isCollapse" :router=true background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
       <div v-for="(route,index) in routes()" :key="route.path">
         <el-menu-item v-if="visibleChildren(route).length === 0 || visibleChildren(route).length === 1" :index="index + 1 + ''" :route="route.path">
@@ -28,6 +28,9 @@
 </template>
 
 <style lang="scss" scoped>
+.hidden-all {
+  display: none;
+}
 .sidebar {
   z-index: 9999;
   position: fixed;
