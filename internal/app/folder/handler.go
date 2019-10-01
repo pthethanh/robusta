@@ -20,6 +20,7 @@ type (
 		Delete(ctx context.Context, id string) error
 		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 		AddChildren(ctx context.Context, req AddChildrenRequest) error
+		Update(ctx context.Context, req UpdateRequest) error
 	}
 	Handler struct {
 		srv service
@@ -116,6 +117,29 @@ func (h *Handler) AddChildren(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 	if err := h.srv.AddChildren(r.Context(), req); err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.BaseResponse{
+		Data: types.IDResponse{
+			ID: id,
+		},
+	})
+}
+
+func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	if id == "" {
+		respond.Error(w, errors.New("invalid id"), http.StatusBadRequest)
+		return
+	}
+	var req UpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respond.Error(w, types.ErrBadRequest, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+	if err := h.srv.Update(r.Context(), req); err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}

@@ -25,6 +25,7 @@ type (
 		FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 		Delete(cxt context.Context, id string) error
 		AddChildren(ctx context.Context, id string, children []string) error
+		Update(ctx context.Context, id string, folder Folder) error
 	}
 	Config struct {
 		MaxPageSize int `envconfig:"FOLDER_MAX_PAGE_SIZE" default:"50"`
@@ -137,7 +138,24 @@ func (s *Service) AddChildren(ctx context.Context, req AddChildrenRequest) error
 	if err := s.repo.AddChildren(ctx, req.ID, req.Children); err != nil {
 		return errors.Wrap(err, "failed to add children")
 	}
-	log.WithContext(ctx).Info("added...")
+	return nil
+}
+
+func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
+	if err := validator.Validate(req); err != nil {
+		return err
+	}
+	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
+		return err
+	}
+	if err := s.repo.Update(ctx, req.ID, Folder{
+		Name:        req.Name,
+		Description: req.Description,
+		Type:        req.Type,
+		Children:    req.Children,
+	}); err != nil {
+		return errors.Wrap(err, "failed to update folder")
+	}
 	return nil
 }
 

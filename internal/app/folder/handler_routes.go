@@ -34,6 +34,11 @@ func (h *Handler) Routes() []router.Route {
 		{
 			Path:    "/api/v1/folders/{id:[a-z0-9-\\-]+}",
 			Method:  http.MethodPut,
+			Handler: h.Update,
+		},
+		{
+			Path:    "/api/v1/folders/{id:[a-z0-9-\\-]+}",
+			Method:  http.MethodPut,
 			Handler: h.AddChildren,
 			Queries: []string{"action", "add-children"},
 		},

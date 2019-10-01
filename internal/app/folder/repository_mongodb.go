@@ -84,3 +84,14 @@ func (r *MongoDBRepository) AddChildren(ctx context.Context, id string, children
 	}
 	return nil
 }
+
+func (r *MongoDBRepository) Update(ctx context.Context, id string, folder Folder) error {
+	s := r.session.Clone()
+	defer s.Close()
+	return s.DB("").C(folderCollectionName).Update(bson.M{"_id": id}, bson.M{"$set": bson.M{
+		"name":        folder.Name,
+		"description": folder.Description,
+		"type":        folder.Type,
+		"children":    folder.Children,
+	}})
+}

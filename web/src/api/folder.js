@@ -25,3 +25,19 @@ export function createFolder (data) {
     data
   })
 }
+
+export function addFolderChildren (id, data) {
+  return request({
+    url: '/api/v1/folders/' + id + '?action=add-children',
+    method: 'PUT',
+    data
+  })
+}
+
+export function updateFolder (id, data) {
+  return request({
+    url: '/api/v1/folders/' + id,
+    method: 'PUT',
+    data
+  })
+}

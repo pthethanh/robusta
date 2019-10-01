@@ -47,6 +47,14 @@ type (
 		ID       string   `json:"id" validate:"required"`
 		Children []string `json:"children" validate:"required"`
 	}
+
+	UpdateRequest struct {
+		ID          string
+		Name        string   `json:"name" validate:"min=3"`
+		Description string   `json:"description" validate:"min=5,max=256"`
+		Type        Type     `json:"type" validate:"required"`
+		Children    []string `json:"children"`
+	}
 )
 
 const (
