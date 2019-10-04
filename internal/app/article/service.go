@@ -79,6 +79,9 @@ func LoadConfigFromEnv() Config {
 func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*Article, error) {
 	recorder := timeutil.NewRecorder("find all articles")
 	defer log.WithContext(ctx).Info(recorder)
+	if err := validator.Validate(req); err != nil {
+		return nil, errors.Wrap(err, "invalid find request")
+	}
 	if req.Limit > s.conf.MaxPageSize {
 		req.Limit = s.conf.MaxPageSize
 	}

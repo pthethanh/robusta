@@ -8,8 +8,8 @@ import (
 
 type (
 	FindRequest struct {
-		Offset      int      `json:"offset"`
-		Limit       int      `json:"limit"`
+		Offset      int      `json:"offset" validate:"gte=0"`
+		Limit       int      `json:"limit" validate:"gt=0"`
 		Status      Status   `json:"-"` // don't allow set by users
 		Tags        []string `json:"tags"`
 		CreatedByID string   `json:"created_by_id"`

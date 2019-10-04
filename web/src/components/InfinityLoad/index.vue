@@ -1,17 +1,17 @@
 <template>
   <div style="overflow:auto">
-    <ul v-infinite-scroll="croll" infinite-scroll-disabled="disabled">
-      <div v-for="(item, index) in list" :key="index">
+    <div v-infinite-scroll="scroll" infinite-scroll-disabled="disabled">
+      <div v-for="(item, index) in data" :key="index">
         <slot v-bind:item="item">
           <div>No data</div>
         </slot>
       </div>
-    </ul>
+    </div>
     <slot name="loading" v-if="loading">
-      <p class="loading">Loading...</p>
+      <p class="loading">{{ loadingText }}</p>
     </slot>
     <slot name="nomore" v-if="noMore">
-      <p class="nomore">¯\_(ツ)_/¯</p>
+      <p class="nomore">{{ noMoreText }}</p>
     </slot>
   </div>
 </template>
@@ -19,18 +19,27 @@
 <script>
 export default {
   props: {
-    'fetch-data': {
+    fetchData: {
       type: Function
     },
-    'data': {
-      type: Array
+    noMoreText: {
+      type: String,
+      default: function () {
+        return '¯\\_(ツ)_/¯'
+      }
+    },
+    loadingText: {
+      type: String,
+      default: function () {
+        return 'Loading...'
+      }
     }
   },
   data () {
     return {
       loading: false,
       noMoreData: false,
-      list: []
+      data: []
     }
   },
   computed: {
@@ -42,7 +51,7 @@ export default {
     }
   },
   methods: {
-    croll () {
+    scroll () {
       this.loading = true
       this.fetchData().then(response => {
         this.loading = false
@@ -50,7 +59,10 @@ export default {
           this.noMoreData = true
           return
         }
-        this.list = this.list.concat(response.data)
+        this.data = this.data.concat(response.data)
+        this.$emit('update:data', this.data)
+      }).catch((err) => {
+        this.$emit('error', err)
       }).finally(() => {
         this.loading = false
       })
