@@ -22,7 +22,7 @@
               <div class="title">{{selected.title}}</div>
               <view-me :data="selected.description" class="description"></view-me>
             </div>
-            <challenge-player v-if="selected !== null" :code="selected.sample" :challenge_id="selected.id" :folder_id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
+            <challenge-player v-if="selected !== null" :code="selected.sample" :challenge-id="selected.id" :folder-id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
           </el-tab-pane>
           <el-tab-pane label="Submissions" name="submissions" style="height: 100vh; overflow: scroll;">
             <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">

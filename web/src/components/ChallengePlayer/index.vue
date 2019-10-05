@@ -33,11 +33,11 @@ export default {
       type: String,
       required: true
     },
-    challenge_id: {
+    challengeId: {
       type: String,
       required: true
     },
-    folder_id: {
+    folderId: {
       type: String,
       required: true
     }
@@ -99,8 +99,8 @@ export default {
       this.output = ''
       evaluate(
         JSON.stringify({
-          challenge_id: this.challenge_id,
-          folder_id: this.folder_id,
+          challenge_id: this.challengeId,
+          folder_id: this.folderId,
           solution: this.code
         })
       ).then(response => {
@@ -153,6 +153,11 @@ export default {
         v = this.output.substring(0, max) + '...'
       }
       return v
+    }
+  },
+  watch: {
+    challengeId: function (o, n) {
+      this.output = ''
     }
   }
 }

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
 import store from '../store'
 import { getToken } from '@/utils/auth'
 
@@ -31,13 +30,8 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code !== 200 && res.code !== 201) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
       // eslint-disable-next-line
-      return Promise.reject('error')
+      return Promise.reject(res.message)
     } else {
       return response.data
     }
@@ -54,11 +48,6 @@ service.interceptors.response.use(
       console.log(res)
       return Promise.reject(res.data.message)
     }
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
     return Promise.reject(error)
   }
 )
