@@ -129,8 +129,13 @@ export default {
       })
     }
   },
-  computed: {},
-  mounted() {}
+  watch: {
+    code: function(o, n) {
+      this.output = ''
+      this.exit = false
+      this.showOutput = false
+    }
+  },
 }
 </script>
 
