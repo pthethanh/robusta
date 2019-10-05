@@ -26,7 +26,7 @@
             {{ tag.label }}
           </el-tag>
         </div>
-        <Comments :targetID="article.id" targetType='article' class="comments"></Comments>
+        <comments :targetID="article.id" targetType='article' class="comments"></comments>
       </el-col>
     </el-row>
   </div>

@@ -5,14 +5,14 @@
     </div>
     <el-row type="flex" justify="center" class="infinite-list-wrapper">
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-infinite-scroll="fetchData" infinite-scroll-disabled="disabled">
-        <Article v-for="(article,index) in articles" :key="index" :article="article" @selected="openDetail" @tagSelected="tagSelected"></Article>
+        <article-item v-for="(article,index) in articles" :key="index" :article="article" @selected="openDetail" @tagSelected="tagSelected"></article-item>
         <div v-if="loading" class="loading">Loading...</div>
         <div v-if="!loading&&noMore" class="loading">¯\_(ツ)_/¯</div>
       </el-col>
     </el-row>
     <el-row>
       <el-dialog :visible.sync="isOpenDetail" :center=true :modal=true :append-to-body=true :fullscreen=true @close="detailClosed">
-        <ArticleDetail :article="selectedArticle" @deleted="isOpenDetail=false"></ArticleDetail>
+        <article-detail :article="selectedArticle" @deleted="isOpenDetail=false"></article-detail>
       </el-dialog>
     </el-row>
   </div>
@@ -22,14 +22,14 @@
 import {
   fetchList
 } from '@/api/article'
-import Article from '@/components/Article'
+import ArticleItem from '@/components/ArticleItem'
 import ArticleDetail from '@/components/ArticleDetail'
 import {
   getTags
 } from '@/utils/tag'
 export default {
   components: {
-    Article,
+    ArticleItem,
     ArticleDetail
   },
   title: 'Goway - Learn to Go',

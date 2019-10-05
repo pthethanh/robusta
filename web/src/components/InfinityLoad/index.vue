@@ -2,7 +2,7 @@
   <div style="overflow:auto">
     <div v-infinite-scroll="scroll" infinite-scroll-disabled="disabled" infinite-scroll-delay="delay">
       <slot v-bind:data="data">
-        <div v-if="data.length === 0" class="nodata">No data found.</div>
+        <div v-if="noData" class="nodata">No data found.</div>
       </slot>
     </div>
     <slot name="loading" v-if="loading">
@@ -58,6 +58,9 @@ export default {
     },
     disabled () {
       return this.loading || this.noMore
+    },
+    noData () {
+      return this.noMore && this.data.length === 0
     }
   },
   methods: {

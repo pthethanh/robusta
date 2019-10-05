@@ -1,6 +1,6 @@
 <template>
   <div class="article">
-    <ArticleDetail :article="article" v-if="ready"></ArticleDetail>
+    <article-detail :article="article" v-if="ready"></article-detail>
   </div>
 </template>
 

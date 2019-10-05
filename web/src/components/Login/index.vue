@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-card class="card">
-      <Logo size="large"></Logo>
+      <logo size="large"></logo>
       <div class="info">
         Sign in to get personalized story recommendations, follow authors and topics you love.
       </div>

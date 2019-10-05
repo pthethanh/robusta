@@ -2,7 +2,7 @@
   <div class="navbar">
     <el-menu mode="horizontal" :router="true" text-color="#383838" active-text-color="#509CFA" background-color="white" :default-active="activeMenuIndex" @select="onSelect">
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal" />
-      <Logo class="logo" @click="onSelect('1', ['1'])"></Logo>
+      <logo class="logo" @click="onSelect('1', ['1'])"></logo>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/home">Blog</el-menu-item>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="2" route="/challenges">Challenges</el-menu-item>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="3" route="/resources">Resources</el-menu-item>

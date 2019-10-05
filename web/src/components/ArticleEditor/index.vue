@@ -10,7 +10,7 @@
           <el-form-item prop="title">
             <el-input class="input-title" placeholder="title" v-model="article.title"></el-input>
           </el-form-item>
-          <Tags ref="tags" :initData="article.tags"></Tags>
+          <tags ref="tags" :initData="article.tags"></tags>
           <editor ref="editor" @save="save" class="editorjs" :initData="article.content"></editor>
         </el-form>
       </el-col>
