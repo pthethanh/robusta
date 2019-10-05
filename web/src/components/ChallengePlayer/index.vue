@@ -99,8 +99,8 @@ export default {
       this.output = ''
       evaluate(
         JSON.stringify({
-          challenge_id: this.challengeID,
-          folder_id: this.folderID,
+          challenge_id: this.challengeId,
+          folder_id: this.folderId,
           solution: this.code
         })
       ).then(response => {
@@ -156,7 +156,7 @@ export default {
     }
   },
   watch: {
-    challengeID: function (o, n) {
+    challengeId: function (o, n) {
       this.output = ''
     }
   }
