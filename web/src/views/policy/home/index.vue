@@ -12,8 +12,12 @@
           </el-form-item>
           <el-form-item prop="object">
             <el-select v-model="policy.object" placeholder="Select folder" filterable no-data-text="No data" no-match-text="No matching option">
-              <el-option v-for="item in folders" :key="item.value" :label="item.name" :value="item.id">
-              </el-option>
+              <infinity-load :fetch-data="fetchFolders" v-bind:data.sync="data" @error="folderOffset -= folderLimit" no-more-text="" :delay="0" :limit="folderLimit">
+                <template v-slot:default="{data}">
+                  <el-option v-for="item in data" :key="item.value" :label="item.name" :value="item.id">
+                  </el-option>
+                </template>
+              </infinity-load>
             </el-select>
           </el-form-item>
           <el-form-item prop="action">
@@ -48,7 +52,11 @@ import {
 import {
   listFolders
 } from '@/api/folder'
+import InfinityLoad from '@/components/InfinityLoad'
 export default {
+  components: {
+    InfinityLoad
+  },
   data () {
     return {
       users: [],
@@ -84,7 +92,9 @@ export default {
           message: 'Effect is required',
           trigger: 'change'
         }]
-      }
+      },
+      folderOffset: -15,
+      folderLimit: 15
     }
   },
   mounted () {
@@ -97,9 +107,6 @@ export default {
           this.folderActions.push(response.data[i])
         }
       }
-    })
-    listFolders('offset=0&limit=100').then((response) => {
-      this.folders = response.data
     })
   },
   methods: {
@@ -125,6 +132,10 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    fetchFolders () {
+      this.folderOffset += this.folderLimit
+      return listFolders('offset=' + this.folderOffset + '&limit=' + this.folderLimit)
     }
   }
 }

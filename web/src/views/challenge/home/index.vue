@@ -1,13 +1,15 @@
 <template>
   <div class="folders">
     <el-row type="flex" justify="center">
-      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-infinite-scroll="fetchData" infinite-scroll-disabled="disabled">
-        <el-card v-for="folder in folders" :key="folder.id" class="folder" @click="goToFolder(folder)">
-          <div class="name" @click="goToFolder(folder)">{{folder.name}} </div>
-          <div class="description" @click="goToFolder(folder)">{{folder.description}}</div>
-        </el-card>
-        <div v-if="loading" class="loading">Loading...</div>
-        <div v-if="!loading&&noMore" class="loading">¯\_(ツ)_/¯</div>
+      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14">
+        <infinity-load :fetch-data="fetchData" @error="offset -= limit" :limit="limit">
+          <template v-slot:default="{data}">
+            <el-card v-for="folder in data" :key="folder.id" class="folder" @click="goToFolder(folder)">
+              <div class="name" @click="goToFolder(folder)">{{folder.name}} </div>
+              <div class="description" @click="goToFolder(folder)">{{folder.description}}</div>
+            </el-card>
+          </template>
+        </infinity-load>
       </el-col>
     </el-row>
   </div>
@@ -17,45 +19,23 @@
 import {
   listFolders
 } from '@/api/folder'
+import InfinityLoad from '@/components/InfinityLoad'
 export default {
+  components: {
+    InfinityLoad
+  },
   data () {
     return {
-      loading: false,
-      noMoreData: false,
-      offset: 0,
-      limit: 50,
-      folders: []
-    }
-  },
-  mounted () {
-    this.fetchData()
-  },
-  computed: {
-    disabled () {
-      return this.loading || this.noMore
-    },
-    noMore () {
-      return this.noMoreData === true
+      offset: -15,
+      limit: 15
     }
   },
   methods: {
-    async fetchData () {
-      this.loading = true
-      listFolders(this.getQueryStr()).then((response) => {
-        if (response.data === null || response.data.length === 0) {
-          this.noMoreData = true
-          return
-        }
-        this.folders = this.folders.concat(response.data)
-        this.offset += response.data.length
-        if (response.data.length < this.limit) {
-          this.noMoreData = true
-        }
-      }).finally(() => {
-        this.loading = false
-      })
+    fetchData () {
+      return listFolders(this.getQueryStr())
     },
     getQueryStr () {
+      this.offset += this.limit
       let query = 'offset=' + this.offset + '&limit=' + this.limit + '&type=challenge'
       return query
     },
