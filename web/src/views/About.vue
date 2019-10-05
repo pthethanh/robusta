@@ -22,7 +22,7 @@
   height: 100vh;
 
   .content {
-    background-color: white;
+    background-color: $backgroundColorInfo;
     padding: 20px 20px;
     font-family: 'Open Sans', sans-serif;
     font-size: 0.95em;

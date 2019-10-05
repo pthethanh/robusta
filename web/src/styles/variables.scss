@@ -1,8 +1,8 @@
 $backgroundColorPrimary: #DAE0E6;
 $backgroundColorSecondary: whitesmoke;
+$backgroundColorInfo: white;
 
 $btnFontWeight: 600;
-$secondaryBackgroundColor: #6A97FF;
 
 $headerTextColor: #383838;
 $headerActiveTextColor: #509CFA;
@@ -17,6 +17,7 @@ $sideBarBackgroundColor: white;
 :export {
   backgroundColorPrimary: $backgroundColorPrimary;
   backgroundColorSecondary: $backgroundColorSecondary;
+  backgroundColorInfo: $backgroundColorInfo;
 
   btnFontWeight: $btnFontWeight;
 
