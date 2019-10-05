@@ -28,6 +28,6 @@ export default {
 .login {
   height: 100%;
   vertical-align: middle;
-  background-color: $secondaryBackgroundColor;
+  background-color: $backgroundColorPrimary;
 }
 </style>

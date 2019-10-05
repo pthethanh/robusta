@@ -39,7 +39,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       output: '',
       playing: null,
@@ -49,7 +49,7 @@ export default {
     }
   },
   methods: {
-    updateOutput(data) {
+    updateOutput (data) {
       this.showOutput = true
       this.exit = false
       var self = this
@@ -90,7 +90,7 @@ export default {
         }
       }
     },
-    run() {
+    run () {
       this.showOutput = true
       this.loading = true
       if (this.playing != null) {
@@ -110,11 +110,11 @@ export default {
         self.loading = false
       })
     },
-    onCodeChange(newCode) {
+    onCodeChange (newCode) {
       this.code = newCode
       this.$emit('code-change', this.code)
     },
-    copyFullCode() {
+    copyFullCode () {
       let self = this
       this.$copyText(this.code).then(function (e) {
         self.$message({
@@ -130,12 +130,12 @@ export default {
     }
   },
   watch: {
-    code: function(o, n) {
+    code: function (o, n) {
       this.output = ''
       this.exit = false
       this.showOutput = false
     }
-  },
+  }
 }
 </script>
 

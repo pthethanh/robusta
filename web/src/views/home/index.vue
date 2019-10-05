@@ -11,7 +11,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-dialog :visible.sync="isOpenDetail" :center=true :modal=true :append-to-body=true :fullscreen=true @close="detailClosed">
+      <el-dialog :visible.sync="isOpenDetail" :center="true" :modal="true" :append-to-body="true" :fullscreen="true" @close="detailClosed">
         <article-detail :article="selectedArticle" @deleted="isOpenDetail=false"></article-detail>
       </el-dialog>
     </el-row>

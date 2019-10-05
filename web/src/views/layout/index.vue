@@ -5,14 +5,14 @@
         <Header></Header>
       </el-header>
       <el-container>
-        <Sidebar></Sidebar>
+        <sidebar></sidebar>
         <el-main style="padding: 0px; height:100%">
           <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
-    <el-dialog :visible.sync="auth.open" modal top="0vh" :width="dialogWidth">
-      <Login></Login>
+    <el-dialog :visible.sync="auth.open" modal top="0vh" :width="dialogWidth" :show-close="false">
+      <login></login>
     </el-dialog>
   </div>
 </template>
