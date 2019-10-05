@@ -70,7 +70,7 @@ export default {
         this.offset += response.data.length
       })
     },
-    getQueryStr() {
+    getQueryStr () {
       let query = 'offset=' + this.offset + '&limit=' + this.limit
       for (var i = 0; i < this.tags.length; i++) {
         query += '&tags=' + this.tags[i].label
@@ -126,10 +126,11 @@ export default {
 @import '@/styles/variables.scss';
 
 .home {
-  background-color: $mainBackgroundColor;
+  background-color: $backgroundColorPrimary;
 
   .filter {
     text-align: center;
+
     .tag {
       margin-left: 5px;
     }
@@ -137,7 +138,7 @@ export default {
 }
 
 .loading {
-  background-color: $mainBackgroundColor;
+  background-color: $backgroundColorPrimary;
   text-align: center;
   font-weight: 600;
 }

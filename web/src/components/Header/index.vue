@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <el-menu mode="horizontal" :router="true" text-color="#383838" active-text-color="#509CFA" background-color="white" :default-active="activeMenuIndex" @select="onSelect">
+    <el-menu mode="horizontal" :router="true" :text-color="variables.headerTextColor" :active-text-color="variables.headerActiveTextColor" :background-color="variables.headerBackgroundColor" :default-active="activeMenuIndex" @select="onSelect">
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container el-menu-item el-menu-item--horizontal" />
       <logo class="logo" @click="onSelect('1', ['1'])"></logo>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/home">Blog</el-menu-item>
@@ -31,6 +31,7 @@ import {
 import Hamburger from '@/components/Hamburger'
 import Avatar from '@/components/Avatar'
 import Logo from '@/components/Logo'
+import variables from '@/styles/variables.scss'
 export default {
   components: {
     Hamburger,
@@ -51,7 +52,7 @@ export default {
     activeMenuIndex () {
       return this.activeIndex
     },
-    firstLetterName() {
+    firstLetterName () {
       var s = ''
       if (this.user.info.first_name !== undefined) {
         s = this.user.info.first_name
@@ -62,6 +63,9 @@ export default {
         return '^_^'
       }
       return s.substr(0, 1)
+    },
+    variables () {
+      return variables
     }
   },
   methods: {
@@ -82,6 +86,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .navbar {
   height: 48px;
   position: fixed;
@@ -90,8 +96,9 @@ export default {
 
   .right-menu-item {
     float: right;
-    color: #3F3B3B;
+    color: $headerTextColor;
   }
+
   .logo {
     float: left;
     height: 48px;
@@ -99,6 +106,7 @@ export default {
     margin: 0;
     border-bottom: 2px solid transparent;
     padding: 0 20px;
+
     &:hover {
       cursor: pointer;
     }

@@ -1,10 +1,30 @@
-$mainBackgroundColor: #DAE0E6;
+$backgroundColorPrimary: #DAE0E6;
+$backgroundColorSecondary: whitesmoke;
+
 $btnFontWeight: 600;
 $secondaryBackgroundColor: #6A97FF;
+
+$headerTextColor: #383838;
+$headerActiveTextColor: #509CFA;
+$headerBackgroundColor: white;
+
+$sideBarTextColor: #383838;
+$sideBarActiveTextColor: #509CFA;
+$sideBarBackgroundColor: white;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {
-  mainBackgroundColor: $mainBackgroundColor;
+  backgroundColorPrimary: $backgroundColorPrimary;
+  backgroundColorSecondary: $backgroundColorSecondary;
+
   btnFontWeight: $btnFontWeight;
+
+  headerTextColor: $headerTextColor;
+  headerActiveTextColor: $headerActiveTextColor;
+  headerBackgroundColor: $headerBackgroundColor;
+
+  sideBarTextColor: $sideBarTextColor;
+  sideBarActiveTextColor: $sideBarActiveTextColor;
+  sideBarBackgroundColor: $sideBarBackgroundColor;
 }

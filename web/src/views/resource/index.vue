@@ -235,10 +235,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .resources {
   font-family: 'Open Sans', sans-serif;
   font-size: 0.95em;
   padding: 20px 20px;
+  background-color: $backgroundColorSecondary;
 
   .sectiton {
     &:after {
@@ -254,6 +257,7 @@ export default {
   .block {
     display: block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+    background-color: white;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <el-row type="flex" justify="center">
-      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14">
+      <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" class="content">
         <h2>About</h2>
         <p>Hi there,</p>
         <p><b style="color:red">Go</b><b style="color:black">way</b> is a website that I've used for practicing programming languages and hence it is supposed to be changed every day ^_^</p>
@@ -14,7 +14,18 @@
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .about {
   padding: 20px 20px;
+  background-color: $backgroundColorSecondary;
+  height: 100vh;
+
+  .content {
+    background-color: white;
+    padding: 20px 20px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95em;
+  }
 }
 </style>

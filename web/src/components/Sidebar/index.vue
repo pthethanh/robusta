@@ -3,7 +3,7 @@
     <el-menu default-active="1" v-bind:class="{
       'el-menu-vertical-demo': !isCollapse,
       'el-menu-vertical-demo hidden-all': isCollapse
-      }" @select="onSelect" :collapse="isCollapse" :router=true background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+      }" @select="onSelect" :collapse="isCollapse" :router=true :background-color="variables.sideBarBackgroundColor" :text-color="variables.sideBarTextColor" :active-text-color="variables.sideBarActiveTextColor">
       <div v-for="(route,index) in routes()" :key="route.path">
         <el-menu-item v-if="visibleChildren(route).length === 0 || visibleChildren(route).length === 1" :index="index + 1 + ''" :route="route.path">
           <i v-bind:class="route.icon"></i>
@@ -27,26 +27,6 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-.hidden-all {
-  display: none;
-}
-.sidebar {
-  z-index: 9999;
-  position: fixed;
-  height: 100%;
-
-  .el-menu-vertical-demo {
-    height: 100%;
-
-    &:not(.el-menu--collapse) {
-      width: 200px;
-      height: 100%;
-    }
-  }
-}
-</style>
-
 <script>
 import {
   mapGetters
@@ -54,6 +34,7 @@ import {
 import {
   routes
 } from '@/router'
+import variables from '@/styles/variables.scss'
 export default {
   computed: {
     ...mapGetters([
@@ -62,6 +43,9 @@ export default {
     ]),
     isCollapse () {
       return !this.sidebar.opened
+    },
+    variables () {
+      return variables
     }
   },
   methods: {
@@ -112,3 +96,24 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.hidden-all {
+  display: none;
+}
+
+.sidebar {
+  z-index: 9999;
+  position: fixed;
+  height: 100%;
+
+  .el-menu-vertical-demo {
+    height: 100%;
+
+    &:not(.el-menu--collapse) {
+      width: 200px;
+      height: 100%;
+    }
+  }
+}
+</style>

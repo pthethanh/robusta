@@ -47,8 +47,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
 .folders {
-  height: 100%;
+  height: 100vh;
+  background-color: $backgroundColorPrimary;
 
   .folder {
     margin: 5px 0px;
