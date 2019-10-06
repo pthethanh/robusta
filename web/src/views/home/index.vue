@@ -127,6 +127,7 @@ export default {
 
 .home {
   background-color: $backgroundColorPrimary;
+  min-height: 100vh;
 
   .filter {
     text-align: center;
