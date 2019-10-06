@@ -34,4 +34,18 @@ type (
 		IncludeDetail bool     `json:"include_detail"`
 		Status        string   `json:"status"`
 	}
+
+	solutionInfoByCreatedAt []SolutionInfo
 )
+
+func (l solutionInfoByCreatedAt) Len() int {
+	return len(l)
+}
+
+func (l solutionInfoByCreatedAt) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}
+
+func (l solutionInfoByCreatedAt) Less(i, j int) bool {
+	return l[i].CreatedAt.Before(*l[j].CreatedAt)
+}

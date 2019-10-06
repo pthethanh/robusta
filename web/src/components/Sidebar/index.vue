@@ -1,9 +1,9 @@
 <template>
-  <div class="sidebar">
-    <el-menu default-active="1" v-bind:class="{
-      'el-menu-vertical-demo': !isCollapse,
-      'el-menu-vertical-demo hidden-all': isCollapse
-      }" @select="onSelect" :collapse="isCollapse" :router=true :background-color="variables.sideBarBackgroundColor" :text-color="variables.sideBarTextColor" :active-text-color="variables.sideBarActiveTextColor">
+  <el-drawer :visible.sync="sidebar.opened" direction="ltr" :size="width" :show-close="false" class="sidebar">
+    <template v-slot:title>
+      <hamburger :raw="true" :toggle-click="toggleSideBar" :is-active="true" class="close-btn"></hamburger>
+    </template>
+    <el-menu default-active="1" @select="onSelect" :router=true :background-color="variables.sideBarBackgroundColor" :text-color="variables.sideBarTextColor" :active-text-color="variables.sideBarActiveTextColor">
       <div v-for="(route,index) in routes()" :key="route.path">
         <el-menu-item v-if="visibleChildren(route).length === 0 || visibleChildren(route).length === 1" :index="index + 1 + ''" :route="route.path">
           <i v-bind:class="route.icon"></i>
@@ -24,7 +24,7 @@
         <span slot="title">Sign in</span>
       </el-menu-item>
     </el-menu>
-  </div>
+  </el-drawer>
 </template>
 
 <script>
@@ -35,17 +35,25 @@ import {
   routes
 } from '@/router'
 import variables from '@/styles/variables.scss'
+import Hamburger from '@/components/Hamburger'
 export default {
+  components: {
+    Hamburger
+  },
   computed: {
     ...mapGetters([
       'sidebar',
-      'user'
+      'user',
+      'device'
     ]),
-    isCollapse () {
-      return !this.sidebar.opened
-    },
     variables () {
       return variables
+    },
+    width () {
+      if (this.device === 'mobile') {
+        return '100%'
+      }
+      return '20%'
     }
   },
   methods: {
@@ -92,28 +100,40 @@ export default {
           }
         }
       }
+    },
+    toggleSideBar () {
+      this.$store.dispatch('ToggleSideBar')
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.hidden-all {
-  display: none;
+<style lang="scss">
+@import '@/styles/variables.scss';
+
+.sidebar .el-drawer__open .el-drawer.ltr {
+  background-color: $sideBarBackgroundColor;
 }
+</style>
+
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
 
 .sidebar {
   z-index: 9999;
   position: fixed;
   height: 100%;
 
-  .el-menu-vertical-demo {
-    height: 100%;
-
-    &:not(.el-menu--collapse) {
-      width: 200px;
-      height: 100%;
+  .el-drawer {
+    .el-menu {
+      height: 100vh;
     }
+  }
+
+  .close-btn {
+    margin-top: 6px;
+    left: 20px;
+    position: absolute;
   }
 }
 </style>

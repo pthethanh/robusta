@@ -39,7 +39,7 @@
     "code-example": "file:./src/components/Editor/plugins/code-example",
     "core-js": "^2.6.5",
     "date-fns": "^2.0.0-beta.3",
-    "element-ui": "^2.10.0",
+    "element-ui": "^2.12.0",
     "highlight.js": "^9.15.8",
     "js-cookie": "2.2.0",
     "nprogress": "^0.2.0",

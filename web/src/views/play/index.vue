@@ -39,7 +39,7 @@ export default {
     filterData() {
       var rs = []
       for (var i = 0; i < this.data.length; i++) {
-        if (this.tags.length == 0) {
+        if (this.tags.length === 0) {
           rs.push(this.data[i])
           continue
         }
@@ -60,11 +60,11 @@ export default {
     },
     logData () {
       console.log(this.data)
-      if (this.tags.length == 0) {
+      if (this.tags.length === 0) {
         this.tags.push('interview preparation')
         return
       }
-      this.tags =[]
+      this.tags = []
     }
   }
 }

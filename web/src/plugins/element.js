@@ -46,7 +46,8 @@ import {
   Table,
   TableColumn,
   Select,
-  Option
+  Option,
+  Drawer
   // Breadcrumb,
   // BreadcrumbItem,
   // DatePicker,
@@ -124,6 +125,7 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Drawer)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
 // Vue.use(Calendar)

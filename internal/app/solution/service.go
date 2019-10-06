@@ -2,6 +2,7 @@ package solution
 
 import (
 	"context"
+	"sort"
 
 	"github.com/pkg/errors"
 
@@ -155,6 +156,7 @@ func (s *Service) GetCompletionReport(ctx context.Context, r CompletionReportReq
 		}
 		offset += len(solutions)
 	}
+	sort.Sort(solutionInfoByCreatedAt(rs))
 	return rs, nil
 }
 
