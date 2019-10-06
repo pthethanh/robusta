@@ -84,3 +84,7 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   -webkit-animation: loading-rotate 2s linear infinite;
   animation: loading-rotate 2s linear infinite;
 }
+
+.el-card {
+  background-color: $cardBackgroundColorInfo;
+}

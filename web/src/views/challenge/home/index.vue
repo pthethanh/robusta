@@ -60,12 +60,14 @@ export default {
       font-size: 1.1em;
       font-weight: 700;
       padding-bottom: 10px;
+      color: $fontColorHeading;
     }
 
     .description {
       max-height: 250px;
       overflow-y: hidden;
       margin-bottom: 5px;
+      color: $fontColorContent;
     }
   }
 

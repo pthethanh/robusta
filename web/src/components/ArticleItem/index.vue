@@ -106,6 +106,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/styles/variables.scss';
+
 .article {
   margin: 5px 0px;
 
@@ -114,25 +116,27 @@ export default {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.8em;
     font-weight: lighter;
-    color: grey;
+    color: $fontColorInfo;
   }
 
   .title {
     font-size: 1.1em;
     font-weight: 700;
     padding-bottom: 10px;
+    color: $fontColorHeading;
   }
 
   .content {
     max-height: 250px;
     overflow-y: hidden;
     margin-bottom: 5px;
+    color: $fontColorContent;
   }
 
   .footer {
     padding-inline-start: 0px;
     display: inline-block;
-    color: grey;
+    color: $fontColorInfo;
     margin-bottom: 0px;
     width: 100%;
 
@@ -148,7 +152,7 @@ export default {
       }
 
       &:hover {
-        color: red;
+        color: $fontColorInfoHover;
       }
     }
 
