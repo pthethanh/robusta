@@ -47,7 +47,7 @@ export default {
       return 48
     },
     width () {
-      if (this.size === 'small' || this.size == undefined) {
+      if (this.size === 'small' || this.size === undefined) {
         return 72
       }
       if (this.size === 'mini') {

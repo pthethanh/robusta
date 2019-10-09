@@ -2,6 +2,7 @@ package api
 
 import (
 	"os"
+	"sync"
 
 	"github.com/pthethanh/robusta/internal/pkg/db/mongodb"
 	"github.com/pthethanh/robusta/internal/pkg/util/closeutil"
@@ -25,13 +26,22 @@ func staticPrefix() string {
 	return "/static/"
 }
 
+var (
+	session     *mgo.Session
+	sessionOnce sync.Once
+)
+
 func dialDefaultMongoDB() (*mgo.Session, *closeutil.Closer, error) {
 	closer := closeutil.NewCloser()
 	repoConf := mongodb.LoadConfigFromEnv()
-	s, err := mongodb.Dial(repoConf)
+	var err error
+	sessionOnce.Do(func() {
+		session, err = mongodb.Dial(repoConf)
+	})
 	if err != nil {
 		return nil, closer, err
 	}
+	s := session.Clone()
 	closer.AddFunc(s.Close)
 	return s, closer, nil
 }

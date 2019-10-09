@@ -51,27 +51,25 @@ export default {
       error: '',
       rules: {
         username: [{
-            required: true,
-            message: 'Email is required',
-            trigger: 'blur'
-          },
-          {
-            min: 4,
-            message: 'Email length should be at least 4 characters',
-            trigger: 'blur'
-          }
-        ],
+          required: true,
+          message: 'Email is required',
+          trigger: 'blur'
+        },
+        {
+          min: 4,
+          message: 'Email length should be at least 4 characters',
+          trigger: 'blur'
+        }],
         password: [{
-            required: true,
-            message: 'Password is required',
-            trigger: 'blur'
-          },
-          {
-            min: 3,
-            message: 'Password length should be at least 3 characters',
-            trigger: 'blur'
-          }
-        ]
+          required: true,
+          message: 'Password is required',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          message: 'Password length should be at least 3 characters',
+          trigger: 'blur'
+        }]
       }
     }
   },
