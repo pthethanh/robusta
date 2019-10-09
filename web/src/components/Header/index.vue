@@ -72,8 +72,7 @@ export default {
     toggleSideBar () {
       this.$store.dispatch('ToggleSideBar')
     },
-    onLogin(e) {
-      console.log(e)
+    onLogin() {
       this.$store.dispatch('ToggleLogin', true)
     },
     onLogout () {
