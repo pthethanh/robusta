@@ -53,6 +53,7 @@ export default {
 .hamburger {
   display: inline-block;
   cursor: pointer;
+  vertical-align: middle;
   width: 20px;
   height: 20px;
 }

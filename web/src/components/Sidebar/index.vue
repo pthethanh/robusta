@@ -1,7 +1,10 @@
 <template>
   <el-drawer :visible.sync="sidebar.opened" direction="ltr" :size="width" :show-close="false" class="sidebar">
     <template v-slot:title>
-      <hamburger :raw="true" :toggle-click="toggleSideBar" :is-active="true" class="close-btn"></hamburger>
+      <div class="title">
+        <hamburger :raw="true" :toggle-click="toggleSideBar" :is-active="true" class="title-item"></hamburger>
+        <logo :raw="true" class="title-item"></logo>
+      </div>
     </template>
     <el-menu default-active="1" @select="onSelect" :router=true :background-color="variables.sideBarBackgroundColor" :text-color="variables.sideBarTextColor" :active-text-color="variables.sideBarActiveTextColor">
       <div v-for="(route,index) in routes()" :key="route.path">
@@ -36,9 +39,12 @@ import {
 } from '@/router'
 import variables from '@/styles/variables.scss'
 import Hamburger from '@/components/Hamburger'
+import Logo from '@/components/Logo'
+
 export default {
   components: {
-    Hamburger
+    Hamburger,
+    Logo
   },
   computed: {
     ...mapGetters([
@@ -130,10 +136,15 @@ export default {
     }
   }
 
-  .close-btn {
-    margin-top: 6px;
+  .title {
+    margin-top: 20px;
     left: 20px;
-    position: absolute;
+    font-size: 1.2em;
+
+    .title-item {
+      margin-right: 20px;
+      vertical-align: middle;
+    }
   }
 }
 </style>

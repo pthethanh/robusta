@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-card class="card">
-      <logo size="large" color2="#666666"></logo>
+      <logo size="large" :contrast="true"></logo>
       <div class="info">
         Sign in to get personalized story recommendations, follow authors and topics you love.
       </div>
@@ -35,6 +35,7 @@ import {
   login
 } from '@/api/login'
 import Logo from '@/components/Logo'
+
 export default {
   name: 'login',
   components: {
@@ -49,8 +50,7 @@ export default {
       loading: false,
       error: '',
       rules: {
-        username: [
-          {
+        username: [{
             required: true,
             message: 'Email is required',
             trigger: 'blur'
@@ -61,8 +61,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        password: [
-          {
+        password: [{
             required: true,
             message: 'Password is required',
             trigger: 'blur'
@@ -113,13 +112,13 @@ export default {
       this.oauthLogin('google')
       this.loading = false
     },
-    oauthLogin(provider) {
+    oauthLogin (provider) {
       let target = process.env.NODE_ENV === 'production' ? '/auth/' + provider : 'http://mylocalhost.com/auth/' + provider
       target = target + '?redirect=' + this.getRedirect()
       window.location.href = target
       this.$store.dispatch('ToggleLogin', false)
     },
-    getRedirect() {
+    getRedirect () {
       var redirect = this.$router.currentRoute.query.redirect
       if (redirect === undefined) {
         redirect = this.$router.currentRoute.path
@@ -129,7 +128,7 @@ export default {
       }
       return redirect
     },
-    goTo(p) {
+    goTo (p) {
       this.$store.dispatch('ToggleLogin', false)
       this.$router.push(p)
     }
@@ -150,6 +149,7 @@ export default {
 
   .card {
     border: 1px solid lightgrey;
+
     .info {
       max-width: 290px;
       word-break: keep-all;

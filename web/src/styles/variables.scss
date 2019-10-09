@@ -19,6 +19,10 @@ $fontColorContent: #242729;
 $fontColorInfo: #666666;
 $fontColorInfoHover: #CE662F;
 
+$logoColor1: #51AEE7;
+$logoColor2: white;
+$logoColor3: #666666;
+
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {
@@ -42,4 +46,8 @@ $fontColorInfoHover: #CE662F;
   fontColorContent: $fontColorContent;
   fontColorInfo: $fontColorInfo;
   fontColorInfoHover: $fontColorInfoHover;
+
+  logoColor1: $logoColor1;
+  logoColor2: $logoColor2;
+  logoColor3: $logoColor3;
 }
