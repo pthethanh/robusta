@@ -19,7 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <div v-if="!user.authenticated" index="7" class="el-menu-item right-menu-item menu-item-bold" @click="onLogin">Sign in</div>
-      <el-menu-item index="6" route="/articles/new" class="right-menu-item menu-item-bold">New Post</el-menu-item>
+      <el-menu-item index="6" route="/articles/new" class="right-menu-item menu-item-bold" style="color: #F2CD02;">New Post</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -72,7 +72,8 @@ export default {
     toggleSideBar () {
       this.$store.dispatch('ToggleSideBar')
     },
-    onLogin () {
+    onLogin(e) {
+      console.log(e)
       this.$store.dispatch('ToggleLogin', true)
     },
     onLogout () {

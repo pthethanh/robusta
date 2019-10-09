@@ -1,23 +1,23 @@
-$backgroundColorPrimary: #DAE0E6;
-$backgroundColorSecondary: whitesmoke;
+$backgroundColorPrimary: #EBEEF7;
+$backgroundColorSecondary: #EBEEF7;
 $backgroundColorInfo: white;
 
 $btnFontWeight: 600;
 
-$headerTextColor: #383838;
-$headerActiveTextColor: #509CFA;
-$headerBackgroundColor: white;
+$headerTextColor: white;
+$headerActiveTextColor: #51AEE7;
+$headerBackgroundColor: #666666;
 
-$sideBarTextColor: #383838;
-$sideBarActiveTextColor: #509CFA;
-$sideBarBackgroundColor: white;
+$sideBarTextColor: white;
+$sideBarActiveTextColor: #51AEE7;
+$sideBarBackgroundColor: #666666;
 
 $cardBackgroundColorInfo: white;
 
 $fontColorHeading: #242729;
 $fontColorContent: #242729;
-$fontColorInfo: grey;
-$fontColorInfoHover: #C6491A;
+$fontColorInfo: #666666;
+$fontColorInfoHover: #CE662F;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass

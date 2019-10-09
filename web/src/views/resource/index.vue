@@ -2,7 +2,7 @@
   <div class="resources">
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14">
-        <h2 class="sectiton">Articles</h2>
+        <h2 class="section-title">Articles</h2>
         <div v-for="(article, index) in articles" :key="index">
           <h3>{{article.level}}</h3>
           <ul class="block">
@@ -21,7 +21,7 @@
             </li>
           </ul>
         </div>
-        <h2 class="sectiton">Books</h2>
+        <h2 class="section-title">Books</h2>
         <ul class="block">
           <li v-for="(book,index) in books" :key="index">
             <el-link :href="book.link" target="_blank" type="primary">{{book.name}}</el-link>
@@ -243,21 +243,11 @@ export default {
   padding: 20px 20px;
   background-color: $backgroundColorSecondary;
 
-  .sectiton {
-    &:after {
-      content: "\a0";
-      display: block;
-      padding: 2px 0;
-      line-height: 1px;
-      width: 40px;
-      border-top: 2px solid #6085FA;
-    }
-  }
-
   .block {
     display: block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
     background-color: $backgroundColorInfo;
+    border-radius: 5px;
   }
 }
 </style>

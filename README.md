@@ -105,7 +105,7 @@ For more detail, see [size-limit on github](https://github.com/ai/size-limit)
 
 ## Tech requirements:
 
-To be upddated...
+Color: https://www.colourlovers.com/palette/173625/Browser_wars
 
 ## TODO
 Need update
