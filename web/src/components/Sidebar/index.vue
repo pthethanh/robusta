@@ -120,6 +120,10 @@ export default {
 .sidebar .el-drawer__open .el-drawer.ltr {
   background-color: $sideBarBackgroundColor;
 }
+
+.sidebar .el-drawer__header {
+  height: 48px;
+}
 </style>
 
 <style lang="scss" scoped>
