@@ -1,7 +1,7 @@
 <template>
   <el-row type="flex" justify="center">
     <el-col :span="14">
-      <dnd-list :list1="list1" :list2="list2" list1-title="Selected" list2-title="Available">
+      <dnd-list :list1.sync="list1" :list2.sync="list2" list1-title="Selected" list2-title="Available" :search="search">
         <template v-slot:list1="{data}">
           <div class="list-complete-item-handle">
             {{ data.title }}
@@ -20,8 +20,8 @@
 <script>
 import DndList from '@/components/DndList'
 import {
-  fetchList
-} from '@/api/article'
+  listChallenges
+} from '@/api/challenge'
 export default {
   name: 'DndListDemo',
   components: {
@@ -30,7 +30,8 @@ export default {
   data () {
     return {
       list1: [],
-      list2: []
+      list2: [],
+      loading: false
     }
   },
   created () {
@@ -39,9 +40,22 @@ export default {
   methods: {
     getData () {
       this.listLoading = true
-      fetchList('').then(response => {
+      listChallenges('').then(response => {
         this.list2 = response.data.splice(0, 5)
         this.list1 = response.data
+      })
+    },
+    isNotInList1 (v) {
+      return this.list1.every(k => v.id !== k.id)
+    },
+    search (keyword) {
+      this.list2 = []
+      listChallenges('title=' + keyword).then(response => {
+        for (var i = 0; i < response.data.length; i++) {
+          if (this.isNotInList1(response.data[i])) {
+            this.list2.push(response.data[i])
+          }
+        }
       })
     }
   }

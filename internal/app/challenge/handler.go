@@ -43,6 +43,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		SortBy:      queries["sort_by"],
 		IDs:         queries["ids"],
 		FolderID:    queries.Get("folder_id"),
+		Title:       queries.Get("title"),
 	}
 	challenges, err := h.srv.FindAll(r.Context(), req)
 	if err != nil {

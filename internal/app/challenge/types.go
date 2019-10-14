@@ -12,6 +12,7 @@ type (
 		IDs         []string `json:"ids"`
 		SortBy      []string `json:"sort_by"`
 		FolderID    string   `json:"folder_id"`
+		Title       string   `json:"title"`
 	}
 
 	UpdateRequest struct {

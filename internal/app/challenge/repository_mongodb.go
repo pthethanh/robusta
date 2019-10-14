@@ -65,6 +65,9 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 			"$in": req.IDs,
 		}
 	}
+	if req.Title != "" {
+		m["title"] = &bson.RegEx{Pattern: req.Title, Options: "i"}
+	}
 	challenges := make([]*types.Challenge, 0)
 	s := r.session.Clone()
 	defer s.Close()
