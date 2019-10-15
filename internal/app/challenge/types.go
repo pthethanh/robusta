@@ -13,6 +13,7 @@ type (
 		SortBy      []string `json:"sort_by"`
 		FolderID    string   `json:"folder_id"`
 		Title       string   `json:"title"`
+		Selects     []string `json:"selects"`
 	}
 
 	UpdateRequest struct {

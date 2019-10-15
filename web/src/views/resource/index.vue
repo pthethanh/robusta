@@ -44,6 +44,10 @@ export default {
           image: 'https://images-na.ssl-images-amazon.com/images/I/516R4ZoMqBL._SX402_BO1,204,203,200_.jpg',
         },
         {
+          name: 'Go in Practice',
+          link: 'https://drive.google.com/open?id=1QhsqRZOsO9zd3aEiq_OE8nKDNEqxVV40',
+        },
+        {
           name: 'Build web application with Go',
           link: 'https://github.com/astaxie/build-web-application-with-golang',
           image: 'https://golang.org/lib/godoc/images/footer-gopher.jpg'

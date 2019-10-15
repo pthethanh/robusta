@@ -44,6 +44,7 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 		IDs:         queries["ids"],
 		FolderID:    queries.Get("folder_id"),
 		Title:       queries.Get("title"),
+		Selects:     queries["selects"],
 	}
 	challenges, err := h.srv.FindAll(r.Context(), req)
 	if err != nil {

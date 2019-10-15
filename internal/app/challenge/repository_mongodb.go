@@ -68,10 +68,14 @@ func (r *MongoDBRepository) FindAll(ctx context.Context, req FindRequest) ([]*ty
 	if req.Title != "" {
 		m["title"] = &bson.RegEx{Pattern: req.Title, Options: "i"}
 	}
+	selects := bson.M{}
+	for _, s := range req.Selects {
+		selects[s] = 1
+	}
 	challenges := make([]*types.Challenge, 0)
 	s := r.session.Clone()
 	defer s.Close()
-	if err := s.DB("").C(challengeCollectionName).Find(m).Sort(req.SortBy...).Skip(req.Offset).Limit(req.Limit).All(&challenges); err != nil {
+	if err := s.DB("").C(challengeCollectionName).Find(m).Sort(req.SortBy...).Select(selects).Skip(req.Offset).Limit(req.Limit).All(&challenges); err != nil {
 		return nil, err
 	}
 	return challenges, nil

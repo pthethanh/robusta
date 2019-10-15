@@ -109,8 +109,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .viewme {
   word-break: keep-all;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>

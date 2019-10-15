@@ -88,6 +88,9 @@ code, pre {
   font-size: 13px;
   overflow-y: scroll;
   line-height: 1.5em;
+  ::-webkit-scrollbar { 
+    display: none;
+  }
 }
 
 pre > code {
@@ -147,11 +150,6 @@ blockquote footer:before {
 	left: -.6em;
 }
 
-// disable scrollbar
-::-webkit-scrollbar { 
-  display: none; 
-}
-
 // content fonts
 .content {
   font-family: "Merriweather", serif;
@@ -187,6 +185,9 @@ h1, h2, h3, h4, h5, h6 {
 .CodeMirror {
   border: 1px solid #eee;
   height: auto;
+  ::-webkit-scrollbar { 
+    display: none;
+  }
 }
 
 .section-title {

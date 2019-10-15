@@ -19,12 +19,10 @@
     </div>
     <div :style="{width:width2}" class="dnd-list-list">
       <h3>{{ list2Title }}</h3>
-      <div>
-        <el-input placeholder="Type to search" prefix-icon="el-icon-search" v-model="keyword" @keyup.enter="search(keyword)">
-          <el-button slot="append" icon="el-icon-search" @click="search(keyword)"></el-button>
-        </el-input>
-      </div>
-      <draggable :list="list2" group="item" class="drag-area">
+      <el-input v-if="search !== undefined" placeholder="Type to search" prefix-icon="el-icon-search" v-model="keyword" v-on:keyup.enter="searchKeyword(keyword)">
+        <el-button :loading="loading" slot="append" icon="el-icon-search" @click="searchKeyword(keyword)"></el-button>
+      </el-input>
+      <draggable :list="list2" group="item" class="drag-area2">
         <div v-for="element in list2" :key="element.id" class="list-complete-item">
           <div class="list-complete-item-handle2" @click="pushEle(element)">
             <slot name="list2" :data="element">
@@ -39,10 +37,12 @@
 
 <script>
 import draggable from 'vuedraggable'
+import InfinityLoad from '@/components/InfinityLoad'
 export default {
   name: 'DndList',
   components: {
-    draggable
+    draggable,
+    InfinityLoad
   },
   props: {
     list1: {
@@ -74,13 +74,13 @@ export default {
       default: '48%'
     },
     search: {
-      type: Function,
-      default: function () {}
+      type: Function
     }
   },
   data () {
     return {
-      keyword: ''
+      keyword: '',
+      loading: false
     }
   },
   methods: {
@@ -122,6 +122,19 @@ export default {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '')
+    },
+    searchKeyword (keyword) {
+      this.loading = true
+      this.search(keyword).then(response => {
+        this.list2.splice(0, this.list2.length)
+        for (var i = 0; i < response.data.length; i++) {
+          if (this.isNotInList1(response.data[i])) {
+            this.list2.push(response.data[i])
+          }
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
@@ -150,6 +163,16 @@ export default {
       margin-top: 15px;
       min-height: 50px;
       padding-bottom: 30px;
+      max-height: 450px;
+      overflow-y: auto;
+    }
+
+    .drag-area2 {
+      margin-top: 15px;
+      min-height: 50px;
+      padding-bottom: 30px;
+      max-height: 394px;
+      overflow-y: auto;
     }
   }
 }
