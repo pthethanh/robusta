@@ -11,7 +11,10 @@
         <el-menu default-active="0" class="left">
           <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
             <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
-            <span>{{index + 1 + '. ' + challenge.title}}</span>
+            <el-badge value="new" class="badge" v-if="challenge.is_new">
+              <span>{{index + 1 + '. ' + challenge.title}}</span>
+            </el-badge>
+            <span v-if="!challenge.is_new">{{index + 1 + '. ' + challenge.title}}</span>
           </el-menu-item>
         </el-menu>
       </template>
@@ -217,6 +220,10 @@ export default {
     height: 100vh;
     overflow-y: scroll;
     padding-bottom: 50px;
+
+    .badge {
+      display: inline;
+    }
 
     .challenge-completed {
       color: green;

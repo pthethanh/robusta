@@ -134,7 +134,7 @@ func (s *Service) FindAll(ctx context.Context) ([]*types.UserInfo, error) {
 			Email:       usr.Email,
 			FirstName:   usr.FirstName,
 			LastName:    usr.LastName,
-			Name:        usr.Name,
+			Name:        usr.GetName(),
 			NickName:    usr.NickName,
 			Description: usr.Description,
 			UserID:      usr.UserID,

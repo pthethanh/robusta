@@ -47,7 +47,8 @@ import {
   TableColumn,
   Select,
   Option,
-  Drawer
+  Drawer,
+  Badge
   // Breadcrumb,
   // BreadcrumbItem,
   // DatePicker,
@@ -75,7 +76,6 @@ import {
   // ColorPicker,
   // Transfer,
   // Rate,
-  // Badge,
   // Upload,
   // Slider,
   // Tree,
@@ -126,13 +126,13 @@ Vue.use(TableColumn)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Drawer)
+Vue.use(Badge)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
 // Vue.use(Calendar)
 // Vue.use(Backtop)
 // Vue.use(CascaderPanel)
 // Vue.use(Rate)
-// Vue.use(Badge)
 // Vue.use(Upload)
 // Vue.use(Slider)
 // Vue.use(Tree)

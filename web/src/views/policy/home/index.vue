@@ -6,7 +6,7 @@
         <el-form class="add-policy-form" :model="policy" @submit.native.prevent="addPolicy" :rules="rules" ref="add-policy-form" inline>
           <el-form-item prop="subject">
             <el-select v-model="policy.subject" placeholder="Select user" filterable no-data-text="No data" no-match-text="No matching option">
-              <el-option v-for="item in users" :key="item.value" :label="item.email" :value="item.user_id">
+              <el-option v-for="item in users" :key="item.value" :label="getDisplayName(item)" :value="item.user_id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -136,6 +136,12 @@ export default {
     fetchFolders () {
       this.folderOffset += this.folderLimit
       return listFolders('offset=' + this.folderOffset + '&limit=' + this.folderLimit)
+    },
+    getDisplayName (user) {
+      if (user.name === '') {
+        return user.email
+      }
+      return user.name + '(' + user.email + ')'
     }
   }
 }

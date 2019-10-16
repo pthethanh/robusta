@@ -37,12 +37,10 @@
 
 <script>
 import draggable from 'vuedraggable'
-import InfinityLoad from '@/components/InfinityLoad'
 export default {
   name: 'DndList',
   components: {
-    draggable,
-    InfinityLoad
+    draggable
   },
   props: {
     list1: {
