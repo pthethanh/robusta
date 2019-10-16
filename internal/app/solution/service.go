@@ -156,7 +156,7 @@ func (s *Service) GetCompletionReport(ctx context.Context, r CompletionReportReq
 		}
 		offset += len(solutions)
 	}
-	sort.Sort(solutionInfoByCreatedAt(rs))
+	sort.Sort(sort.Reverse(solutionInfoByCreatedAt(rs)))
 	return rs, nil
 }
 

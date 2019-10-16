@@ -145,7 +145,7 @@ export default {
       for (var i = 0; i < children.length; i++) {
         ids += '&ids=' + children[i]
       }
-      let query = 'folder_id=' + this.folder.id + '&offset=' + this.offset + '&limit=' + this.limit + ids
+      let query = 'folder_id=' + this.folder.id + '&offset=' + this.offset + '&limit=' + this.limit + ids + '&sort_by=-created_at'
       return query
     },
     handleTabClick (tab, event) {
