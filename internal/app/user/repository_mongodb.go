@@ -120,6 +120,17 @@ func (r *MongoDBRepository) FindByEmail(ctx context.Context, email string) (*typ
 	return user, nil
 }
 
+func (r *MongoDBRepository) UpdatePassword(ctx context.Context, userID string, newPass string) error {
+	s := r.session.Clone()
+	defer s.Close()
+	return r.collection(s).Update(bson.M{"user_id": userID}, bson.M{
+		"$set": bson.M{
+			"password":   newPass,
+			"updated_at": time.Now(),
+		},
+	})
+}
+
 func (r *MongoDBRepository) collection(s *mgo.Session) *mgo.Collection {
 	return s.DB("").C("user")
 }

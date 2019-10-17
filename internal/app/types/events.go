@@ -12,6 +12,8 @@ const (
 
 	EventNotificationCommentReactionCreated = "notification_comment_reaction_created"
 	EventNotificationCommentReplyCreated    = "notification_comment_reply_created"
+
+	EventPasswordResetTokenCreated = "user_password_reset_token_crated"
 )
 
 type (
@@ -20,5 +22,10 @@ type (
 		OldReaction *Reaction
 		NewReaction *Reaction
 		Detail      *ReactionDetail
+	}
+
+	ResetPasswordTokenCreated struct {
+		Token string   `json:"token"`
+		User  UserInfo `json:"user"`
 	}
 )

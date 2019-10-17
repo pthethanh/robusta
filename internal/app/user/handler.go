@@ -13,6 +13,8 @@ type (
 	service interface {
 		Register(ctx context.Context, req *types.RegisterRequest) (*types.User, error)
 		FindAll(ctx context.Context) ([]*types.UserInfo, error)
+		GenerateResetPasswordToken(ctx context.Context, mail string) (string, error)
+		ResetPassword(ctx context.Context, r ResetPasswordRequest) error
 	}
 	Handler struct {
 		srv service
@@ -51,4 +53,34 @@ func (h *Handler) FindAll(w http.ResponseWriter, r *http.Request) {
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: users,
 	})
+}
+
+func (h *Handler) GenerateResetPasswordToken(w http.ResponseWriter, r *http.Request) {
+	var req GenerateResetPasswordTokenRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respond.Error(w, err, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+	_, err := h.srv.GenerateResetPasswordToken(r.Context(), req.Email)
+	if err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.AppSuccess)
+}
+
+func (h *Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	var req ResetPasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respond.Error(w, err, http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+	err := h.srv.ResetPassword(r.Context(), req)
+	if err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.AppSuccess)
 }

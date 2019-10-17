@@ -2,13 +2,17 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
+	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/db"
+	"github.com/pthethanh/robusta/internal/pkg/event"
+	"github.com/pthethanh/robusta/internal/pkg/jwt"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/uuid"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
@@ -24,24 +28,42 @@ type (
 		FindAll(context.Context) ([]*types.User, error)
 		FindByUserID(ctx context.Context, id string) (*types.User, error)
 		FindByEmail(ctx context.Context, email string) (*types.User, error)
+		UpdatePassword(ctx context.Context, userID string, newPassword string) error
 	}
 
 	PolicyService interface {
 		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
 	}
 
+	Config struct {
+		ResetPasswordTokenLifeTime time.Duration `envconfig:"USER_RESET_PASSWORD_TOKEN_LIFE_TIME" default:"15m"`
+		NotificationTopic          string        `envconfig:"NOTIFICATION_TOPIC" default:"r_topic_notification"`
+	}
+
 	Service struct {
+		conf   Config
 		repo   Repository
 		policy PolicyService
+		jwt    jwt.SignVerifier
+		es     event.Publisher
 	}
 )
 
 // New return a new user service
-func New(repo Repository, policy PolicyService) *Service {
+func New(conf Config, repo Repository, policy PolicyService, jwtSigner jwt.SignVerifier, es event.Publisher) *Service {
 	return &Service{
+		conf:   conf,
 		repo:   repo,
 		policy: policy,
+		jwt:    jwtSigner,
+		es:     es,
 	}
+}
+
+func LoadConfigFromEnv() Config {
+	var conf Config
+	envconfig.Load(&conf)
+	return conf
 }
 
 func (s *Service) Auth(ctx context.Context, email, password string) (*types.User, error) {
@@ -74,12 +96,12 @@ func (s *Service) Register(ctx context.Context, req *types.RegisterRequest) (*ty
 		log.WithContext(ctx).Debug("email already registered")
 		return nil, ErrEmailDuplicated
 	}
-	password, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	password, err := s.generatePassword(req.Password)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate password")
 	}
 	user := &types.User{
-		Password:  string(password),
+		Password:  password,
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 		Email:     req.Email,
@@ -157,4 +179,77 @@ func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, err
 
 func (s *Service) isAllowed(ctx context.Context, obj string, act string) error {
 	return policyutil.IsCurrentUserAllowed(ctx, s.policy, obj, act)
+}
+
+func (s *Service) GenerateResetPasswordToken(ctx context.Context, mail string) (string, error) {
+	user, err := s.repo.FindByEmail(ctx, mail)
+	if err != nil {
+		return "", err
+	}
+	token, err := s.jwt.Sign(jwt.Claims{
+		StandardClaims: jwt.StandardClaims{
+			Id:        user.UserID,
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(s.conf.ResetPasswordTokenLifeTime).Unix(),
+		},
+		UserID: user.UserID,
+	})
+	if err != nil {
+		return "", err
+	}
+	// notify to user
+	ev, err := event.NewEvent(types.EventPasswordResetTokenCreated, types.ResetPasswordTokenCreated{
+		Token: token,
+		User: types.UserInfo{
+			ID:        user.ID,
+			Email:     user.Email,
+			UserID:    user.UserID,
+			Name:      user.Name,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		},
+	}, time.Now())
+	if err != nil {
+		log.WithContext(ctx).Errorf("failed to create notification event, err: %v", err)
+		return "", errors.Wrap(err, "failed to create event")
+	}
+	s.es.Publish(ev, s.conf.NotificationTopic)
+
+	return token, nil
+}
+
+func (s *Service) ResetPassword(ctx context.Context, r ResetPasswordRequest) error {
+	if err := validator.Validate(r); err != nil {
+		log.WithContext(ctx).Errorf("invalid request, err: %v", err)
+		return err
+	}
+	c, err := s.jwt.Verify(r.Token)
+	if err != nil {
+		log.WithContext(ctx).Errorf("invalid token, err: %v", err)
+		return err
+	}
+	// verify user exist
+	if _, err := s.repo.FindByUserID(ctx, c.UserID); err != nil {
+		log.WithContext(ctx).Errorf("could not found user, err: %v", err)
+		return err
+	}
+	pass, err := s.generatePassword(r.NewPassword)
+	if err != nil {
+		log.WithContext(ctx).Errorf("failed to generate password, err: %v", err)
+		return err
+	}
+	// update pass
+	if err := s.repo.UpdatePassword(ctx, c.UserID, pass); err != nil {
+		log.WithContext(ctx).Errorf("failed to update password, err: %v", err)
+		return err
+	}
+	return nil
+}
+
+func (s *Service) generatePassword(pass string) (string, error) {
+	rs, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to generate password")
+	}
+	return string(rs), nil
 }

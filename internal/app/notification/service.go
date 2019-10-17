@@ -74,6 +74,8 @@ func (s *Service) Start() {
 					s.handleCommentReactionCreated(ev)
 				case types.EventNotificationCommentReplyCreated:
 					s.handleCommentReplyCreated(ev)
+				case types.EventPasswordResetTokenCreated:
+					s.handleUserPasswordResetTokenCreated(ev)
 				}
 			}
 		}()

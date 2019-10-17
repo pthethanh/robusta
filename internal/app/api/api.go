@@ -34,7 +34,7 @@ func NewRouter() (http.Handler, io.Closer, error) {
 	}
 	policyHandler := newPolicyHandler(policySrv)
 
-	userSrv, userCloser, err := newUserService(policySrv)
+	userSrv, userCloser, err := newUserService(policySrv, es)
 	if err != nil {
 		return nil, closer, err
 	}

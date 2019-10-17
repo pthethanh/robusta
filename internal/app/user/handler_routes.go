@@ -20,5 +20,17 @@ func (h *Handler) Routes() []router.Route {
 			Method:  http.MethodPost,
 			Handler: h.Register,
 		},
+		{
+			Path:    "/api/v1/users",
+			Method:  http.MethodPut,
+			Handler: h.GenerateResetPasswordToken,
+			Queries: []string{"action", "request-reset-password"},
+		},
+		{
+			Path:    "/api/v1/users",
+			Method:  http.MethodPut,
+			Handler: h.ResetPassword,
+			Queries: []string{"action", "reset-password"},
+		},
 	}
 }
