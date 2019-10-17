@@ -23,7 +23,7 @@
         </el-button>
         <div class="footer">
           <div @click="goTo('/users/register')">Don't have an account? Register here!</div>
-          <div @click="goTo('/users/forgot-password')" hidden>Forgot password ?</div>
+          <div @click="goTo('/users/forgot-password')">Forgot password ?</div>
         </div>
       </el-form>
     </el-card>

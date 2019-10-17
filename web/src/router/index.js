@@ -105,6 +105,14 @@ export const routes = [
     children: [{
       path: 'register',
       component: () => import('@/views/user/registration/index')
+    },
+    {
+      path: 'reset-password/:token',
+      component: () => import('@/views/user/reset-password/index')
+    },
+    {
+      path: 'forgot-password',
+      component: () => import('@/views/user/forgot-password/index')
     }]
   },
   {
