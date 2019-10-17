@@ -78,16 +78,13 @@ func (s *Service) MakeOwner(ctx context.Context, sub string, obj string) error {
 	return s.AddPolicy(ctx, sub, obj, types.PolicyActionAny, types.PolicyEffectAllow)
 }
 
+// AssignPolicy assign policy to a subject. Subject can be  user or role
 func (s *Service) AssignPolicy(ctx context.Context, req AssignPolicyRequest) error {
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	user := auth.FromContext(ctx)
-	if user == nil {
-		return types.ErrUnauthorized
-	}
-	if !s.IsAllowed(ctx, user.UserID, req.Object, ActionPolicyUpdate) {
-		return types.ErrUnauthorized
+	if err := s.validatePermission(ctx, req.Object, ActionPolicyUpdate); err != nil {
+		return err
 	}
 	if err := s.AddPolicy(ctx, req.Subject, req.Object, req.Action, req.Effect); err != nil {
 		log.WithContext(ctx).Errorf("failed to add policy, err: %v", err)
@@ -104,16 +101,13 @@ func (s *Service) AssignPolicy(ctx context.Context, req AssignPolicyRequest) err
 	return nil
 }
 
+// AssignGroupPolicy assign user to roles
 func (s *Service) AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRequest) error {
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	user := auth.FromContext(ctx)
-	if user == nil {
-		return types.ErrUnauthorized
-	}
-	if !s.IsAllowed(ctx, user.UserID, req.Group, ActionPolicyUpdate) {
-		return types.ErrUnauthorized
+	if err := s.validatePermission(ctx, req.Group, ActionPolicyUpdate); err != nil {
+		return err
 	}
 	if err := s.AddGroupingPolicy(ctx, req.Subject, req.Group); err != nil {
 		log.WithContext(ctx).Errorf("failed to add group policy, err: %v", err)
@@ -122,6 +116,36 @@ func (s *Service) AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRe
 	return nil
 }
 
+// GetRoles get all available roles
+func (s *Service) GetRoles(ctx context.Context) ([]string, error) {
+	if err := s.validatePermission(ctx, Object, ActionPolicyUpdate); err != nil {
+		return nil, err
+	}
+	roles := s.enforcer.GetAllRoles()
+	return roles, nil
+}
+
+// GetUsersForRole return users of the given role
+func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]string, error) {
+	if err := s.validatePermission(ctx, Object, ActionPolicyUpdate); err != nil {
+		return nil, err
+	}
+	users := s.enforcer.GetRolesForUser(role)
+	return users, nil
+}
+
+func (s *Service) validatePermission(ctx context.Context, obj string, act string) error {
+	user := auth.FromContext(ctx)
+	if user == nil {
+		return types.ErrUnauthorized
+	}
+	if !s.IsAllowed(ctx, user.UserID, obj, act) {
+		return types.ErrUnauthorized
+	}
+	return nil
+}
+
+// ListActions return  all supported actions
 func (s *Service) ListActions(ctx context.Context) ([]string, error) {
 	user := auth.FromContext(ctx)
 	if user == nil {

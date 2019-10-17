@@ -12,6 +12,11 @@ type (
 		Subject string `json:"subject" validate:"required"`
 		Group   string `json:"group" validate:"group"`
 	}
+
+	CreateGroupRequest struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
 )
 
 const (
