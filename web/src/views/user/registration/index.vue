@@ -90,7 +90,7 @@ export default {
         })
         self.error = ''
         self.$router.push('/login?redirect=/')
-      }).catch(() => {
+      }).catch((error) => {
         this.loading = false
         var res = error.response
         if (res !== undefined && res !== null) {

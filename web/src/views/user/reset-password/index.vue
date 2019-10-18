@@ -40,36 +40,36 @@ export default {
       error: '',
       rules: {
         new_password: [{
-            required: true,
-            message: 'Password is required',
-            trigger: 'blur'
-          },
-          {
-            min: 5,
-            message: 'Password length should be at least 5 characters',
-            trigger: 'blur'
-          },
-          {
-            max: 25,
-            message: 'Password length should be less than 25 characters',
-            trigger: 'blur'
-          }
+          required: true,
+          message: 'Password is required',
+          trigger: 'blur'
+        },
+        {
+          min: 5,
+          message: 'Password length should be at least 5 characters',
+          trigger: 'blur'
+        },
+        {
+          max: 25,
+          message: 'Password length should be less than 25 characters',
+          trigger: 'blur'
+        }
         ],
         re_type_new_password: [{
-            required: true,
-            message: 'Password is required',
-            trigger: 'blur'
-          },
-          {
-            min: 5,
-            message: 'Password length should be at least 5 characters',
-            trigger: 'blur'
-          },
-          {
-            max: 25,
-            message: 'Password length should be less than 25 characters',
-            trigger: 'blur'
-          }
+          required: true,
+          message: 'Password is required',
+          trigger: 'blur'
+        },
+        {
+          min: 5,
+          message: 'Password length should be at least 5 characters',
+          trigger: 'blur'
+        },
+        {
+          max: 25,
+          message: 'Password length should be less than 25 characters',
+          trigger: 'blur'
+        }
         ]
       }
     }

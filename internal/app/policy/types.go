@@ -16,6 +16,7 @@ type (
 	FindPolicyRequest struct {
 		Subjects []string `json:"subject"`
 		Actions  []string `json:"actions"`
+		Objects  []string `json:"objects"`
 	}
 )
 

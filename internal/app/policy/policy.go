@@ -168,6 +168,15 @@ func (s *Service) FindPolicies(ctx context.Context, req FindPolicyRequest) ([]ty
 		if !matched {
 			continue
 		}
+		matched = len(req.Objects) == 0 // matched by default if not filter
+		for _, obj := range req.Objects {
+			if plc.Object == obj {
+				matched = true
+			}
+		}
+		if !matched {
+			continue
+		}
 		matched = len(req.Actions) == 0 // matched by default if not filter
 		for _, act := range req.Actions {
 			if strings.HasPrefix(plc.Action, act) {
@@ -181,6 +190,20 @@ func (s *Service) FindPolicies(ctx context.Context, req FindPolicyRequest) ([]ty
 		rs = append(rs, plc)
 	}
 	return rs, nil
+}
+
+func (s *Service) RemovePolicy(ctx context.Context, req types.Policy) error {
+	if err := validator.Validate(req); err != nil {
+		return err
+	}
+	if err := s.validatePermission(ctx, req.Object, ActionPolicyUpdate); err != nil {
+		return err
+	}
+	if _, err := s.enforcer.RemovePolicySafe(req.Subject, req.Object, req.Action, req.Effect); err != nil {
+		log.WithContext(ctx).Errorf("failed to remove policy, err: %v", err)
+		return errors.Wrap(err, "failed to remove policy")
+	}
+	return nil
 }
 
 func (s *Service) validatePermission(ctx context.Context, obj string, act string) error {

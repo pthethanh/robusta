@@ -22,3 +22,18 @@ export function listPolicyActions() {
     method: 'GET'
   })
 }
+
+export function listPolicy(q) {
+  return request({
+    url: '/api/v1/policies?' + q,
+    method: 'GET'
+  })
+}
+
+export function removePolicy(data) {
+  return request({
+    url: '/api/v1/policies',
+    method: 'DELETE',
+    data
+  })
+}

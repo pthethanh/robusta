@@ -19,6 +19,7 @@ type (
 		GetRoles(ctx context.Context) ([]string, error)
 		GetUsersForRole(ctx context.Context, role string) ([]string, error)
 		FindPolicies(ctx context.Context, req FindPolicyRequest) ([]types.Policy, error)
+		RemovePolicy(ctx context.Context, req types.Policy) error
 	}
 	Handler struct {
 		srv service
@@ -96,6 +97,7 @@ func (h *Handler) FindPolicies(w http.ResponseWriter, r *http.Request) {
 	policies, err := h.srv.FindPolicies(r.Context(), FindPolicyRequest{
 		Subjects: queries["subjects"],
 		Actions:  queries["actions"],
+		Objects:  queries["objects"],
 	})
 	if err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
@@ -104,4 +106,17 @@ func (h *Handler) FindPolicies(w http.ResponseWriter, r *http.Request) {
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: policies,
 	})
+}
+
+func (h *Handler) RemovePolicy(w http.ResponseWriter, r *http.Request) {
+	var req types.Policy
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respond.Error(w, err, http.StatusBadRequest)
+		return
+	}
+	if err := h.srv.RemovePolicy(r.Context(), req); err != nil {
+		respond.Error(w, err, http.StatusInternalServerError)
+		return
+	}
+	respond.JSON(w, http.StatusOK, types.BaseResponse{})
 }
