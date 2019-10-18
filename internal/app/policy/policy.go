@@ -2,6 +2,7 @@ package policy
 
 import (
 	"context"
+	"strings"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -53,8 +54,8 @@ func NewMongoDBCasbinEnforcer(conf CasbinConfig) *casbin.Enforcer {
 // - s.AddPolicy("group_admin", "article_1", "*", deny)
 // - s.AddPolicy("group_admin", "article_2", "read", allow)
 // - s.AddPolicy("group_admin", "article_3", "write", allow)
-func (s *Service) AddPolicy(ctx context.Context, sub string, obj string, act string, eft string) error {
-	_, err := s.enforcer.AddPolicySafe(sub, obj, act, eft)
+func (s *Service) AddPolicy(ctx context.Context, p types.Policy) error {
+	_, err := s.enforcer.AddPolicySafe(p.Subject, p.Object, p.Action, p.Effect)
 	return err
 }
 
@@ -75,7 +76,12 @@ func (s *Service) IsAllowed(ctx context.Context, sub string, obj string, act str
 
 // MakeOwner make the sub to be owner of the obj
 func (s *Service) MakeOwner(ctx context.Context, sub string, obj string) error {
-	return s.AddPolicy(ctx, sub, obj, types.PolicyActionAny, types.PolicyEffectAllow)
+	return s.AddPolicy(ctx, types.Policy{
+		Subject: sub,
+		Object:  obj,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	})
 }
 
 // AssignPolicy assign policy to a subject. Subject can be  user or role
@@ -86,7 +92,12 @@ func (s *Service) AssignPolicy(ctx context.Context, req AssignPolicyRequest) err
 	if err := s.validatePermission(ctx, req.Object, ActionPolicyUpdate); err != nil {
 		return err
 	}
-	if err := s.AddPolicy(ctx, req.Subject, req.Object, req.Action, req.Effect); err != nil {
+	if err := s.AddPolicy(ctx, types.Policy{
+		Subject: req.Subject,
+		Object:  req.Object,
+		Action:  req.Action,
+		Effect:  req.Effect,
+	}); err != nil {
 		log.WithContext(ctx).Errorf("failed to add policy, err: %v", err)
 		return errors.Wrap(err, "failed to add policy")
 	}
@@ -132,6 +143,44 @@ func (s *Service) GetUsersForRole(ctx context.Context, role string) ([]string, e
 	}
 	users := s.enforcer.GetRolesForUser(role)
 	return users, nil
+}
+
+// FindPolicies return all policies match the given filters
+func (s *Service) FindPolicies(ctx context.Context, req FindPolicyRequest) ([]types.Policy, error) {
+	if err := s.validatePermission(ctx, Object, ActionPolicyUpdate); err != nil {
+		return nil, err
+	}
+	policies := s.enforcer.GetPolicy()
+	rs := make([]types.Policy, 0)
+	for _, p := range policies {
+		plc := types.Policy{
+			Subject: p[0],
+			Object:  p[1],
+			Action:  p[2],
+			Effect:  p[3],
+		}
+		matched := len(req.Subjects) == 0 // matched by default if not filter
+		for _, sub := range req.Subjects {
+			if plc.Subject == sub {
+				matched = true
+			}
+		}
+		if !matched {
+			continue
+		}
+		matched = len(req.Actions) == 0 // matched by default if not filter
+		for _, act := range req.Actions {
+			if strings.HasPrefix(plc.Action, act) {
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			continue
+		}
+		rs = append(rs, plc)
+	}
+	return rs, nil
 }
 
 func (s *Service) validatePermission(ctx context.Context, obj string, act string) error {

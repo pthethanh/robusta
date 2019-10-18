@@ -16,7 +16,7 @@ import (
 type (
 	PolicyService interface {
 		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		AddPolicy(ctx context.Context, sub string, obj string, act string, eft string) error
+		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
 	Repository interface {
@@ -78,12 +78,22 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	if err := s.repo.Insert(ctx, f); err != nil {
 		return errors.Wrap(err, "failed to insert folder")
 	}
-	if err := s.policy.AddPolicy(ctx, user.UserID, f.ID, types.PolicyActionAny, types.PolicyEffectAllow); err != nil {
+	if err := s.policy.AddPolicy(ctx, types.Policy{
+		Subject: user.UserID,
+		Object:  f.ID,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	}); err != nil {
 		return errors.Wrap(err, "failed to set permission")
 	}
 	if req.IsPublic {
 		// make everyone permission to read this folder.
-		if err := s.policy.AddPolicy(ctx, types.PolicySubjectAny, f.ID, types.PolicyActionFolderRead, types.PolicyEffectAllow); err != nil {
+		if err := s.policy.AddPolicy(ctx, types.Policy{
+			Subject: types.PolicySubjectAny,
+			Object:  f.ID,
+			Action:  types.PolicyActionFolderRead,
+			Effect:  types.PolicyEffectAllow,
+		}); err != nil {
 			return errors.Wrap(err, "failed to make the folder public read")
 		}
 	}

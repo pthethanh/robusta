@@ -13,9 +13,9 @@ type (
 		Group   string `json:"group" validate:"group"`
 	}
 
-	CreateGroupRequest struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
+	FindPolicyRequest struct {
+		Subjects []string `json:"subject"`
+		Actions  []string `json:"actions"`
 	}
 )
 
