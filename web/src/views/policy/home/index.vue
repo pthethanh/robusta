@@ -8,7 +8,7 @@
             <el-select v-model="policy.object" placeholder="Select folder" filterable no-data-text="No data" no-match-text="No matching option" @change="reloadFolderPolicies">
               <infinity-load :fetch-data="fetchFolders" v-bind:data.sync="folders" @error="folderOffset -= folderLimit" no-more-text="" :delay="0" :limit="folderLimit">
                 <template v-slot:default="{data}">
-                  <el-option v-for="item in data" :key="item.value" :label="item.name" :value="item.id">
+                  <el-option v-for="item in data" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </template>
               </infinity-load>
@@ -16,7 +16,7 @@
           </el-form-item>
           <el-form-item prop="subject">
             <el-select v-model="policy.subject" placeholder="Select user" filterable no-data-text="No data" no-match-text="No matching option">
-              <el-option v-for="item in users" :key="item.value" :label="getDisplayName(item)" :value="item.user_id">
+              <el-option v-for="item in users" :key="item.user_id" :label="getDisplayName(item)" :value="item.user_id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -115,6 +115,10 @@ export default {
   },
   mounted () {
     listUsers().then((response) => {
+      this.users.push({
+        name: 'Any User',
+        user_id: '*',
+      })
       this.users = response.data
     })
     listPolicyActions().then((response) => {
