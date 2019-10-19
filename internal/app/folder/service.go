@@ -7,7 +7,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
@@ -15,7 +14,7 @@ import (
 
 type (
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		Validate(ctx context.Context, obj string, act string) error
 		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
@@ -54,7 +53,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderCreate); err != nil {
+	if err := s.policy.Validate(ctx, types.PolicyObjectFolder, types.PolicyActionFolderCreate); err != nil {
 		return err
 	}
 	f := &Folder{
@@ -78,7 +77,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	if err := s.repo.Insert(ctx, f); err != nil {
 		return errors.Wrap(err, "failed to insert folder")
 	}
-	if err := s.policy.AddPolicy(ctx, types.Policy{
+	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
 		Subject: user.UserID,
 		Object:  f.ID,
 		Action:  types.PolicyActionAny,
@@ -88,7 +87,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 	}
 	if req.IsPublic {
 		// make everyone permission to read this folder.
-		if err := s.policy.AddPolicy(ctx, types.Policy{
+		if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
 			Subject: types.PolicySubjectAny,
 			Object:  f.ID,
 			Action:  types.PolicyActionFolderRead,
@@ -101,7 +100,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
-	if err := s.isAllowed(ctx, id, types.PolicyActionFolderRead); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionFolderRead); err != nil {
 		return nil, err
 	}
 	f, err := s.repo.FindByID(ctx, id)
@@ -121,7 +120,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 	}
 	rs := make([]*Folder, 0)
 	for _, f := range folders {
-		if err := s.isAllowed(ctx, f.ID, types.PolicyActionFolderRead); err != nil {
+		if err := s.policy.Validate(ctx, f.ID, types.PolicyActionFolderRead); err != nil {
 			log.WithContext(ctx).Debugf("user doesn't have permission on foldder %s, err: %v", f.ID, err)
 			continue
 		}
@@ -131,7 +130,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, types.PolicyActionFolderDelete); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionFolderDelete); err != nil {
 		log.WithContext(ctx).Errorf("cannot delete folder, err: %v", err)
 		return err
 	}
@@ -142,7 +141,7 @@ func (s *Service) AddChildren(ctx context.Context, req AddChildrenRequest) error
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
+	if err := s.policy.Validate(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
 		return err
 	}
 	if err := s.repo.AddChildren(ctx, req.ID, req.Children); err != nil {
@@ -155,7 +154,7 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 	if err := validator.Validate(req); err != nil {
 		return err
 	}
-	if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
+	if err := s.policy.Validate(ctx, types.PolicyObjectFolder, types.PolicyActionFolderUpdate); err != nil {
 		return err
 	}
 	if err := s.repo.Update(ctx, req.ID, Folder{
@@ -167,8 +166,4 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 		return errors.Wrap(err, "failed to update folder")
 	}
 	return nil
-}
-
-func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, action)
 }

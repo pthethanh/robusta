@@ -17,6 +17,7 @@ type (
 
 const (
 	authContextKey contextKey = "r_auth_user"
+	adminContext   contextKey = "r_auth_admin"
 )
 
 // UserInfoMiddleware decode user info in  Authorization header
@@ -43,6 +44,17 @@ func UserInfoMiddleware(verifier jwt.Verifier) func(http.Handler) http.Handler {
 	}
 }
 
+// RequiredAuthMiddleware reject request that has not authenticated
+func RequiredAuthMiddleware(inner http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if user := FromContext(r.Context()); user == nil {
+			respond.JSON(w, http.StatusUnauthorized, ErrUnauthorized)
+			return
+		}
+		inner.ServeHTTP(w, r)
+	})
+}
+
 // NewContext return a new context with user inside
 func NewContext(ctx context.Context, user *types.User) context.Context {
 	return context.WithValue(ctx, authContextKey, user)
@@ -56,13 +68,16 @@ func FromContext(ctx context.Context) *types.User {
 	return nil
 }
 
-// RequiredAuthMiddleware reject request that has not authenticated
-func RequiredAuthMiddleware(inner http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if user := FromContext(r.Context()); user == nil {
-			respond.JSON(w, http.StatusUnauthorized, ErrUnauthorized)
-			return
-		}
-		inner.ServeHTTP(w, r)
-	})
+// NewAdminContext return a context indicates that it's an admin call.
+// This should be only used for internal call between services.
+func NewAdminContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, adminContext, true)
+}
+
+// IsAdminContext check whether the given context is an admin call.
+func IsAdminContext(ctx context.Context) bool {
+	if v, ok := ctx.Value(adminContext).(bool); ok {
+		return v
+	}
+	return false
 }

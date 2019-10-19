@@ -8,7 +8,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
@@ -22,8 +21,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		MakeOwner(ctx context.Context, sub string, obj string) error
+		Validate(ctx context.Context, obj string, act string) error
+		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
 	Config struct {
@@ -67,7 +66,12 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 	if user == nil {
 		return nil
 	}
-	if err := s.policy.MakeOwner(ctx, user.UserID, solution.ID); err != nil {
+	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
+		Subject: user.UserID,
+		Object:  solution.ID,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	}); err != nil {
 		return err
 	}
 	return nil
@@ -84,7 +88,7 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 	isOwner := user.UserID == req.CreatedByID
 	// if not the owner get his/her solutions, need to check permissions
 	if req.IncludeDetail && !isOwner {
-		if err := s.isAllowed(ctx, types.PolicyObjectSolution, types.PolicyActionSolutionReadListDetail); err != nil {
+		if err := s.policy.Validate(ctx, types.PolicyObjectSolution, types.PolicyActionSolutionReadListDetail); err != nil {
 			log.WithContext(ctx).Errorf("failed to read solution detail, err: %v", err)
 			return nil, err
 		}
@@ -114,7 +118,7 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*types.Solution, error) {
-	if err := s.isAllowed(ctx, id, types.PolicyActionSolutionRead); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionSolutionRead); err != nil {
 		return nil, err
 	}
 	return s.repo.FindByID(ctx, id)
@@ -158,8 +162,4 @@ func (s *Service) GetCompletionReport(ctx context.Context, r CompletionReportReq
 	}
 	sort.Sort(sort.Reverse(solutionInfoByCreatedAt(rs)))
 	return rs, nil
-}
-
-func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }

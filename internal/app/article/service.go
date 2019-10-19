@@ -8,7 +8,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -30,8 +29,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		MakeOwner(ctx context.Context, sub string, obj string) error
+		Validate(ctx context.Context, obj string, act string) error
+		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
 	Config struct {
@@ -112,7 +111,12 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 	}
 
 	// make her the owner of the article
-	if err := s.policy.MakeOwner(ctx, user.UserID, a.ID); err != nil {
+	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
+		Subject: user.UserID,
+		Object:  a.ID,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	}); err != nil {
 		return err
 	}
 	return nil
@@ -120,7 +124,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 
 // ChangeStatus delete the given article
 func (s *Service) ChangeStatus(ctx context.Context, id string, status Status) error {
-	if err := s.isAllowed(ctx, id, types.PolicyActionArticleUpdate); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionArticleUpdate); err != nil {
 		return err
 	}
 	return s.repo.ChangeStatus(ctx, id, status)
@@ -131,7 +135,7 @@ func (s *Service) Update(ctx context.Context, id string, a *Article) error {
 	if err := validator.Validate(a); err != nil {
 		return errors.Wrap(err, "invalid article")
 	}
-	if err := s.isAllowed(ctx, id, types.PolicyActionArticleUpdate); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionArticleUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, a)
@@ -158,10 +162,6 @@ func (s *Service) FindByArticleID(ctx context.Context, articleID string) (*Artic
 		return nil, err
 	}
 	return a, nil
-}
-
-func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying background process to finish

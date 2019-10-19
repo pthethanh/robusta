@@ -8,7 +8,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/event"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -27,8 +26,8 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		MakeOwner(ctx context.Context, sub string, obj string) error
+		Validate(ctx context.Context, obj string, act string) error
+		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
 	Config struct {
@@ -90,7 +89,12 @@ func (s *Service) Create(ctx context.Context, cm *types.Comment) error {
 		return err
 	}
 	// make the user the owner of the comment
-	if err := s.policy.MakeOwner(ctx, user.UserID, cm.ID); err != nil {
+	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
+		Subject: user.UserID,
+		Object:  cm.ID,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	}); err != nil {
 		log.WithContext(ctx).Errorf("failed to make owner for the comment, err: %v", err)
 		return err
 	}
@@ -115,14 +119,14 @@ func (s *Service) Update(ctx context.Context, id string, cm *types.Comment) erro
 	if err := validator.Validate(cm); err != nil {
 		return errors.Wrap(err, "invalid comment")
 	}
-	if err := s.isAllowed(ctx, id, types.PolicyActionCommentUpdate); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionCommentUpdate); err != nil {
 		return err
 	}
 	return s.repo.Update(ctx, id, cm)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, types.PolicyActionCommentUpdate); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionCommentUpdate); err != nil {
 		return err
 	}
 	deletedComment, err := s.repo.Delete(ctx, id)
@@ -135,10 +139,6 @@ func (s *Service) Delete(ctx context.Context, id string) error {
 
 func (s *Service) FindByID(ctx context.Context, id string) (types.Comment, error) {
 	return s.repo.FindByID(ctx, id)
-}
-
-func (s *Service) isAllowed(ctx context.Context, id string, act string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, act)
 }
 
 // Close close/wait underlying services

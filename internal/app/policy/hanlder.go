@@ -13,8 +13,8 @@ import (
 
 type (
 	service interface {
-		AssignPolicy(ctx context.Context, req AssignPolicyRequest) error
-		AssignGroupPolicy(ctx context.Context, req AssignGroupPolicyRequest) error
+		AddPolicy(ctx context.Context, req types.Policy) error
+		AddGroupPolicy(ctx context.Context, req GroupPolicy) error
 		ListActions(ctx context.Context) ([]string, error)
 		GetRoles(ctx context.Context) ([]string, error)
 		GetUsersForRole(ctx context.Context, role string) ([]string, error)
@@ -32,26 +32,26 @@ func NewHandler(srv service) *Handler {
 	}
 }
 
-func (h *Handler) AssignPolicy(w http.ResponseWriter, r *http.Request) {
-	var req AssignPolicyRequest
+func (h *Handler) AddPolicy(w http.ResponseWriter, r *http.Request) {
+	var req types.Policy
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return
 	}
-	if err := h.srv.AssignPolicy(r.Context(), req); err != nil {
+	if err := h.srv.AddPolicy(r.Context(), req); err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{})
 }
 
-func (h *Handler) AssignGroupPolicy(w http.ResponseWriter, r *http.Request) {
-	var req AssignGroupPolicyRequest
+func (h *Handler) AddGroupPolicy(w http.ResponseWriter, r *http.Request) {
+	var req GroupPolicy
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respond.Error(w, err, http.StatusBadRequest)
 		return
 	}
-	if err := h.srv.AssignGroupPolicy(r.Context(), req); err != nil {
+	if err := h.srv.AddGroupPolicy(r.Context(), req); err != nil {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}

@@ -7,7 +7,6 @@ import (
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
@@ -15,8 +14,8 @@ import (
 
 type (
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
-		MakeOwner(ctx context.Context, sub string, obj string) error
+		Validate(ctx context.Context, obj string, act string) error
+		AddPolicy(ctx context.Context, p types.Policy) error
 	}
 
 	Repository interface {
@@ -58,7 +57,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 		log.WithContext(ctx).Errorf("invalid input, err: %v", err)
 		return types.ErrBadRequest
 	}
-	if err := s.isAllowed(ctx, types.PolicyObjectChallenge, types.PolicyActionChallengeCreate); err != nil {
+	if err := s.policy.Validate(ctx, types.PolicyObjectChallenge, types.PolicyActionChallengeCreate); err != nil {
 		log.WithContext(ctx).Errorf("failed to create challenge due to permission issue, err: %v", err)
 		return err
 	}
@@ -71,7 +70,12 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 	if err := s.repo.Insert(ctx, c); err != nil {
 		return errors.Wrap(err, "failed to insert challenge")
 	}
-	if err := s.policy.MakeOwner(ctx, user.UserID, c.ID); err != nil {
+	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
+		Subject: user.UserID,
+		Object:  c.ID,
+		Action:  types.PolicyActionAny,
+		Effect:  types.PolicyEffectAllow,
+	}); err != nil {
 		return errors.Wrap(err, "failed to set permission")
 	}
 	return nil
@@ -80,7 +84,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 // Get return full information of the requested challenge.
 // The requested user must have read permission, otherwise the request will be rejected.
 func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) {
-	if err := s.isAllowed(ctx, id, types.PolicyActionChallengeRead); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionChallengeRead); err != nil {
 		log.WithContext(ctx).Errorf("failed to read challenge due to permission issue, err: %v", err)
 		return nil, err
 	}
@@ -104,11 +108,11 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 	// if query across folders, user must have read-list permission.
 	// otherwise he/she must have read permission on the given folder.
 	if r.FolderID == "" {
-		if err := s.isAllowed(ctx, types.PolicyObjectFolder, types.PolicyActionFolderReadList); err != nil {
+		if err := s.policy.Validate(ctx, types.PolicyObjectFolder, types.PolicyActionFolderReadList); err != nil {
 			log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 			return nil, err
 		}
-	} else if err := s.isAllowed(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
+	} else if err := s.policy.Validate(ctx, r.FolderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}
@@ -122,20 +126,16 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 
 // Delete delete the given challenge.
 func (s *Service) Delete(ctx context.Context, id string) error {
-	if err := s.isAllowed(ctx, id, types.PolicyActionChallengeDelete); err != nil {
+	if err := s.policy.Validate(ctx, id, types.PolicyActionChallengeDelete); err != nil {
 		return err
 	}
 	return s.repo.Delete(ctx, id)
 }
 
-func (s *Service) isAllowed(ctx context.Context, id string, action string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, id, action)
-}
-
 // FindFolderChallengeByID find the challenge by the given id.
 // User must have folder:read permission to be able to get it.
 func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folderID string) (*types.Challenge, error) {
-	if err := s.isAllowed(ctx, folderID, types.PolicyActionFolderRead); err != nil {
+	if err := s.policy.Validate(ctx, folderID, types.PolicyActionFolderRead); err != nil {
 		log.WithContext(ctx).Errorf("reading list of challenges failed due to permission issue, err: %v", err)
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 		log.WithContext(ctx).Errorf("bad request, err: %v", err)
 		return types.ErrBadRequest
 	}
-	if err := s.isAllowed(ctx, req.ID, types.PolicyActionChallengeUpdate); err != nil {
+	if err := s.policy.Validate(ctx, req.ID, types.PolicyActionChallengeUpdate); err != nil {
 		log.WithContext(ctx).Errorf("failed to update challenge due to permission issue, err: %v", err)
 		return err
 	}

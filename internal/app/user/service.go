@@ -8,7 +8,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/pthethanh/robusta/internal/app/types"
-	"github.com/pthethanh/robusta/internal/app/utils/policyutil"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/event"
@@ -32,7 +31,7 @@ type (
 	}
 
 	PolicyService interface {
-		IsAllowed(ctx context.Context, sub string, obj string, act string) bool
+		Validate(ctx context.Context, obj string, act string) error
 	}
 
 	Config struct {
@@ -145,7 +144,7 @@ func (s *Service) FindBySample(ctx context.Context, user *types.User) ([]*types.
 }
 
 func (s *Service) FindAll(ctx context.Context) ([]*types.UserInfo, error) {
-	if err := s.isAllowed(ctx, types.PolicyObjectUser, types.PolicyActionUserReadList); err != nil {
+	if err := s.policy.Validate(ctx, types.PolicyObjectUser, types.PolicyActionUserReadList); err != nil {
 		return nil, err
 	}
 	users, err := s.repo.FindAll(ctx)
@@ -175,10 +174,6 @@ func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, err
 		return nil, err
 	}
 	return user, nil
-}
-
-func (s *Service) isAllowed(ctx context.Context, obj string, act string) error {
-	return policyutil.IsCurrentUserAllowed(ctx, s.policy, obj, act)
 }
 
 func (s *Service) GenerateResetPasswordToken(ctx context.Context, mail string) (string, error) {

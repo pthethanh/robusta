@@ -24,14 +24,14 @@ func (h *Handler) Routes() []router.Route {
 		{
 			Path:        "/api/v1/policies",
 			Method:      http.MethodPost,
-			Handler:     h.AssignPolicy,
+			Handler:     h.AddPolicy,
 			Queries:     []string{"action", "add-policy"},
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
 		{
 			Path:        "/api/v1/policies",
 			Method:      http.MethodPost,
-			Handler:     h.AssignGroupPolicy,
+			Handler:     h.AddGroupPolicy,
 			Queries:     []string{"action", "add-group-policy"},
 			Middlewares: []router.Middleware{auth.RequiredAuthMiddleware},
 		},
