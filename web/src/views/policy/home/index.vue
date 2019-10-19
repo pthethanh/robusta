@@ -115,11 +115,13 @@ export default {
   },
   mounted () {
     listUsers().then((response) => {
+      this.users = []
       this.users.push({
         name: 'Any User',
         user_id: '*',
+        email: ''
       })
-      this.users = response.data
+      this.users = this.users.concat(response.data)
     })
     listPolicyActions().then((response) => {
       for (var i = 0; i < response.data.length; i++) {
@@ -160,10 +162,13 @@ export default {
       return listFolders('offset=' + this.folderOffset + '&limit=' + this.folderLimit)
     },
     getDisplayName (user) {
-      if (user.name === '') {
+      if (user.name === undefined || user.name.trim() === '') {
         return user.email
       }
-      return user.name + '- ' + user.email
+      if (user.email === '') {
+        return user.name
+      }
+      return user.name + ' - ' + user.email
     },
     reloadFolderPolicies (folder) {
       this.folderPolicies.splice(0, this.folderPolicies.length)
