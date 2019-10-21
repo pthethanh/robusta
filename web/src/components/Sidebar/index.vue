@@ -1,5 +1,5 @@
 <template>
-  <el-drawer :visible.sync="sidebar.opened" direction="ltr" :size="width" :show-close="false" class="sidebar">
+  <el-drawer :visible.sync="sidebar.opened" @close="closeSideBar" direction="ltr" :size="width" :show-close="false" class="sidebar">
     <template v-slot:title>
       <div class="title">
         <hamburger :raw="true" :toggle-click="toggleSideBar" :is-active="true" class="title-item"></hamburger>
@@ -109,6 +109,9 @@ export default {
     },
     toggleSideBar () {
       this.$store.dispatch('ToggleSideBar')
+    },
+    closeSideBar() {
+      this.$store.dispatch('CloseSideBar')
     }
   }
 }
