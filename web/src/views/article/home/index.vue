@@ -11,7 +11,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-dialog :visible.sync="isOpenDetail" :center="true" :modal="true" :append-to-body="true" :fullscreen="true" @close="detailClosed" top="48px" width="95%" :modal-append-to-body="true" class="dialog">
+      <el-dialog :visible.sync="isOpenDetail" :center="true" :modal="true" :append-to-body="true" :fullscreen="true" @close="detailClosed">
         <article-detail :article="selectedArticle" @deleted="isOpenDetail=false"></article-detail>
       </el-dialog>
     </el-row>
@@ -134,6 +134,7 @@ export default {
       if (this.isOpenDetail) {
         this.isOpenDetail = false
       }
+      // TODO bug: close detail will call this and cause bug
       var tags = getTags(this.$route.query.tags)
       if (JSON.stringify(tags) !== JSON.stringify(this.tags)) {
         this.tags = tags
@@ -142,9 +143,9 @@ export default {
     getURL () {
       var url = '/articles'
       if (this.tags.length > 0) {
-        url += '?'
+        url += '?tags=' + this.tags[0].label
       }
-      for (var i = 0; i < this.tags.length; i++) {
+      for (var i = 1; i < this.tags.length; i++) {
         url += '&tags=' + this.tags[i].label
       }
       return url
@@ -166,10 +167,6 @@ export default {
     .tag {
       margin-left: 5px;
     }
-  }
-
-  .dialog {
-    height: 100%;
   }
 }
 
