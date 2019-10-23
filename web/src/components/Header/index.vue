@@ -3,7 +3,7 @@
     <el-menu mode="horizontal" :router="true" :text-color="variables.headerTextColor" :active-text-color="variables.headerActiveTextColor" :background-color="variables.headerBackgroundColor" :default-active="activeMenuIndex" @select="onSelect">
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
       <logo class="logo" @click="onSelect('1', ['1'])"></logo>
-      <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/home">Blog</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/articles">Blog</el-menu-item>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="2" route="/challenges">Challenges</el-menu-item>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="3" route="/resources">Resources</el-menu-item>
       <el-menu-item class="hidden-xs-only menu-item-bold" index="4" route="/about">About</el-menu-item>

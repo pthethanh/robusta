@@ -22,21 +22,27 @@ export const routes = [
     icon: 'el-icon-collection',
     component: Layout,
     redirect: '/',
-    children: [{
-      name: 'New Post',
-      path: 'new',
-      component: () => import('@/views/article/new/index')
-    },
-    {
-      hidden: true,
-      path: 'detail/:id',
-      component: () => import('@/views/article/view/index')
-    },
-    {
-      hidden: true,
-      path: 'edit/:id',
-      component: () => import('@/views/article/edit/index')
-    }]
+    children: [
+      {
+        name: 'Latest Posts',
+        path: '',
+        component: () => import('@/views/article/home/index')
+      },
+      {
+        name: 'New Post',
+        path: 'new',
+        component: () => import('@/views/article/new/index')
+      },
+      {
+        hidden: true,
+        path: 'detail/:id',
+        component: () => import('@/views/article/view/index')
+      },
+      {
+        hidden: true,
+        path: 'edit/:id',
+        component: () => import('@/views/article/edit/index')
+      }]
   },
   {
     path: '/resources',
