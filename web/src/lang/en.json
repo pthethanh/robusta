@@ -1,17 +1,31 @@
 {
-    "nav_home": "Home",
-    "nav_blog": "Blog",
-    "nav_challenges": "Challenges",
-    "nav_resources": "Resources",
-    "nav_about": "About",
-    "nav_new_post": "New Post",
-    "nav_profile": "Profile",
-    "nav_sign_in": "Sign in",
-    "nav_sign_out": "Sign out",
-    "nav_latest_posts": "Latest Posts",
-    "nav_list_challenges": "List Challenges",
-    "nav_new_challenge": "New Challenge",
-    "nav_manage_challenges": "Manage Challenge",
-    "nav_policies": "Policies",
-    "nav_users": "Users"
+    "nav": {
+        "home": "Home",
+        "blog": "Blog",
+        "challenges": "Challenges",
+        "resources": "Resources",
+        "about": "About",
+        "new_post": "New Post",
+        "profile": "Profile",
+        "sign_in": "Sign in",
+        "sign_out": "Sign out",
+        "latest_posts": "Latest Posts",
+        "list_challenges": "List Challenges",
+        "new_challenge": "New Challenge",
+        "manage_challenges": "Manage Challenge",
+        "policies": "Policies",
+        "users": "Users"
+    },
+    "gen": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "warning": "Warning",
+        "ok": "OK",
+        "cancel": "Cancel",
+        "delete_success": "Deleted successfully"
+    },
+    "article": {
+        "delete_confirm": "This will delete this article permanently. Continue?"
+    }
 }

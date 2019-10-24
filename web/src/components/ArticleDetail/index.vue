@@ -14,8 +14,8 @@
           <el-dropdown class="ctx-menu" v-show="user.info.user_id === article.created_by_id" @command="handleSettings" trigger="click">
             <i class="el-icon-more ctx-menu-btn"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-edit" command="edit">Edit</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-delete" command="delete">Delete</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-edit" command="edit">{{ $t('gen.edit') }}</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-delete" command="delete">{{ $t('gen.delete') }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -85,15 +85,15 @@ export default {
       }
       var self = this
       if (command === 'delete') {
-        this.$confirm('This will delete this article permanently. Continue?', 'Warning', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel',
+        this.$confirm(this.$i18n.t('article.delete_confirm'), this.$i18n.t('gen.warning'), {
+          confirmButtonText: this.$i18n.t('gen.ok'),
+          cancelButtonText: this.$i18n.t('gen.cancel'),
           type: 'warning'
         }).then(() => {
           deleteArticle(this.article.id).then(function (respose) {
             self.$message({
               type: 'success',
-              message: 'Delete successfully'
+              message: this.$i18n.t('gen.delete_success')
             })
             self.$router.push('/')
             self.$emit('deleted')

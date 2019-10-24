@@ -24,7 +24,7 @@
       </div>
       <el-menu-item :index="(routes().length + 1) + ''" @click="onLogin()" v-if="!user.authenticated">
         <i class="el-icon-s-custom"></i>
-        <span slot="title">{{ $t('nav_sign_in')}}</span>
+        <span slot="title">{{ $t('nav.sign_in')}}</span>
       </el-menu-item>
     </el-menu>
   </el-drawer>
