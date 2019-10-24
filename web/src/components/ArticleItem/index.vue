@@ -73,10 +73,9 @@ export default {
       } else {
         this.article.reaction_upvote++
       }
-      let self = this
-      reactToArticle(this.article.id, reactionType).then(function (response) {
-        self.article.reaction_downvote = response.data.downvote
-        self.article.reaction_upvote = response.data.upvote
+      reactToArticle(this.article.id, reactionType).then((response) => {
+        this.article.reaction_downvote = response.data.downvote
+        this.article.reaction_upvote = response.data.upvote
       })
     },
     select () {

@@ -78,21 +78,17 @@ export default {
       this.$emit('code-change', this.code)
     },
     copyFullCode () {
-      let self = this
-      this.$copyText(this.code).then(
-        function (e) {
-          self.$message({
-            type: 'success',
-            message: this.$i18n.t('gen.copied')
-          })
-        },
-        function (e) {
-          self.$message({
-            type: 'error',
-            message: this.$i18n.t('gen.copy_failed')
-          })
-        }
-      )
+      this.$copyText(this.code).then((e) => {
+        this.$message({
+          type: 'success',
+          message: this.$i18n.t('gen.copied')
+        })
+      }, (e) => {
+        this.$message({
+          type: 'error',
+          message: this.$i18n.t('gen.copy_failed')
+        })
+      })
     },
     runTest () {
       this.loading = true

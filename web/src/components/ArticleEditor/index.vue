@@ -58,13 +58,12 @@ export default {
   },
   title: '',
   created () {
-    let self = this
     if (this.isEditMode()) {
       fetchArticle(this.id).then(response => {
         this.article = response.data
         this.ready = true
-      }).catch(function (err) {
-        self.$message({
+      }).catch((err) => {
+        this.$message({
           message: this.$i18n.t('gen.load_data_failed') + ': ' + err,
           type: 'error'
         })
@@ -98,10 +97,9 @@ export default {
       this.article.content = raw
       this.article.content_type = 'editor_js'
       this.article.tags = this.getTags()
-      let self = this
-      createArticle(this.article).then(function (response) {
-        self.article = response.data
-        self.$message({
+      createArticle(this.article).then((response) => {
+        this.article = response.data
+        this.$message({
           message: this.$i18n.t('gen.create_success'),
           type: 'success'
         })
@@ -115,9 +113,8 @@ export default {
       if (this.article !== undefined) {
         id = this.article.id
       }
-      let self = this
-      updateArticle(id, this.article).then(function (response) {
-        self.$message({
+      updateArticle(id, this.article).then((response) => {
+        this.$message({
           message: this.$i18n.t('gen.update_success'),
           type: 'success'
         })

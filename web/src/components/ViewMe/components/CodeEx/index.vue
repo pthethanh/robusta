@@ -116,12 +116,12 @@ export default {
     },
     copyFullCode () {
       let self = this
-      this.$copyText(this.code).then(function (e) {
+      this.$copyText(this.code).then((e) => {
         self.$message({
           type: 'success',
           message: this.$i18n.t('gen.copied')
         })
-      }, function (e) {
+      }, (e) => {
         self.$message({
           type: 'error',
           message: this.$i18n.t('gen.copy_failed')

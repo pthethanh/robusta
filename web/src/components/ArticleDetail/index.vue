@@ -83,20 +83,19 @@ export default {
         this.$router.push('/articles/edit/' + this.article.id)
         return
       }
-      var self = this
       if (command === 'delete') {
         this.$confirm(this.$i18n.t('article.delete_confirm'), this.$i18n.t('gen.warning'), {
           confirmButtonText: this.$i18n.t('gen.ok'),
           cancelButtonText: this.$i18n.t('gen.cancel'),
           type: 'warning'
         }).then(() => {
-          deleteArticle(this.article.id).then(function (respose) {
-            self.$message({
+          deleteArticle(this.article.id).then((respose) => {
+            this.$message({
               type: 'success',
               message: this.$i18n.t('gen.delete_success')
             })
-            self.$router.push('/')
-            self.$emit('deleted')
+            this.$router.push('/')
+            this.$emit('deleted')
           })
         })
       }

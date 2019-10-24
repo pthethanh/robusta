@@ -53,6 +53,7 @@
         "title": "Title",
         "code_sample": "Code sample",
         "tips": "Tips",
+        "test": "Test",
         "validation": {
             "sample_required": "Sample is required",
             "test_required": "Test is required"

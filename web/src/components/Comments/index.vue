@@ -126,14 +126,13 @@ export default {
     async loadComments () {
       this.loading = true
       this.comments = []
-      let self = this
       var query = 'target=' + this.targetID + '&sort_by=level&sort_by=-created_at'
-      findComments(query).then(function (response) {
+      findComments(query).then((response) => {
         if (response.data !== null && response.data.length > 0) {
-          self.buildCommentTree(response.data)
+          this.buildCommentTree(response.data)
         }
-      }).finally(function () {
-        self.loading = false
+      }).finally(() => {
+        this.loading = false
       })
     },
     buildCommentTree (loadedComments) {
@@ -159,10 +158,9 @@ export default {
         if (!valid) {
           return false
         }
-        var self = this
-        createComment(this.comment).then(function (response) {
-          self.comments.unshift(response.data)
-          self.comment.content = ''
+        createComment(this.comment).then((response) => {
+          this.comments.unshift(response.data)
+          this.comment.content = ''
         })
       })
     },
@@ -171,7 +169,7 @@ export default {
         if (!valid) {
           return false
         }
-        createComment(comment).then(function (response) {
+        createComment(comment).then((response) => {
           comment.id = response.data.id
           comment.mode = 'view'
         })
@@ -182,7 +180,7 @@ export default {
         if (!valid) {
           return false
         }
-        updateComment(comment.id, comment).then(function (response) {
+        updateComment(comment.id, comment).then((response) => {
           comment.mode = 'view'
         })
       })
@@ -196,7 +194,7 @@ export default {
       this.react('downvote', comment)
     },
     react (reactionType, comment) {
-      reactToComment(comment.id, reactionType).then(function (response) {
+      reactToComment(comment.id, reactionType).then((response) => {
         comment.reaction_downvote = response.data.downvote
         comment.reaction_upvote = response.data.upvote
       })
@@ -232,18 +230,17 @@ export default {
       this.$store.dispatch('ToggleLogin', true)
     },
     handleDeleteComment (index, comment) {
-      let self = this
       this.$confirm(this.$i18n.t('comment.delete_confirm'), this.$i18n.t('gen.warning'), {
         confirmButtonText: this.$i18n.t('gen.ok'),
         cancelButtonText: this.$i18n.t('gen.cancel'),
         type: 'warning'
       }).then(() => {
-        deleteComment(comment.id).then(function (respose) {
-          self.$message({
+        deleteComment(comment.id).then((respose) => {
+          this.$message({
             type: 'success',
             message: this.$i18n.t('gen.delete_success')
           })
-          self.comments.splice(index, 1)
+          this.comments.splice(index, 1)
         })
       })
     },

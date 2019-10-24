@@ -16,7 +16,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="test">
-            <el-input type="textarea" :rows="15" :placeholder="$t('challenge.code_sample')" v-model="challenge.test">
+            <el-input type="textarea" :rows="15" :placeholder="$t('challenge.test')" v-model="challenge.test">
             </el-input>
           </el-form-item>
           <el-form-item prop="tips">
@@ -75,13 +75,12 @@ export default {
   },
   title: '',
   created () {
-    let self = this
     if (this.isEditMode()) {
       getChallenge(this.id).then(response => {
         this.challenge = response.data
         this.ready = true
-      }).catch(function (err) {
-        self.$message({
+      }).catch((err) => {
+        this.$message({
           message: this.$i18n.t('gen.load_data_failed') + ': ' + err,
           type: 'error'
         })
