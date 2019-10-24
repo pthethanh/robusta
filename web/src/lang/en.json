@@ -23,9 +23,70 @@
         "warning": "Warning",
         "ok": "OK",
         "cancel": "Cancel",
-        "delete_success": "Deleted successfully"
+        "run": "Run",
+        "preview": "Preview",
+        "delete_success": "Deleted successfully",
+        "create_success": "Created successfully",
+        "update_success": "Updated successfully",
+        "load_data_failed": "Failed to load data",
+        "posted_by": "Posted by",
+        "copied": "Copied to clipboard successfully",
+        "copy_failed": "Failed to copy",
+        "no_data": "No data found",
+        "loading": "Loading...",
+        "email": "Email",
+        "password": "Password"
+
+    },
+    "validation": {
+        "title_required": "Title is required",
+        "title_max_256": "Length should be less than 256 characters",
+        "email_required": "Email is required",
+        "email_min_len": "Email length should be at least 4 characters",
+        "password_required": "Password is required"
     },
     "article": {
         "delete_confirm": "This will delete this article permanently. Continue?"
+        
+    },
+    "challenge": {
+        "title": "Title",
+        "code_sample": "Code sample",
+        "tips": "Tips",
+        "validation": {
+            "sample_required": "Sample is required",
+            "test_required": "Test is required"
+        }
+    },
+    "playground": {
+        "error": "Error",
+        "passed": "PASSED",
+        "failed": "FAILED",
+        "status": "Status",
+        "test_failed": "Test failed",
+        "runtime_error": "Error: Runtime error",
+        "warnings": "Warnings",
+        "program_exit": "Program exited.",
+        "tests_failed": "test(s) failed.",
+        "all_tests_passed": "All tests passed."
+    },
+    "comment": {
+        "comments": "Comments",
+        "placeholder": "Leave your comment",
+        "add": "Add Comment",
+        "login": "Login to Comment",
+        "reply": "Reply",
+        "update": "Update",
+        "delete_confirm": "This will delete this comment permanently. Continue?",
+        "validation": {
+            "required": "Please leave your comment"
+        }
+    },
+    "login": {
+        "info": "Sign in to get personalized story recommendations, follow authors and topics you love.",
+        "google": "Sign in with Google",
+        "register": "Don't have an account? Register here!",
+        "forgot_password": "Forgot password?",
+        "login_failed": "Invalid email or password"
     }
 }

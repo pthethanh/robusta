@@ -3,27 +3,27 @@
     <el-card class="card">
       <logo size="large" :contrast="true"></logo>
       <div class="info">
-        Sign in to get personalized story recommendations, follow authors and topics you love.
+        {{ $t('login.info') }}
       </div>
       <el-form class="login-form" :model="user" :rules="rules" ref="form" @submit.native.prevent="login">
         <el-form-item prop="username" :error="error">
-          <el-input v-model="user.username" placeholder="Email" prefix-icon="fas fa-user">
+          <el-input v-model="user.username" :placeholder="$t('gen.email')" prefix-icon="fas fa-user">
           </el-input>
         </el-form-item>
         <el-form-item prop="password" :error="error">
-          <el-input v-model="user.password" placeholder="Password" type="password" prefix-icon="fas fa-lock">
+          <el-input v-model="user.password" :placeholder="$t('gen.password')" type="password" prefix-icon="fas fa-lock">
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button :loading="loading" class="login-button" type="primary" native-type="submit" block>Sign in</el-button>
+          <el-button :loading="loading" class="login-button" type="primary" native-type="submit" block>{{ $t('nav.sign_in') }}</el-button>
         </el-form-item>
         <el-button :loading="loading" class="login-button social-login-btn" type="plain" @click="loginGoogle">
           <svg-icon icon-class="google" class-name="svg-icon" />
-          <span>Sign in with Google</span>
+          <span>{{ $t('login.google') }}</span>
         </el-button>
         <div class="footer">
-          <div @click="goTo('/users/register')">Don't have an account? Register here!</div>
-          <div @click="goTo('/users/forgot-password')">Forgot password ?</div>
+          <div @click="goTo('/users/register')">{{ $t('login.register') }}</div>
+          <div @click="goTo('/users/forgot-password')">{{ $t('login.forgot_password') }}</div>
         </div>
       </el-form>
     </el-card>
@@ -52,22 +52,18 @@ export default {
       rules: {
         username: [{
           required: true,
-          message: 'Email is required',
+          message: this.$i18n.t('validation.email_required'),
           trigger: 'blur'
         },
         {
           min: 4,
-          message: 'Email length should be at least 4 characters',
+          message: this.$i18n.t('validation.email_min_len'),
           trigger: 'blur'
-        }],
+        }
+        ],
         password: [{
           required: true,
-          message: 'Password is required',
-          trigger: 'blur'
-        },
-        {
-          min: 3,
-          message: 'Password length should be at least 3 characters',
+          message: this.$i18n.t('validation.password_required'),
           trigger: 'blur'
         }]
       }
@@ -91,7 +87,7 @@ export default {
           resolve()
         }).catch(error => {
           this.loading = false
-          this.error = 'Invalid email or password'
+          this.error = this.$i18n.t('login.login_failed')
           reject(error)
         })
       })

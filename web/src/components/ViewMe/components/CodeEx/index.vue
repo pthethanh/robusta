@@ -3,7 +3,7 @@
     <el-row>
       <div class="code-ex-btn-group">
         <el-button @click="copyFullCode" type="primary" size="mini" v-if="code != ''" icon="el-icon-document-copy"></el-button>
-        <el-button @click="run" type="primary" size="mini" v-if="code != ''">Run</el-button>
+        <el-button @click="run" type="primary" size="mini" v-if="code != ''">{{ $t('gen.run') }}</el-button>
       </div>
       <div class="code-ex-input">
         <highlight-code lang="go">{{sample}}</highlight-code>
@@ -14,7 +14,7 @@
       <div class="code-ex-output">
         <pre>
 <span>{{output}}</span>
-<span v-if="exit" style="color:yellow; font-style:italic">Program exited.</span>
+<span v-if="exit" style="color:yellow; font-style:italic">{{ $t('playground.program_exit') }}</span>
         </pre>
       </div>
     </el-row>
@@ -59,16 +59,16 @@ export default {
         if (!data.events || data.events.length === 0) {
           if (data.is_test) {
             if (data.tests_failed > 0) {
-              self.output += '\n' + data.tests_failed + ' test(s) failed.'
+              self.output += '\n' + data.tests_failed + ' ' + this.$i18n.t('playground.tests_failed')
             } else {
-              self.output += '\nAll tests passed.'
+              self.output += '\n' + this.$i18n.t('playground.all_tests_passed')
             }
           } else {
             if (data.status > 0) {
-              self.output += '\nstatus: ' + data.status + '.'
+              self.output += '\n' + this.$i18n.t('playground.status') + ': ' + data.status + '.'
             } else {
               if (data.errors !== '') {
-                self.output += '\nerror: ' + data.errors + '.'
+                self.output += '\n' + this.$i18n.t('playground.error') + ': ' + data.errors + '.'
               } else {
                 // self.output += '\nProgram exited.'
                 self.exit = true
@@ -119,12 +119,12 @@ export default {
       this.$copyText(this.code).then(function (e) {
         self.$message({
           type: 'success',
-          message: 'Full runable code is copied into clipboard'
+          message: this.$i18n.t('gen.copied')
         })
       }, function (e) {
         self.$message({
           type: 'error',
-          message: 'Failed to copy full runable code to clipboard'
+          message: this.$i18n.t('gen.copy_failed')
         })
       })
     }

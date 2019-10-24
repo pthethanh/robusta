@@ -3,7 +3,7 @@
     <el-row>
       <div class="btn-group">
         <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="copyFullCode"></el-button>
-        <el-button type="primary" :loading="loading" size="mini" @click="runTest">Run</el-button>
+        <el-button type="primary" :loading="loading" size="mini" @click="runTest">{{ $t('gen.run') }}</el-button>
       </div>
       <codemirror ref="myCm" :value="code" :options="cmOptions" mode="text/x-go" class="editor" @input="onCodeChange" />
       <div class="output" v-if="output !== ''">
@@ -83,13 +83,13 @@ export default {
         function (e) {
           self.$message({
             type: 'success',
-            message: 'Full runable code is copied into clipboard'
+            message: this.$i18n.t('gen.copied')
           })
         },
         function (e) {
           self.$message({
             type: 'error',
-            message: 'Failed to copy full runable code to clipboard'
+            message: this.$i18n.t('gen.copy_failed')
           })
         }
       )
@@ -97,6 +97,7 @@ export default {
     runTest () {
       this.loading = true
       this.output = ''
+      var errorStr = this.$i18n.t('playground.error')
       evaluate(
         JSON.stringify({
           challenge_id: this.challengeId,
@@ -106,36 +107,36 @@ export default {
       ).then(response => {
         var data = response.data
         if (data.error !== '') {
-          this.output += 'Error: ' + data.error + '\n'
+          this.output += errorStr + ': ' + data.error + '\n'
           this.$emit('run-completed', false, this.code)
           return
         }
-        var status = 'PASSED'
+        var status = this.$i18n.t('playground.passed')
         if (data.tests_failed > 0 || data.status !== 0) {
-          status = 'FAILED'
+          status = this.$i18n.t('playground.failed')
         }
-        this.output = 'Status: ' + status + '\n'
+        this.output = this.$i18n.t('playground.status') + ': ' + status + '\n'
         if (data.tests_failed > 0) {
-          this.output += data.tests_failed + ' tests failed\n'
+          this.output += data.tests_failed + ' ' + this.$i18n.t('playground.test_failed') + '\n'
         }
         if (data.status > 1 && data.tests_failed === 0) {
-          this.output += 'Error: Runtime error\n'
+          this.output += this.$i18n.t('playground.runtime_error') + '\n'
         }
         var problems = data.problems
         if (problems.length > 0) {
-          this.output += 'Warnings: \n'
+          this.output += this.$i18n.t('playground.warnings') + ': \n'
           for (var i = 0; i < problems.length; i++) {
             this.output += 'prog.go:' + problems[i].Position.Line + ':' + problems[i].Position.Column + ': ' + problems[i].Text + '\n'
           }
         }
-        this.$emit('run-completed', status === 'PASSED', this.code)
+        this.$emit('run-completed', status === this.$i18n.t('playground.passed'), this.code)
       }).catch((error) => {
         var res = error.response
         if (res !== undefined && res !== null) {
-          this.output += 'Error: ' + res.data.message + '\n'
+          this.output += errorStr + ': ' + res.data.message + '\n'
           return
         }
-        this.output += 'Error: ' + error + '\n'
+        this.output += errorStr + ': ' + error + '\n'
         this.$emit('run-completed', false, this.code)
       }).finally(() => {
         this.loading = false

@@ -1,15 +1,15 @@
 <template>
   <div class="comment-wrapper">
     <div class="comment-info">
-      <span v-loading="_loading" class="info-txt">{{comments.length}} Comments</span>
+      <span v-loading="_loading" class="info-txt">{{comments.length}} {{ $t('comment.comments') }}</span>
     </div>
     <div class="comment-box">
       <el-form :model="comment" :rules="rules" ref="commentForm">
         <el-form-item prop="content">
-          <el-input type="textarea" class="text" :rows="3" placeholder="Leave your comment" v-model="comment.content"></el-input>
+          <el-input type="textarea" class="text" :rows="3" :placeholder="$t('comment.placeholder')" v-model="comment.content"></el-input>
         </el-form-item>
-        <el-button class="comment-btn" v-if="user.authenticated" @click="addNewComment" type="primary" size="mini">Add Comment</el-button>
-        <el-button class="comment-btn" type="danger" size="mini" v-if="!user.authenticated" @click="goToLogin">Login to Comment</el-button>
+        <el-button class="comment-btn" v-if="user.authenticated" @click="addNewComment" type="primary" size="mini">{{ $t('comment.add') }}</el-button>
+        <el-button class="comment-btn" type="danger" size="mini" v-if="!user.authenticated" @click="goToLogin">{{ $t('comment.login') }}</el-button>
       </el-form>
     </div>
     <div v-if="comments !== null && comments.length > 0">
@@ -42,12 +42,12 @@
 
             <el-form :model="comment" :rules="rules" v-if="comment.mode==='edit'" ref="editForm" class="edit">
               <el-form-item prop="content">
-                <el-input v-model="comment.content" type="textarea" class="text" :rows="3" placeholder="Leave your comment"></el-input>
+                <el-input v-model="comment.content" type="textarea" class="text" :rows="3" :placeholder="$t('comment.placeholder')"></el-input>
               </el-form-item>
-              <el-button class="comment-btn" type="primary" size="mini" @click="addReplyComment(comment)" v-if="user.authenticated && comment.id === ''">Reply</el-button>
-              <el-button class="comment-btn" type="primary" size="mini" @click="updateComment(comment)" v-if="user.authenticated && comment.id !== ''">Update</el-button>
-              <el-button class="comment-btn" type="danger" size="mini" v-if="!user.authenticated" @click="goToLogin">Login to Comment</el-button>
-              <el-button class="comment-btn" type="primary" size="mini" @click="cancel(index, comment)">Cancel</el-button>
+              <el-button class="comment-btn" type="primary" size="mini" @click="addReplyComment(comment)" v-if="user.authenticated && comment.id === ''">{{ $t('comment.reply') }}</el-button>
+              <el-button class="comment-btn" type="primary" size="mini" @click="updateComment(comment)" v-if="user.authenticated && comment.id !== ''">{{ $t('comment.update') }}</el-button>
+              <el-button class="comment-btn" type="danger" size="mini" v-if="!user.authenticated" @click="goToLogin">{{ $t('comment.login') }}</el-button>
+              <el-button class="comment-btn" type="primary" size="mini" @click="cancel(index, comment)">{{ $t('gen.cancel') }}</el-button>
             </el-form>
             <div class="actions" v-if="comment.mode!=='edit'">
               <li class="footer-item el-icon-arrow-up" @click="upvote(comment)">
@@ -56,7 +56,7 @@
               <li class="footer-item el-icon-arrow-down" @click="downvote(comment)">
                 <span class="footer-item-value">{{comment.reaction_downvote}}</span>
               </li>
-              <li @click="replyTo(index, comment)">Reply</li>
+              <li @click="replyTo(index, comment)">{{ $t('comment.reply') }}</li>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export default {
       rules: {
         content: [{
           required: true,
-          message: 'Please leave your comment',
+          message: this.$i18n.t('comment.validation.required'),
           trigger: 'blur'
         }]
       },
@@ -233,15 +233,15 @@ export default {
     },
     handleDeleteComment (index, comment) {
       let self = this
-      this.$confirm('This will delete this comment permanently. Continue?', 'Warning', {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
+      this.$confirm(this.$i18n.t('comment.delete_confirm'), this.$i18n.t('gen.warning'), {
+        confirmButtonText: this.$i18n.t('gen.ok'),
+        cancelButtonText: this.$i18n.t('gen.cancel'),
         type: 'warning'
       }).then(() => {
         deleteComment(comment.id).then(function (respose) {
           self.$message({
             type: 'success',
-            message: 'Delete successfully'
+            message: this.$i18n.t('gen.delete_success')
           })
           self.comments.splice(index, 1)
         })

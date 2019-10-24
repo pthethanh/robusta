@@ -1,7 +1,7 @@
 <template>
   <div class="article">
     <el-card class="card">
-      <div class="header" @click="select">Posted by {{article.created_by_name}} {{article.created_at | date }}</div>
+      <div class="header" @click="select">{{ $t('gen.posted_by') }} {{article.created_by_name}} {{article.created_at | date }}</div>
       <div class="title" @click="select">{{article.title}}</div>
       <div class="content" @click="select" v-html="article.abstract" v-if="isAbstractPresent()"></div>
       <div class="content" @click="select" v-if="!isAbstractPresent()">
@@ -98,7 +98,7 @@ export default {
       }
       return typedTags
     },
-    tagSelected(tag) {
+    tagSelected (tag) {
       this.$emit('tagSelected', tag)
     }
   }

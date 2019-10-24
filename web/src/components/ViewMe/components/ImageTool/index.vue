@@ -6,7 +6,7 @@
       'image__withBorder': data.withBorder,
     }">
       <div slot="placeholder" class="image-slot">
-        Loading<span class="dot">...</span>
+        {{ $t('gen.loading') }}<span class="dot">...</span>
       </div>
       <div slot="error" class="image-slot">
         <i class="el-icon-picture-outline"></i>

@@ -3,24 +3,24 @@
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-if="ready">
         <div class="menu">
-          <el-button type="primary" size="mini" class="menu-btn" @click="saveEditor">Save</el-button>
-          <el-button type="primary" size="mini" class="menu-btn" @click="openReviewEditor">Preview</el-button>
+          <el-button type="primary" size="mini" class="menu-btn" @click="saveEditor">{{ $t('gen.save') }}</el-button>
+          <el-button type="primary" size="mini" class="menu-btn" @click="openReviewEditor">{{ $t('gen.preview') }}</el-button>
         </div>
         <el-form :model="challenge" :rules="rules" ref="editorForm" class="form">
           <el-form-item prop="title">
-            <el-input class="input-title" placeholder="title" v-model="challenge.title"></el-input>
+            <el-input class="input-title" :placeholder="$t('challenge.title')" v-model="challenge.title"></el-input>
           </el-form-item>
           <editor ref="editor" @save="save" class="editorjs" :initData="challenge.description"></editor>
           <el-form-item prop="sample">
-            <el-input type="textarea" :rows="10" placeholder="Code sample" v-model="challenge.sample">
+            <el-input type="textarea" :rows="10" :placeholder="$t('challenge.code_sample')" v-model="challenge.sample">
             </el-input>
           </el-form-item>
           <el-form-item prop="test">
-            <el-input type="textarea" :rows="15" placeholder="Unit test" v-model="challenge.test">
+            <el-input type="textarea" :rows="15" :placeholder="$t('challenge.code_sample')" v-model="challenge.test">
             </el-input>
           </el-form-item>
           <el-form-item prop="tips">
-            <el-input type="textarea" :rows="15" placeholder="Tips" v-model="challenge.tips">
+            <el-input type="textarea" :rows="15" :placeholder="$t('challenge.tips')" v-model="challenge.tips">
             </el-input>
           </el-form-item>
         </el-form>
@@ -53,21 +53,21 @@ export default {
       rules: {
         title: [{
           required: true,
-          message: 'Please enter title',
+          message: this.$i18n.t('validation.title_required'),
           trigger: 'blur'
         }, {
           max: 256,
-          message: 'Length should be less than 256 characters',
+          message: this.$i18n.t('validation.title_max_256'),
           trigger: 'blur'
         }],
         sample: [{
           required: true,
-          message: 'Please enter sample',
+          message: this.$i18n.t('challenge.validation.sample_required'),
           trigger: 'blur'
         }],
         test: [{
           required: true,
-          message: 'Please enter test',
+          message: this.$i18n.t('challenge.validation.test_required'),
           trigger: 'blur'
         }]
       }
@@ -82,7 +82,7 @@ export default {
         this.ready = true
       }).catch(function (err) {
         self.$message({
-          message: 'Failed to load data: ' + err,
+          message: this.$i18n.t('gen.load_data_failed') + ': ' + err,
           type: 'error'
         })
       })
@@ -117,7 +117,7 @@ export default {
       createChallenge(this.challenge).then((response) => {
         self.challenge = response.data
         this.$message({
-          message: 'Created successfully',
+          message: this.$i18n.t('gen.create_success'),
           type: 'success'
         })
       })
@@ -131,7 +131,7 @@ export default {
       }
       updateChallenge(id, this.challenge).then((response) => {
         this.$message({
-          message: 'Update successfully',
+          message: this.$i18n.t('gen.update_success'),
           type: 'success'
         })
       })
