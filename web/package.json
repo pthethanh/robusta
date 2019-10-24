@@ -48,12 +48,13 @@
     "vue-clipboard2": "^0.3.0",
     "vue-codemirror": "^4.0.6",
     "vue-highlight.js": "^3.1.0",
+    "vue-i18n": "^8.15.0",
     "vue-page-title": "^1.1.4",
     "vue-router": "^3.0.1",
     "vue-shortkey": "^3.1.7",
     "vue-splitpane": "^1.0.4",
-    "vuex": "^3.0.1",
-    "vuedraggable": "2.23.2"
+    "vuedraggable": "2.23.2",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.5.5",

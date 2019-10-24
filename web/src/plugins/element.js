@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+
 import {
   Dialog,
   Dropdown,
@@ -81,6 +84,8 @@ import {
   // Tree,
   // Tooltip,
 } from 'element-ui'
+
+locale.use(lang)
 
 Vue.use(Dialog)
 Vue.use(Dropdown)

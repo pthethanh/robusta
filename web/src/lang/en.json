@@ -1,0 +1,17 @@
+{
+    "nav_home": "Home",
+    "nav_blog": "Blog",
+    "nav_challenges": "Challenges",
+    "nav_resources": "Resources",
+    "nav_about": "About",
+    "nav_new_post": "New Post",
+    "nav_profile": "Profile",
+    "nav_sign_in": "Sign in",
+    "nav_sign_out": "Sign out",
+    "nav_latest_posts": "Latest Posts",
+    "nav_list_challenges": "List Challenges",
+    "nav_new_challenge": "New Challenge",
+    "nav_manage_challenges": "Manage Challenge",
+    "nav_policies": "Policies",
+    "nav_users": "Users"
+}

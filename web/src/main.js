@@ -1,5 +1,5 @@
 import Vue from 'vue'
-
+import { i18n } from './plugins/i18n.js'
 import request from '@/utils/request'
 import '@/icons'
 import '@/permission'
@@ -27,6 +27,7 @@ Object.keys(filters).forEach(key => {
 new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
+  i18n,
   store,
   render: h => h(App)
 })

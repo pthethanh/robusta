@@ -3,23 +3,23 @@
     <el-menu mode="horizontal" :router="true" :text-color="variables.headerTextColor" :active-text-color="variables.headerActiveTextColor" :background-color="variables.headerBackgroundColor" :default-active="activeMenuIndex" @select="onSelect">
       <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
       <logo class="logo" @click="onSelect('1', ['1'])"></logo>
-      <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/articles">Blog</el-menu-item>
-      <el-menu-item class="hidden-xs-only menu-item-bold" index="2" route="/challenges">Challenges</el-menu-item>
-      <el-menu-item class="hidden-xs-only menu-item-bold" index="3" route="/resources">Resources</el-menu-item>
-      <el-menu-item class="hidden-xs-only menu-item-bold" index="4" route="/about">About</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="1" route="/articles">{{ $t('nav_blog') }}</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="2" route="/challenges">{{ $t('nav_challenges') }}</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="3" route="/resources">{{ $t('nav_resources') }}</el-menu-item>
+      <el-menu-item class="hidden-xs-only menu-item-bold" index="4" route="/about">{{ $t('nav_about') }}</el-menu-item>
       <el-dropdown v-if="user.authenticated" class="right-menu-item el-menu-item el-menu-item--horizontal" trigger="click">
         <avatar size="small" :src="user.info.avatar_url" :names="[user.info.first_name, user.info.email]"></avatar>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile">
-            <el-dropdown-item>Profile</el-dropdown-item>
+            <el-dropdown-item>{{ $t('nav_profile') }}</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="onLogout">Sign Out</span>
+            <span style="display:block;" @click="onLogout">{{ $t('nav_sign_out') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <div v-if="!user.authenticated" index="7" class="el-menu-item right-menu-item menu-item-bold" @click="onLogin">Sign in</div>
-      <el-menu-item index="6" route="/articles/new" class="right-menu-item menu-item-bold" style="color: #F2CD02;">New Post</el-menu-item>
+      <div v-if="!user.authenticated" index="7" class="el-menu-item right-menu-item menu-item-bold" @click="onLogin">{{ $t('nav_sign_in') }}</div>
+      <el-menu-item index="6" route="/articles/new" class="right-menu-item menu-item-bold" style="color: #F2CD02;">{{ $t('nav_new_post') }}</el-menu-item>
     </el-menu>
   </div>
 </template>

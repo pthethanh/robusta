@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/views/layout'
+import { i18n } from '@/plugins/i18n.js'
 
 Vue.use(Router)
 export const routes = [
   { path: '/home', redirect: '/', hidden: true },
   {
     path: '/',
-    name: 'Home',
+    name: i18n.t('nav_home'),
     icon: 'el-icon-s-home',
     component: Layout,
     redirect: '/',
@@ -18,18 +19,18 @@ export const routes = [
   },
   {
     path: '/articles',
-    name: 'Blog',
+    name: i18n.t('nav_blog'),
     icon: 'el-icon-collection',
     component: Layout,
     redirect: '/',
     children: [
       {
-        name: 'Latest Posts',
+        name: i18n.t('nav_latest_posts'),
         path: '',
         component: () => import('@/views/article/home/index')
       },
       {
-        name: 'New Post',
+        name: i18n.t('nav_new_post'),
         path: 'new',
         component: () => import('@/views/article/new/index')
       },
@@ -46,7 +47,7 @@ export const routes = [
   },
   {
     path: '/resources',
-    name: 'Resources',
+    name: i18n.t('nav_resources'),
     icon: 'el-icon-help',
     component: Layout,
     redirect: '/',
@@ -57,24 +58,24 @@ export const routes = [
   },
   {
     path: '/challenges',
-    name: 'Challenges',
+    name: i18n.t('nav_challenges'),
     icon: 'el-icon-coffee-cup',
     component: Layout,
     redirect: '/challenges/home',
     children: [{
       path: 'home',
-      name: 'List Challenges',
+      name: i18n.t('nav_list_challenges'),
       component: () => import('@/views/challenge/home/index')
     },
     {
       path: 'new',
-      name: 'New Challenge',
+      name: i18n.t('nav_new_challenge'),
       roles: ['group-admin'],
       component: () => import('@/views/challenge/new/index')
     },
     {
       path: 'admin',
-      name: 'Manage Challenges',
+      name: i18n.t('nav_manage_challenges'),
       roles: ['group-admin'],
       component: () => import('@/views/challenge/admin/index')
     },
@@ -91,20 +92,20 @@ export const routes = [
   },
   {
     path: '/policies',
-    name: 'Policies',
+    name: i18n.t('nav_policies'),
     icon: 'el-icon-setting',
     roles: ['group-admin'],
     component: Layout,
     redirect: '/policies/home',
     children: [{
       path: 'home',
-      name: 'Manage Policies',
+      name: i18n.t('nav_manage_policies'),
       component: () => import('@/views/policy/home/index')
     }]
   },
   {
     path: '/users',
-    name: 'Users',
+    name: i18n.t('nav_users'),
     component: Layout,
     hidden: true,
     redirect: '/',
@@ -123,7 +124,7 @@ export const routes = [
   },
   {
     path: '/about',
-    name: 'About',
+    name: i18n.t('nav_about'),
     icon: 'el-icon-info',
     component: Layout,
     redirect: '/',
