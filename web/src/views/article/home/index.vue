@@ -25,7 +25,8 @@ import {
 import ArticleItem from '@/components/ArticleItem'
 import ArticleDetail from '@/components/ArticleDetail'
 import {
-  getTags
+  getTags,
+  tagsEquals
 } from '@/utils/tag'
 export default {
   components: {
@@ -42,16 +43,20 @@ export default {
       limit: 15,
       loading: false,
       noMoreArticles: false,
-      tags: []
+      tags: [],
+      init: true
     }
   },
   mounted () {
     window.onpopstate = this.handleBackButton
     this.tags = getTags(this.$route.query.tags)
-    this.reload()
   },
   watch: {
     tags: function (o, n) {
+      if (this.init) {
+        this.init = false
+        return
+      }
       this.reload()
     }
   },
@@ -94,7 +99,7 @@ export default {
       if (id === undefined) {
         id = this.selectedArticle.id
       }
-      history.pushState({}, null, this.$route.fullPath)
+      history.pushState({}, null, this.getURL())
       history.pushState({}, null, '/articles/detail/' + id)
     },
     detailClosed () {
@@ -118,9 +123,7 @@ export default {
       this.articles = []
       this.offset = 0
       this.noMoreArticles = false
-      if (this.$route.fullPath !== this.getURL()) {
-        history.pushState({}, null, this.getURL())
-      }
+      history.pushState({}, null, this.getURL())
       this.fetchData()
     },
     removeFilter (tag) {
@@ -134,9 +137,8 @@ export default {
       if (this.isOpenDetail) {
         this.isOpenDetail = false
       }
-      // TODO bug: close detail will call this and cause bug
       var tags = getTags(this.$route.query.tags)
-      if (JSON.stringify(tags) !== JSON.stringify(this.tags)) {
+      if (!tagsEquals(tags, this.tags)) {
         this.tags = tags
       }
     },
