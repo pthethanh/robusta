@@ -7,10 +7,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 .el-dialog__headerbtn {
   position: fixed;
-  top: 20px;
+  top: 10px;
   right: 20px;
   padding: 0;
-  font-size: 25px;
+  font-size: 16px;
   z-index: 9999;
   i {
     &:before {
