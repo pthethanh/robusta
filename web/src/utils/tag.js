@@ -24,3 +24,15 @@ export function getTags(tags) {
   }
   return result
 }
+
+export function tagsEquals(tags1, tags2) {
+  if (tags1.length !== tags2.length) {
+    return false
+  }
+  for (var i = 0; i < tags1.length; i++) {
+    if (tags1.label !== tags2.label) {
+      return false
+    }
+  }
+  return true
+}

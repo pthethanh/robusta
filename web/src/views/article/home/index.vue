@@ -11,7 +11,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-dialog :visible.sync="isOpenDetail" :center="true" :modal="true" :append-to-body="true" :fullscreen="true" @close="detailClosed" top="48px" width="95%" :modal-append-to-body="true" class="dialog">
+      <el-dialog :visible.sync="isOpenDetail" :center="true" :modal="true" :append-to-body="true" :fullscreen="true" @close="detailClosed">
         <article-detail :article="selectedArticle" @deleted="isOpenDetail=false"></article-detail>
       </el-dialog>
     </el-row>
@@ -25,7 +25,8 @@ import {
 import ArticleItem from '@/components/ArticleItem'
 import ArticleDetail from '@/components/ArticleDetail'
 import {
-  getTags
+  getTags,
+  tagsEquals
 } from '@/utils/tag'
 export default {
   components: {
@@ -42,16 +43,20 @@ export default {
       limit: 15,
       loading: false,
       noMoreArticles: false,
-      tags: []
+      tags: [],
+      init: true
     }
   },
   mounted () {
     window.onpopstate = this.handleBackButton
     this.tags = getTags(this.$route.query.tags)
-    this.reload()
   },
   watch: {
     tags: function (o, n) {
+      if (this.init) {
+        this.init = false
+        return
+      }
       this.reload()
     }
   },
@@ -94,7 +99,7 @@ export default {
       if (id === undefined) {
         id = this.selectedArticle.id
       }
-      history.pushState({}, null, this.$route.fullPath)
+      history.pushState({}, null, this.getURL())
       history.pushState({}, null, '/articles/detail/' + id)
     },
     detailClosed () {
@@ -118,9 +123,7 @@ export default {
       this.articles = []
       this.offset = 0
       this.noMoreArticles = false
-      if (this.$route.fullPath !== this.getURL()) {
-        history.pushState({}, null, this.getURL())
-      }
+      history.pushState({}, null, this.getURL())
       this.fetchData()
     },
     removeFilter (tag) {
@@ -135,16 +138,16 @@ export default {
         this.isOpenDetail = false
       }
       var tags = getTags(this.$route.query.tags)
-      if (JSON.stringify(tags) !== JSON.stringify(this.tags)) {
+      if (!tagsEquals(tags, this.tags)) {
         this.tags = tags
       }
     },
     getURL () {
       var url = '/articles'
       if (this.tags.length > 0) {
-        url += '?'
+        url += '?tags=' + this.tags[0].label
       }
-      for (var i = 0; i < this.tags.length; i++) {
+      for (var i = 1; i < this.tags.length; i++) {
         url += '&tags=' + this.tags[i].label
       }
       return url
@@ -166,10 +169,6 @@ export default {
     .tag {
       margin-left: 5px;
     }
-  }
-
-  .dialog {
-    height: 100%;
   }
 }
 

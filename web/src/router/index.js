@@ -14,7 +14,7 @@ export const routes = [
     redirect: '/',
     children: [{
       path: '',
-      component: () => import('@/views/home/index')
+      component: () => import('@/views/article/home/index')
     }]
   },
   {
