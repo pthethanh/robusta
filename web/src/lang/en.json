@@ -42,8 +42,10 @@
         "title_required": "Title is required",
         "title_max_256": "Length should be less than 256 characters",
         "email_required": "Email is required",
-        "email_min_len": "Email length should be at least 4 characters",
-        "password_required": "Password is required"
+        "email_invalid": "Please enter a valid email address",
+        "password_required": "Password is required",
+        "password_len_min": "Password length should be at least 5 characters",
+        "password_len_max": "Password length should be less than 25 characters"
     },
     "article": {
         "delete_confirm": "This will delete this article permanently. Continue?"
@@ -100,5 +102,66 @@
         "register": "Don't have an account? Register here!",
         "forgot_password": "Forgot password?",
         "login_failed": "Invalid email or password"
+    },
+    "policy": {
+        "user_placeholder": "Select user",
+        "action_placeholder": "Select action",
+        "effect_placeholder": "Select effect",
+        "add_policy": "Add Policy",
+        "remove_policy": "Remove",
+        "user": "User",
+        "action": "Action",
+        "effect": "Effect",
+        "any_user": "All users",
+        "remove_success": "Removed policy successfully",
+        "remove_failed": "Failed to remove policy",
+        "add_success": "Added policy successfully",
+        "folder": {
+            "title": "Manage Folder Policies",
+            "folder_placeholder": "Select folder"    
+        },
+        "validation": {
+            "user_required": "Please select user",
+            "folder_required": "Please select folder",
+            "action_required": "Please select action",
+            "effect_required": "Please select effect"
+        }
+    },
+    "resource": {
+        "articles": "Articles",
+        "books": "Books",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "beginner": "Beginner"
+    },
+    "user": {
+        "email": "Email",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "password": "Password",
+        "password_confirm": "Enter password again",
+        "password_not_match": "Password doesn't match",
+        "forgot_password": {
+            "title": "Forgot Password",
+            "info": "Please enter the email that you registered below for resetting password.",
+            "submit": "Submit",
+            "success_message": "Reset Password request has been sent to your email. Please check.",
+            "failed_message": "There were some error during send request for resetting password. Please try again."
+        },
+        "registration": {
+            "title": "Create a new account",
+            "info": "It's quick and easy.",
+            "register": "Register",
+            "success_message": "Account has been created. Go ahead to login!",
+            "failed_message": "There were some error during the registration. Please try again"
+        },
+        "reset_password": {
+            "title": "Reset Password",
+            "reset": "Reset",
+            "invalid_token": "Invalid token",
+            "link_to_forgot_password": "Click <a href=\"/users/forgot-password\" style=\"color:red\">here</a> to request a new reset password link if the current link doesn't work or already expired.",
+            "success_message": "Password has been reset successfully. Please try to login again.",
+            "failed_message": "There were some error during resetting password. Please try again."
+        }
     }
 }

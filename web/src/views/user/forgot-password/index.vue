@@ -2,15 +2,15 @@
   <div class="forgot-password">
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="10" :md="10" :lg="8" :xl="8">
-        <div class="title">Forgot Password</div>
-        <p>Please enter the email that you registered below for resetting password.</p>
+        <div class="title">{{ $t('user.forgot_password.title') }}</div>
+        <p>{{ $t('user.forgot_password.info') }}</p>
         <el-form :model="user" :rules="rules" ref="forgot-password-form" @submit.native.prevent="sendResetPasswordRequest">
           <el-form-item prop="email" :error="error">
-            <el-input v-model="user.email" placeholder="Email" type="email">
+            <el-input v-model="user.email" :placeholder="$t('user.email')" type="email">
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" type="primary" @click="sendResetPasswordRequest">Submit</el-button>
+            <el-button :loading="loading" type="primary" @click="sendResetPasswordRequest">{{ $t('user.forgot_password.submit') }}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -33,14 +33,15 @@ export default {
       rules: {
         email: [{
           required: true,
-          message: 'Email is required',
+          message: this.$i18n.t('validation.email_required'),
           trigger: 'blur'
         },
         {
           type: 'email',
-          message: 'Please enter a valid email address',
+          message: this.$i18n.t('validation.email_invalid'),
           trigger: 'blur'
-        }]
+        }
+        ]
       }
     }
   },
@@ -58,7 +59,7 @@ export default {
       genResetPasswordToken(JSON.stringify(this.user)).then((response) => {
         this.$message({
           type: 'success',
-          message: 'Reset Password request has been sent to your email. Please check.'
+          message: this.$i18n.t('user.forgot_password.success_message')
         })
         this.error = ''
       }).catch((error) => {
@@ -67,7 +68,7 @@ export default {
         if (res !== undefined && res !== null) {
           this.error = res.data.message
         } else {
-          this.error = 'There were some error during send request for resetting password. Please try again.'
+          this.error = this.$i18n.t('user.forgot_password.failed_message')
         }
       })
       this.loading = false

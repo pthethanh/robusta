@@ -2,10 +2,10 @@
   <div class="policy">
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="24" :md="24" :lg="22" :xl="18">
-        <div class="title">Add Folder Policies</div>
+        <div class="title">{{ $t('policy.folder.title') }}</div>
         <el-form class="add-policy-form" :model="policy" @submit.native.prevent="addPolicy" :rules="rules" ref="add-policy-form" inline>
           <el-form-item prop="object">
-            <el-select v-model="policy.object" placeholder="Select folder" filterable no-data-text="No data" no-match-text="No matching option" @change="reloadFolderPolicies">
+            <el-select v-model="policy.object" :placeholder="$t('policy.folder.folder_placeholder')" filterable @change="reloadFolderPolicies">
               <infinity-load :fetch-data="fetchFolders" v-bind:data.sync="folders" @error="folderOffset -= folderLimit" no-more-text="" :delay="0" :limit="folderLimit">
                 <template v-slot:default="{data}">
                   <el-option v-for="item in data" :key="item.id" :label="item.name" :value="item.id">
@@ -15,37 +15,37 @@
             </el-select>
           </el-form-item>
           <el-form-item prop="subject">
-            <el-select v-model="policy.subject" placeholder="Select user" filterable no-data-text="No data" no-match-text="No matching option">
+            <el-select v-model="policy.subject" :placeholder="$t('policy.user_placeholder')" filterable>
               <el-option v-for="item in users" :key="item.user_id" :label="getDisplayName(item)" :value="item.user_id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item prop="action">
-            <el-select v-model="policy.action" placeholder="Select action" filterable no-data-text="No data" no-match-text="No matching option">
+            <el-select v-model="policy.action" :placeholder="$t('policy.action_placeholder')" filterable>
               <el-option v-for="item in folderActions" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item prop="effect">
-            <el-select v-model="policy.effect" placeholder="Select effect" filterable no-data-text="No data" no-match-text="No matching option">
+            <el-select v-model="policy.effect" :placeholder="$t('policy.effect_placeholder')" filterable>
               <el-option v-for="item in effect" :key="item" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" type="primary" @click="addPolicy">Add Policy</el-button>
+            <el-button :loading="loading" type="primary" @click="addPolicy">{{ $t('policy.add_policy') }}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="folderPolicies" style="width: 100%" empty-text="No data" max-height="500">
-          <el-table-column label="User" prop="user" fixed min-width="250" sortable>
+        <el-table :data="folderPolicies" style="width: 100%" max-height="500">
+          <el-table-column :label="$t('policy.user')" prop="user" fixed min-width="250" sortable>
           </el-table-column>
-          <el-table-column label="Action" prop="action" min-width="200" sortable>
+          <el-table-column :label="$t('policy.action')" prop="action" min-width="200" sortable>
           </el-table-column>
-          <el-table-column label="Effect" prop="effect" min-width="200" sortable>
+          <el-table-column :label="$t('policy.effect')" prop="effect" min-width="200" sortable>
           </el-table-column>
           <el-table-column align="right" min-width="200">
-            <template  slot-scope="scope">
-              <el-button size="mini" type="danger" @click="handleRemovePolicy(scope.$index, scope.row)">Remove</el-button>
+            <template slot-scope="scope">
+              <el-button size="mini" type="danger" @click="handleRemovePolicy(scope.$index, scope.row)">{{ $t('policy.remove_policy') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -90,22 +90,22 @@ export default {
       rules: {
         subject: [{
           required: true,
-          message: 'Please select user',
+          message: this.$i18n.t('policy.validation.user_required'),
           trigger: 'change'
         }],
         object: [{
           required: true,
-          message: 'Object is required',
+          message: this.$i18n.t('policy.validation.folder_required'),
           trigger: 'change'
         }],
         action: [{
           required: true,
-          message: 'Action is required',
+          message: this.$i18n.t('policy.validation.action_required'),
           trigger: 'change'
         }],
         effect: [{
           required: true,
-          message: 'Effect is required',
+          message: this.$i18n.t('policy.validation.effect_required'),
           trigger: 'change'
         }]
       },
@@ -117,7 +117,7 @@ export default {
     listUsers().then((response) => {
       this.users = []
       this.users.push({
-        name: 'Any User',
+        name: this.$i18n.t('policy.any_user'),
         user_id: '*',
         email: ''
       })
@@ -139,18 +139,19 @@ export default {
         isValid = valid
       })
       if (!isValid) {
+        this.loading = false
         return
       }
       addPolicy(JSON.stringify(this.policy)).then((response) => {
         this.policy.user = this.getUserName(this.policy.subject)
         this.folderPolicies.unshift(this.policy)
         this.$message({
-          message: 'Added policy successfully',
+          message: this.$i18n.t('policy.add_success'),
           type: 'success'
         })
       }).catch((error) => {
         this.$message({
-          message: 'Failed to add policy: ' + error,
+          message: this.$i18n.t('gen.load_data_failed') + ': ' + error,
           type: 'error'
         })
       }).finally(() => {
@@ -180,7 +181,7 @@ export default {
         }
       }).catch((error) => {
         this.$message({
-          message: 'Failed to load policies: ' + error,
+          message: this.$i18n.t('gen.load_data_failed') + ': ' + error,
           type: 'error'
         })
       })
@@ -201,12 +202,12 @@ export default {
       removePolicy(JSON.stringify(this.folderPolicies[i])).then(() => {
         this.folderPolicies.splice(i, 1)
         this.$message({
-          message: 'Removed policy successfully',
+          message: this.$i18n.t('policy.remove_success'),
           type: 'success'
         })
       }).catch((error) => {
         this.$message({
-          message: 'Failed remove policy: ' + error,
+          message: this.$i18n.t('policy.remove_failed') + ': ' + error,
           type: 'error'
         })
       })

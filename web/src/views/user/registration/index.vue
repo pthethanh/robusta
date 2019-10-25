@@ -1,27 +1,27 @@
 <template>
   <div class="register">
     <div class="form">
-      <div class="title">Create a new account</div>
-      <div>It's quick and easy.</div>
+      <div class="title">{{ $t('user.registration.title') }}</div>
+      <div>{{ $t('user.registration.info') }}</div>
       <el-form class="register-form" :model="user" :rules="rules" ref="register-form" @submit.native.prevent="register">
         <el-form-item>
           <el-col :span="12">
-            <el-input v-model="user.first_name" placeholder="First Name"></el-input>
+            <el-input v-model="user.first_name" :placeholder="$t('user.first_name')"></el-input>
           </el-col>
           <el-col :span="12">
-            <el-input v-model="user.last_name" placeholder="Last Name"></el-input>
+            <el-input v-model="user.last_name" :placeholder="$t('user.last_name')"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item prop="email" :error="error">
-          <el-input v-model="user.email" placeholder="Email" type="email">
+          <el-input v-model="user.email" :placeholder="$t('user.email')" type="email">
           </el-input>
         </el-form-item>
         <el-form-item prop="password" :error="error">
-          <el-input v-model="user.password" placeholder="Password" type="password">
+          <el-input v-model="user.password" :placeholder="$t('user.password')" type="password">
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button :loading="loading" type="primary" @click="register">Register</el-button>
+          <el-button :loading="loading" type="primary" @click="register">{{ $t('user.registration.register') }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -46,29 +46,31 @@ export default {
       rules: {
         email: [{
           required: true,
-          message: 'Email is required',
+          message: this.$i18n.t('validation.email_required'),
           trigger: 'blur'
         },
         {
           type: 'email',
-          message: 'Please enter a valid email address',
+          message: this.$i18n.t('validation.email_invalid'),
           trigger: 'blur'
-        }],
+        }
+        ],
         password: [{
           required: true,
-          message: 'Password is required',
+          message: this.$i18n.t('validation.password_required'),
           trigger: 'blur'
         },
         {
           min: 5,
-          message: 'Password length should be at least 5 characters',
+          message: this.$i18n.t('validation.password_len_min'),
           trigger: 'blur'
         },
         {
           max: 25,
-          message: 'Password length should be less than 25 characters',
+          message: this.$i18n.t('validation.password_len_max'),
           trigger: 'blur'
-        }]
+        }
+        ]
       }
     }
   },
@@ -86,7 +88,7 @@ export default {
       register(JSON.stringify(this.user)).then(response => {
         self.$message({
           type: 'success',
-          message: 'Account has been created. Go ahead to login!'
+          message: this.$i18n.t('user.registration.success_message')
         })
         self.error = ''
         self.$router.push('/login?redirect=/')
@@ -96,7 +98,7 @@ export default {
         if (res !== undefined && res !== null) {
           this.error = res.data.message
         } else {
-          this.error = 'There were some error during the registration. Please try again'
+          this.error = this.$i18n.t('user.registration.failed_message')
         }
       })
       this.loading = false

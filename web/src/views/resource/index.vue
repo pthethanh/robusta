@@ -2,9 +2,9 @@
   <div class="resources">
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14">
-        <h2 class="section-title">Articles</h2>
+        <h2 class="section-title">{{ $t('resource.articles') }}</h2>
         <div v-for="(article, index) in articles" :key="index">
-          <h3>{{article.level}}</h3>
+          <h3>{{ $t('resource.' + article.level) }}</h3>
           <ul class="block">
             <li v-for="(category, idx) in article.categories" :key="idx">
               <span>{{category.name}}:&nbsp;</span>
@@ -21,7 +21,7 @@
             </li>
           </ul>
         </div>
-        <h2 class="section-title">Books</h2>
+        <h2 class="section-title">{{ $t('resource.books') }}</h2>
         <ul class="block">
           <li v-for="(book,index) in books" :key="index">
             <el-link :href="book.link" target="_blank" type="primary">{{book.name}}</el-link>
@@ -64,7 +64,7 @@ export default {
         }
       ],
       articles: [{
-          level: 'Beginner',
+          level: 'beginner',
           links: [{
               name: 'The Tour of Go',
               link: 'https://tour.golang.org/welcome/1'
@@ -100,7 +100,7 @@ export default {
           ]
         },
         {
-          level: 'Intermediate',
+          level: 'intermediate',
           categories: [{
               name: 'Array, Slice',
               links: [{
@@ -205,7 +205,7 @@ export default {
           ]
         },
         {
-          level: 'Advanced',
+          level: 'advanced',
           links: [{
               name: 'Go Proverbs',
               link: 'https://go-proverbs.github.io'

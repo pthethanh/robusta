@@ -2,23 +2,21 @@
   <div class="reset-password">
     <el-row type="flex" justify="center">
       <el-col :xs="24" :sm="10" :md="10" :lg="8" :xl="8">
-        <div class="title">Reset Password</div>
+        <div class="title">{{ $t('user.reset_password.title') }}</div>
         <el-form :model="user" :rules="rules" ref="reset-password-form" @submit.native.prevent="reset">
           <el-form-item prop="new_password" :error="error">
-            <el-input v-model="user.new_password" placeholder="Password" type="password">
+            <el-input v-model="user.new_password" :placeholder="$t('user.password')" type="password">
             </el-input>
           </el-form-item>
           <el-form-item prop="re_type_new_password" :error="error">
-            <el-input v-model="user.re_type_new_password" placeholder="Re-type Password" type="password">
+            <el-input v-model="user.re_type_new_password" :placeholder="$t('user.password_confirm')" type="password">
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button :loading="loading" type="primary" @click="reset">Reset</el-button>
+            <el-button :loading="loading" type="primary" @click="reset">{{ $t('user.reset_password.reset') }}</el-button>
           </el-form-item>
         </el-form>
-        <div>
-            Click <a href="/users/forgot-password" style="color:red">here</a> to request a new reset password link if the current link doesn't work or already expired.
-        </div>
+        <div v-html="$t('user.reset_password.link_to_forgot_password')"></div>
       </el-col>
     </el-row>
   </div>
@@ -41,33 +39,33 @@ export default {
       rules: {
         new_password: [{
           required: true,
-          message: 'Password is required',
+          message: this.$i18n.t('validation.password_required'),
           trigger: 'blur'
         },
         {
           min: 5,
-          message: 'Password length should be at least 5 characters',
+          message: this.$i18n.t('validation.password_len_min'),
           trigger: 'blur'
         },
         {
           max: 25,
-          message: 'Password length should be less than 25 characters',
+          message: this.$i18n.t('validation.password_len_max'),
           trigger: 'blur'
         }
         ],
         re_type_new_password: [{
           required: true,
-          message: 'Password is required',
+          message: this.$i18n.t('validation.password_required'),
           trigger: 'blur'
         },
         {
           min: 5,
-          message: 'Password length should be at least 5 characters',
+          message: this.$i18n.t('validation.password_len_min'),
           trigger: 'blur'
         },
         {
           max: 25,
-          message: 'Password length should be less than 25 characters',
+          message: this.$i18n.t('validation.password_len_max'),
           trigger: 'blur'
         }
         ]
@@ -84,12 +82,12 @@ export default {
         return
       }
       if (this.user.new_password !== this.user.re_type_new_password) {
-        this.error = 'Re-type Password does not match'
+        this.error = this.$i18n.t('user.password_not_match')
         return
       }
       var token = this.$route.params.token
       if (token === undefined || token === '') {
-        this.error = 'Invalid token'
+        this.error = this.$i18n.t('user.reset_password.invalid_token')
         return
       }
       this.user.token = token
@@ -97,7 +95,7 @@ export default {
       resetPassword(JSON.stringify(this.user)).then((response) => {
         this.$message({
           type: 'success',
-          message: 'Password has been reset succesfully. Please try to login again.'
+          message: this.$i18n.t('user.reset_password.success_message')
         })
         this.error = ''
       }).catch((error) => {
@@ -106,7 +104,7 @@ export default {
         if (res !== undefined && res !== null) {
           this.error = res.data.message
         } else {
-          this.error = 'There were some error during resetting password. Please try again.'
+          this.error = this.$i18n.t('user.reset_password.failed_message')
         }
       })
       this.loading = false

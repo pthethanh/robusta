@@ -56,8 +56,8 @@ export default {
           trigger: 'blur'
         },
         {
-          min: 4,
-          message: this.$i18n.t('validation.email_min_len'),
+          type: 'email',
+          message: this.$i18n.t('validation.email_invalid'),
           trigger: 'blur'
         }
         ],
