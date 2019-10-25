@@ -11,7 +11,6 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -34,7 +33,7 @@ func (r *MongoDBRepository) Create(ctx context.Context, user *types.User) (strin
 	user.UpdateAt = user.CreatedAt
 
 	if err := r.collection(s).Insert(user); err != nil {
-		return "", errors.Wrapf(err, "failed to insert user %s", user.ID)
+		return "", err
 	}
 	return user.ID, nil
 }

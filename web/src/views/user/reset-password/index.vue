@@ -100,12 +100,7 @@ export default {
         this.error = ''
       }).catch((error) => {
         this.loading = false
-        var res = error.response
-        if (res !== undefined && res !== null) {
-          this.error = res.data.message
-        } else {
-          this.error = this.$i18n.t('user.reset_password.failed_message')
-        }
+        this.error = this.$i18n.t('user.reset_password.failed_message') + ': ' + error
       })
       this.loading = false
     }

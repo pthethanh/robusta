@@ -2,6 +2,7 @@ package policy
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/casbin/casbin"
 	mongodbadapter "github.com/casbin/mongodb-adapter"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -105,7 +105,7 @@ func (s *Service) AddPolicy(ctx context.Context, req types.Policy) error {
 		Effect:  req.Effect,
 	}); err != nil {
 		log.WithContext(ctx).Errorf("failed to add policy, err: %v", err)
-		return errors.Wrap(err, "failed to add policy")
+		return fmt.Errorf("failed to add policy: %w", err)
 	}
 	if req.Effect == types.PolicyEffectDeny {
 		return nil
@@ -113,7 +113,7 @@ func (s *Service) AddPolicy(ctx context.Context, req types.Policy) error {
 	// cleanup existing old deny effect
 	if _, err := s.enforcer.RemovePolicySafe(req.Subject, req.Object, req.Action, types.PolicyEffectDeny); err != nil {
 		log.WithContext(ctx).Errorf("failed cleanup existing deny policy, err: %v", err)
-		return errors.Wrap(err, "failed cleanup existing deny policy")
+		return fmt.Errorf("failed cleanup existing deny policy: %w", err)
 	}
 	return nil
 }
@@ -128,7 +128,7 @@ func (s *Service) AddGroupPolicy(ctx context.Context, req GroupPolicy) error {
 	}
 	if err := s.addGroupingPolicy(ctx, req.Subject, req.Group); err != nil {
 		log.WithContext(ctx).Errorf("failed to add group policy, err: %v", err)
-		return errors.Wrap(err, "failed to add group policy")
+		return fmt.Errorf("failed to add group policy: %w", err)
 	}
 	return nil
 }
@@ -207,7 +207,7 @@ func (s *Service) RemovePolicy(ctx context.Context, req types.Policy) error {
 	}
 	if _, err := s.enforcer.RemovePolicySafe(req.Subject, req.Object, req.Action, req.Effect); err != nil {
 		log.WithContext(ctx).Errorf("failed to remove policy, err: %v", err)
-		return errors.Wrap(err, "failed to remove policy")
+		return fmt.Errorf("failed to remove policy: %w", err)
 	}
 	return nil
 }

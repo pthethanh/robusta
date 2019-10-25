@@ -94,12 +94,7 @@ export default {
         self.$router.push('/login?redirect=/')
       }).catch((error) => {
         this.loading = false
-        var res = error.response
-        if (res !== undefined && res !== null) {
-          this.error = res.data.message
-        } else {
-          this.error = this.$i18n.t('user.registration.failed_message')
-        }
+        this.error = this.$i18n.t('user.registration.failed_message') + ': ' + error
       })
       this.loading = false
     }

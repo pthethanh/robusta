@@ -2,9 +2,8 @@ package article
 
 import (
 	"context"
+	"fmt"
 	"sync"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -79,14 +78,14 @@ func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*Article, err
 	recorder := timeutil.NewRecorder("find all articles")
 	defer log.WithContext(ctx).Info(recorder)
 	if err := validator.Validate(req); err != nil {
-		return nil, errors.Wrap(err, "invalid find request")
+		return nil, fmt.Errorf("invalid find request: %w", err)
 	}
 	if req.Limit > s.conf.MaxPageSize {
 		req.Limit = s.conf.MaxPageSize
 	}
 	articles, err := s.repo.FindAll(ctx, req)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find all articles")
+		return nil, fmt.Errorf("failed to find articles: %w", err)
 	}
 	return articles, nil
 }
@@ -94,7 +93,7 @@ func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*Article, err
 // Create create a new article
 func (s *Service) Create(ctx context.Context, a *Article) error {
 	if err := validator.Validate(a); err != nil {
-		return errors.Wrap(err, "invalid article")
+		return fmt.Errorf("invalid article: %w", err)
 	}
 
 	a.Status = StatusPublic
@@ -107,7 +106,7 @@ func (s *Service) Create(ctx context.Context, a *Article) error {
 	a.ArticleID = articleID(a.Title)
 	if err := s.repo.Create(ctx, a); err != nil {
 		log.WithContext(ctx).Errorf("failed to create article, err: %v", err)
-		return errors.Wrap(err, "failed to insert article")
+		return fmt.Errorf("failed to insert article:  %w", err)
 	}
 
 	// make her the owner of the article
@@ -133,7 +132,7 @@ func (s *Service) ChangeStatus(ctx context.Context, id string, status Status) er
 // Update the existing article
 func (s *Service) Update(ctx context.Context, id string, a *Article) error {
 	if err := validator.Validate(a); err != nil {
-		return errors.Wrap(err, "invalid article")
+		return fmt.Errorf("invalid article: %w", err)
 	}
 	if err := s.policy.Validate(ctx, id, types.PolicyActionArticleUpdate); err != nil {
 		return err

@@ -2,9 +2,8 @@ package solution
 
 import (
 	"context"
+	"fmt"
 	"sort"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -51,7 +50,7 @@ func LoadConfigFromEnv() Config {
 
 func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 	if err := validator.Validate(solution); err != nil {
-		return errors.Wrap(err, "invalid solution")
+		return fmt.Errorf("invalid solution: %w", err)
 	}
 	user := auth.FromContext(ctx)
 	if user != nil {
@@ -61,7 +60,7 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 	}
 	if err := s.repo.Insert(ctx, solution); err != nil {
 		log.WithContext(ctx).Errorf("failed to save solution, err: %v", err)
-		return errors.Wrap(err, "failed to save solution")
+		return fmt.Errorf("failed to save solution: %w", err)
 	}
 	if user == nil {
 		return nil
@@ -96,7 +95,7 @@ func (s *Service) FindSolutionInfo(ctx context.Context, req FindRequest) ([]Solu
 	solutions, err := s.repo.FindAll(ctx, req)
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to find solutions from database, err: %v", err)
-		return nil, errors.Wrap(err, "failed to find solutions from database")
+		return nil, fmt.Errorf("failed to find solutions from database: %w", err)
 	}
 	infos := make([]SolutionInfo, 0)
 	for _, s := range solutions {

@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/uuid"
 )
@@ -55,11 +54,11 @@ func (c *Client) Run(ctx context.Context, r *RunRequest) (*RunResponse, error) {
 	playURL := fmt.Sprintf("%s/compile?version=%d&body=%s", c.conf.Host, 2, code)
 	req, err := http.NewRequest(http.MethodPost, playURL, nil)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create request")
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 	res, err := c.client.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to request to playground server")
+		return nil, fmt.Errorf("failed to request to playground server: %w", err)
 	}
 	defer res.Body.Close()
 	var v struct {
@@ -75,7 +74,7 @@ func (c *Client) Run(ctx context.Context, r *RunRequest) (*RunResponse, error) {
 		TestsFailed int  `json:"TestsFailed"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&v); err != nil {
-		return nil, errors.Wrap(err, "failed to decode response")
+		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 	rs := RunResponse{
 		Code:        v.Code,
@@ -97,7 +96,7 @@ func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateRes
 		generatedFileName(): bytes.NewBuffer(r.Test),
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to merge files")
+		return nil, fmt.Errorf("failed to merge files: %w", err)
 	}
 	problems, err := LintFile(generatedFileName(), f)
 	res, err := c.Run(ctx, &RunRequest{

@@ -146,22 +146,22 @@
             "info": "Please enter the email that you registered below for resetting password.",
             "submit": "Submit",
             "success_message": "Reset Password request has been sent to your email. Please check.",
-            "failed_message": "There were some error during send request for resetting password. Please try again."
+            "failed_message": "There were some error during send request for resetting password"
         },
         "registration": {
             "title": "Create a new account",
             "info": "It's quick and easy.",
             "register": "Register",
             "success_message": "Account has been created. Go ahead to login!",
-            "failed_message": "There were some error during the registration. Please try again"
+            "failed_message": "There were some error during the registration"
         },
         "reset_password": {
             "title": "Reset Password",
             "reset": "Reset",
             "invalid_token": "Invalid token",
             "link_to_forgot_password": "Click <a href=\"/users/forgot-password\" style=\"color:red\">here</a> to request a new reset password link if the current link doesn't work or already expired.",
-            "success_message": "Password has been reset successfully. Please try to login again.",
-            "failed_message": "There were some error during resetting password. Please try again."
+            "success_message": "Password has been reset successfully. Please try to login with the new password.",
+            "failed_message": "There were some error during resetting password"
         }
     }
 }

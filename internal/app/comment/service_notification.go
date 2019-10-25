@@ -2,9 +2,8 @@ package comment
 
 import (
 	"context"
+	"fmt"
 	"time"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/event"
@@ -13,7 +12,7 @@ import (
 func (s *Service) sendReactionCreatedNotification(r types.Reaction) error {
 	c, err := s.FindByID(context.Background(), r.TargetID)
 	if err != nil {
-		return errors.Wrap(err, "failed to find comment")
+		return fmt.Errorf("failed to find comment: %w", err)
 	}
 	// don't need to send notify to the same person
 	if c.CreatedByID == r.CreatedByID {
@@ -24,7 +23,7 @@ func (s *Service) sendReactionCreatedNotification(r types.Reaction) error {
 		Reaction: r,
 	}, time.Now())
 	if err != nil {
-		return errors.Wrap(err, "failed to create comment reaction notification event")
+		return fmt.Errorf("failed to create comment reaction notification event: %w", err)
 	}
 	s.es.Publish(ev, s.conf.NotificationTopic)
 	return nil
@@ -33,7 +32,7 @@ func (s *Service) sendReactionCreatedNotification(r types.Reaction) error {
 func (s *Service) sendReplyCreatedNotification(reply types.Comment) error {
 	c, err := s.FindByID(context.Background(), reply.ReplyToID)
 	if err != nil {
-		return errors.Wrap(err, "failed to find original comment")
+		return fmt.Errorf("failed to find original comment: %w", err)
 	}
 	// don't need to send notify to the same person
 	if reply.CreatedByID == c.CreatedByID {
@@ -44,7 +43,7 @@ func (s *Service) sendReplyCreatedNotification(reply types.Comment) error {
 		Reply:   reply,
 	}, time.Now())
 	if err != nil {
-		return errors.Wrap(err, "failed to create reply comment notification event")
+		return fmt.Errorf("failed to create reply comment notification event: %w", err)
 	}
 	s.es.Publish(ev, s.conf.NotificationTopic)
 	return nil

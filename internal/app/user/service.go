@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"time"
 
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -69,7 +69,7 @@ func (s *Service) Auth(ctx context.Context, email, password string) (*types.User
 	user, err := s.repo.FindByEmail(ctx, email)
 	if err != nil && !db.IsErrNotFound(err) {
 		log.WithContext(ctx).Errorf("failed to check existing user by email, err: %v", err)
-		return nil, errors.Wrap(err, "failed to check existing user by email")
+		return nil, fmt.Errorf("failed to check existing user by email: %w", err)
 	}
 	if db.IsErrNotFound(err) {
 		log.WithContext(ctx).Debugf("user not found, email: %s", email)
@@ -89,7 +89,7 @@ func (s *Service) Register(ctx context.Context, req *types.RegisterRequest) (*ty
 	existingUser, err := s.repo.FindByEmail(ctx, req.Email)
 	if err != nil && !db.IsErrNotFound(err) {
 		log.WithContext(ctx).Errorf("failed to check existing user by email, err: %v", err)
-		return nil, errors.Wrap(err, "failed to check existing user by email")
+		return nil, fmt.Errorf("failed to check existing user by email: %w", err)
 	}
 	if existingUser != nil {
 		log.WithContext(ctx).Debug("email already registered")
@@ -97,7 +97,7 @@ func (s *Service) Register(ctx context.Context, req *types.RegisterRequest) (*ty
 	}
 	password, err := s.generatePassword(req.Password)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to generate password")
+		return nil, fmt.Errorf("failed to generate password: %w", err)
 	}
 	user := &types.User{
 		Password:  password,
@@ -109,7 +109,7 @@ func (s *Service) Register(ctx context.Context, req *types.RegisterRequest) (*ty
 		UserID:    uuid.New(),
 	}
 	if _, err := s.repo.Create(ctx, user); err != nil {
-		return nil, errors.Wrap(err, "failed to insert user")
+		return nil, fmt.Errorf("failed to insert user: %w", err)
 	}
 	return user.Strip(), nil
 }
@@ -206,7 +206,7 @@ func (s *Service) GenerateResetPasswordToken(ctx context.Context, mail string) (
 	}, time.Now())
 	if err != nil {
 		log.WithContext(ctx).Errorf("failed to create notification event, err: %v", err)
-		return "", errors.Wrap(err, "failed to create event")
+		return "", fmt.Errorf("failed to create event: %w", err)
 	}
 	s.es.Publish(ev, s.conf.NotificationTopic)
 
@@ -244,7 +244,7 @@ func (s *Service) ResetPassword(ctx context.Context, r ResetPasswordRequest) err
 func (s *Service) generatePassword(pass string) (string, error) {
 	rs, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to generate password")
+		return "", fmt.Errorf("failed to generate password: %w", err)
 	}
 	return string(rs), nil
 }

@@ -2,8 +2,7 @@ package folder
 
 import (
 	"context"
-
-	"github.com/pkg/errors"
+	"fmt"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -75,7 +74,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 		f.CreatedByAvatar = user.AvatarURL
 	}
 	if err := s.repo.Insert(ctx, f); err != nil {
-		return errors.Wrap(err, "failed to insert folder")
+		return fmt.Errorf("failed to insert folder: %w", err)
 	}
 	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
 		Subject: user.UserID,
@@ -83,7 +82,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 		Action:  types.PolicyActionAny,
 		Effect:  types.PolicyEffectAllow,
 	}); err != nil {
-		return errors.Wrap(err, "failed to set permission")
+		return fmt.Errorf("failed to set permission: %w", err)
 	}
 	if req.IsPublic {
 		// make everyone permission to read this folder.
@@ -93,7 +92,7 @@ func (s *Service) Create(ctx context.Context, req *CreateRequest) error {
 			Action:  types.PolicyActionFolderRead,
 			Effect:  types.PolicyEffectAllow,
 		}); err != nil {
-			return errors.Wrap(err, "failed to make the folder public read")
+			return fmt.Errorf("failed to make the folder public read: %w", err)
 		}
 	}
 	return nil
@@ -105,7 +104,7 @@ func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
 	}
 	f, err := s.repo.FindByID(ctx, id)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find the folder")
+		return nil, fmt.Errorf("failed to find the folder: %w", err)
 	}
 	return f, nil
 }
@@ -113,7 +112,7 @@ func (s *Service) Get(ctx context.Context, id string) (*Folder, error) {
 func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*Folder, error) {
 	folders, err := s.repo.FindAll(ctx, r)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find folder")
+		return nil, fmt.Errorf("failed to find folder: %w", err)
 	}
 	if r.Limit > s.conf.MaxPageSize {
 		r.Limit = s.conf.MaxPageSize
@@ -145,7 +144,7 @@ func (s *Service) AddChildren(ctx context.Context, req AddChildrenRequest) error
 		return err
 	}
 	if err := s.repo.AddChildren(ctx, req.ID, req.Children); err != nil {
-		return errors.Wrap(err, "failed to add children")
+		return fmt.Errorf("failed to add children: %w", err)
 	}
 	return nil
 }
@@ -163,7 +162,7 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 		Type:        req.Type,
 		Children:    req.Children,
 	}); err != nil {
-		return errors.Wrap(err, "failed to update folder")
+		return fmt.Errorf("failed to update folder: %w", err)
 	}
 	return nil
 }

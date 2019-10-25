@@ -37,7 +37,7 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane :label="$t('challenge.status')" name="tips" style="height: 100vh; overflow: scroll;">
+          <el-tab-pane :label="$t('challenge.tips')" name="tips" style="height: 100vh; overflow: scroll;">
             <div v-if="selected.tips !== ''">{{selected.tips}}</div>
             <div v-if="selected.tips === ''">{{ $t('challenge.no_tips') }}</div>
           </el-tab-pane>

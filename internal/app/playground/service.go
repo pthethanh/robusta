@@ -3,8 +3,8 @@ package playground
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
-	"github.com/pkg/errors"
 	"golang.org/x/lint"
 
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -55,14 +55,14 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 	}
 	challenge, err := s.challengeSrv.FindFolderChallengeByID(ctx, r.ChallengeID, r.FolderID)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find challenge")
+		return nil, fmt.Errorf("failed to find challenge: %w", err)
 	}
 	res, err := s.runner.Evaluate(ctx, &playground.EvaluateRequest{
 		Solution: []byte(r.Solution),
 		Test:     []byte(challenge.Test),
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "compile failed")
+		return nil, fmt.Errorf("compile failed: %w", err)
 	}
 	status := types.SolutionStatusSuccess
 	if !res.IsSuccess() {
@@ -81,7 +81,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 		EvaluateResult: string(v),
 		ChallengeID:    r.ChallengeID,
 	}); err != nil {
-		return nil, errors.Wrap(err, "failed to save solution")
+		return nil, fmt.Errorf("failed to save solution: %w", err)
 	}
 	return res, nil
 }

@@ -2,9 +2,8 @@ package comment
 
 import (
 	"context"
+	"fmt"
 	"sync"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -69,7 +68,7 @@ func LoadConfigFromEnv() Config {
 
 func (s *Service) Create(ctx context.Context, cm *types.Comment) error {
 	if err := validator.Validate(cm); err != nil {
-		return errors.Wrap(err, "invalid comment")
+		return fmt.Errorf("invalid comment: %w", err)
 	}
 	user := auth.FromContext(ctx)
 	if user != nil {
@@ -117,7 +116,7 @@ func (s *Service) FindAll(ctx context.Context, req FindRequest) ([]*types.Commen
 
 func (s *Service) Update(ctx context.Context, id string, cm *types.Comment) error {
 	if err := validator.Validate(cm); err != nil {
-		return errors.Wrap(err, "invalid comment")
+		return fmt.Errorf("invalid comment: %w", err)
 	}
 	if err := s.policy.Validate(ctx, id, types.PolicyActionCommentUpdate); err != nil {
 		return err

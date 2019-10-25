@@ -2,9 +2,8 @@ package article
 
 import (
 	"context"
+	"fmt"
 	"time"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/event"
@@ -13,7 +12,7 @@ import (
 func (s *Service) sendCommentCreatedNotification(c types.Comment) error {
 	a, err := s.FindByID(context.Background(), c.Target)
 	if err != nil {
-		return errors.Wrap(err, "failed to find article")
+		return fmt.Errorf("failed to find article: %w", err)
 	}
 	if a.CreatedByID == c.CreatedByID {
 		return nil
@@ -29,7 +28,7 @@ func (s *Service) sendCommentCreatedNotification(c types.Comment) error {
 		Comment: c,
 	}, time.Now())
 	if err != nil {
-		return errors.Wrap(err, "failed to create article comment notification event")
+		return fmt.Errorf("failed to create article comment notification event: %w", err)
 	}
 	s.es.Publish(ev, s.conf.NotificationTopic)
 	return nil
@@ -38,7 +37,7 @@ func (s *Service) sendCommentCreatedNotification(c types.Comment) error {
 func (s *Service) sendReactionCreatedNotification(r types.Reaction) error {
 	a, err := s.FindByID(context.Background(), r.TargetID)
 	if err != nil {
-		return errors.Wrap(err, "failed to find article")
+		return fmt.Errorf("failed to find article: %w", err)
 	}
 	if a.CreatedByID == r.CreatedByID {
 		return nil
@@ -54,7 +53,7 @@ func (s *Service) sendReactionCreatedNotification(r types.Reaction) error {
 		Reaction: r,
 	}, time.Now())
 	if err != nil {
-		return errors.Wrap(err, "failed to create article reaction notification event")
+		return fmt.Errorf("failed to create article reaction notification event: %w", err)
 	}
 	s.es.Publish(ev, s.conf.NotificationTopic)
 	return nil

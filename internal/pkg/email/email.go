@@ -3,10 +3,10 @@ package email
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"gopkg.in/gomail.v2"
 
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
@@ -50,7 +50,7 @@ func New(conf Config) (*Mailer, error) {
 	host, port, _ := net.SplitHostPort(conf.Address)
 	portInt, err := strconv.Atoi(port)
 	if err != nil {
-		return nil, errors.Wrap(err, "address must be in form of <host>:<port>")
+		return nil, fmt.Errorf("address must be in form of <host>:<port>: %w", err)
 	}
 	d := gomail.NewDialer(host, portInt, username, password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
@@ -76,7 +76,7 @@ func (m *Mailer) Send(ctx context.Context, email Email) error {
 	msg.SetHeader("Subject", email.Subject)
 	msg.SetBody("text/html", email.Body)
 	if err := m.dialer.DialAndSend(msg); err != nil {
-		return errors.Wrap(err, "failed to send mail")
+		return fmt.Errorf("failed to send mail: %w", err)
 	}
 	return nil
 }

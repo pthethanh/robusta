@@ -5,7 +5,7 @@ import (
 
 	mgo "github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/pkg/errors"
+
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db"
 	"github.com/pthethanh/robusta/internal/pkg/util/timeutil"
@@ -34,7 +34,7 @@ func (r *MongoRepository) Create(ctx context.Context, a *types.Comment) error {
 	a.CreatedAt = timeutil.Now()
 	a.UpdatedAt = a.CreatedAt
 	if err := s.DB("").C(commentCollection).Insert(a); err != nil {
-		return errors.Wrapf(err, "failed to insert article %s", a.ID)
+		return err
 	}
 	return nil
 }
@@ -62,7 +62,7 @@ func (r *MongoRepository) FindAll(ctx context.Context, req FindRequest) ([]*type
 		sorters = []string{"-created_at"}
 	}
 	if err := s.DB("").C(commentCollection).Find(selector).Sort(sorters...).Skip(req.Offset).Limit(req.Limit).All(&comments); err != nil {
-		return nil, errors.Wrap(err, "failed to find all comments from database")
+		return nil, err
 	}
 	return comments, nil
 }
@@ -87,7 +87,7 @@ func (r *MongoRepository) Update(ctx context.Context, id string, a *types.Commen
 	defer s.Close()
 	a.UpdatedAt = timeutil.Now()
 	if err := s.DB("").C(commentCollection).Update(bson.D{{Name: "_id", Value: id}}, a); err != nil {
-		return errors.Wrapf(err, "failed to update comment %s", id)
+		return err
 	}
 	return nil
 }
@@ -100,7 +100,7 @@ func (r *MongoRepository) Delete(ctx context.Context, id string) (types.Comment,
 	if _, err := s.DB("").C(commentCollection).Find(bson.M{"_id": id}).Apply(mgo.Change{
 		Remove: true,
 	}, &c); err != nil {
-		return types.Comment{}, errors.Wrapf(err, "failed to delete comment %s", id)
+		return types.Comment{}, err
 	}
 	return c, nil
 }
@@ -110,7 +110,7 @@ func (r *MongoRepository) FindByID(ctx context.Context, id string) (types.Commen
 	defer s.Close()
 	var c types.Comment
 	if err := s.DB("").C(commentCollection).Find(bson.M{"_id": id}).One(&c); err != nil {
-		return types.Comment{}, errors.Wrap(err, "failed to find comment")
+		return types.Comment{}, err
 	}
 	return c, nil
 }

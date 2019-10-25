@@ -10,7 +10,6 @@ import (
 
 	mgo "github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"github.com/pkg/errors"
 )
 
 // MongoRepository is MongoDB implementation of repository
@@ -46,7 +45,7 @@ func (r *MongoRepository) FindAll(ctx context.Context, req FindRequest) ([]*Arti
 		sorters = []string{"-created_at"}
 	}
 	if err := r.collection(s).Find(selector).Sort(sorters...).Skip(req.Offset).Limit(req.Limit).All(&articles); err != nil {
-		return nil, errors.Wrap(err, "failed to find all articles from database")
+		return nil, err
 	}
 	return articles, nil
 }
@@ -57,7 +56,7 @@ func (r *MongoRepository) FindByID(ctx context.Context, id string) (*Article, er
 	defer s.Close()
 	var article *Article
 	if err := r.collection(s).Find(bson.M{"_id": id}).One(&article); err != nil {
-		return nil, errors.Wrap(err, "failed to find all articles from database")
+		return nil, err
 	}
 	return article, nil
 }
@@ -70,7 +69,7 @@ func (r *MongoRepository) Create(ctx context.Context, a *Article) error {
 	a.CreatedAt = timeutil.Now()
 	a.UpdatedAt = a.CreatedAt
 	if err := r.collection(s).Insert(a); err != nil {
-		return errors.Wrapf(err, "failed to insert article %s", a.ID)
+		return err
 	}
 	return nil
 }
@@ -80,7 +79,7 @@ func (r *MongoRepository) ChangeStatus(ctx context.Context, id string, status St
 	s := r.session.Clone()
 	defer s.Close()
 	if err := r.collection(s).Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"status": status}}); err != nil {
-		return errors.Wrapf(err, "failed to delete article %s", id)
+		return err
 	}
 	return nil
 }
@@ -91,7 +90,7 @@ func (r *MongoRepository) Update(ctx context.Context, id string, a *Article) err
 	defer s.Close()
 	a.UpdatedAt = timeutil.Now()
 	if err := r.collection(s).Update(bson.D{{Name: "_id", Value: id}}, a); err != nil {
-		return errors.Wrapf(err, "failed to update article %s", id)
+		return err
 	}
 	return nil
 }
@@ -144,7 +143,7 @@ func (r *MongoRepository) FindByArticleID(ctx context.Context, id string) (*Arti
 	defer s.Close()
 	var article *Article
 	if err := r.collection(s).Find(bson.M{"article_id": id}).One(&article); err != nil {
-		return nil, errors.Wrap(err, "failed to find all articles from database")
+		return nil, err
 	}
 	return article, nil
 }

@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"github.com/pkg/errors"
 	"golang.org/x/lint"
 	"golang.org/x/tools/go/ast/astutil"
 )
@@ -26,11 +25,11 @@ func mergePackageFiles(pkgName string, fileName string, files map[string]io.Read
 	for name, f := range files {
 		src, err := ioutil.ReadAll(f)
 		if err != nil {
-			return nil, errors.Wrapf(err, "invalid input file: %s", name)
+			return nil, fmt.Errorf("invalid input file %s: %w", name, err)
 		}
 		astFile, err := parser.ParseFile(fset, name, string(src), parser.ParseComments)
 		if err != nil {
-			return nil, errors.Wrapf(err, "failed to parse input file: %s", name)
+			return nil, fmt.Errorf("failed to parse input file %s: %w", name, err)
 		}
 		astFiles[name] = astFile
 		if closer, ok := f.(io.Closer); ok {
@@ -55,7 +54,7 @@ func mergePackageFiles(pkgName string, fileName string, files map[string]io.Read
 	pkgFile := ast.MergePackageFiles(pkg, ast.FilterImportDuplicates)
 	var buf bytes.Buffer
 	if err := format.Node(&buf, fset, pkgFile); err != nil {
-		return nil, errors.Wrap(err, "failed to print merged file")
+		return nil, fmt.Errorf("failed to print merged file: %w", err)
 	}
 
 	// Parse the file again to have correct position in the ast.File.
@@ -63,7 +62,7 @@ func mergePackageFiles(pkgName string, fileName string, files map[string]io.Read
 	pkgFset := token.NewFileSet()
 	pkgFile, err := parser.ParseFile(pkgFset, fileName, buf.String(), parser.ParseComments)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse merged file")
+		return nil, fmt.Errorf("failed to parse merged file: %w", err)
 	}
 	for _, imp := range imports {
 		path, err := strconv.Unquote(imp.Path.Value)
@@ -89,7 +88,7 @@ func mergePackageFiles(pkgName string, fileName string, files map[string]io.Read
 
 	pkgBuf := bytes.Buffer{}
 	if err := format.Node(&pkgBuf, pkgFset, pkgFile); err != nil {
-		return nil, errors.Wrap(err, "failed to format merged file")
+		return nil, fmt.Errorf("failed to format merged file: %w", err)
 	}
 	return pkgBuf.Bytes(), nil
 }
@@ -99,7 +98,7 @@ func LintFile(file string, src []byte) ([]lint.Problem, error) {
 	linter := &lint.Linter{}
 	problems, err := linter.Lint(file, src)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse lint file")
+		return nil, fmt.Errorf("failed to parse lint file: %w", err)
 	}
 	return problems, nil
 }

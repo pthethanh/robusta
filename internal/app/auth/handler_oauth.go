@@ -3,6 +3,7 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -16,7 +17,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
-	"github.com/pkg/errors"
 )
 
 type (

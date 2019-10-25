@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
-
 	"github.com/pthethanh/robusta/internal/pkg/log"
 
 	"github.com/globalsign/mgo"

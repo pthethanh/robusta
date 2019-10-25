@@ -3,14 +3,13 @@ package playground
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/playground"
-
-	"github.com/pkg/errors"
 )
 
 type (
@@ -33,13 +32,13 @@ func New(s service) *Handler {
 func (h *Handler) Run(w http.ResponseWriter, r *http.Request) {
 	var req Request
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respond.Error(w, errors.Wrap(err, "invalid request"), http.StatusBadRequest)
+		respond.Error(w, fmt.Errorf("invalid request: %w", err), http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
 	res, err := h.srv.Run(r.Context(), &req)
 	if err != nil {
-		respond.Error(w, errors.Wrap(err, "failed to run"), http.StatusInternalServerError)
+		respond.Error(w, fmt.Errorf("failed to run: %w", err), http.StatusInternalServerError)
 		return
 	}
 	res.Code = types.AppCodeSuccess

@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/pkg/errors"
 
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/image"
@@ -85,7 +84,7 @@ func (s *Service) FetchURL(ctx context.Context, url string) (*Link, error) {
 func (s *Service) UploadImageByURL(ctx context.Context, url string) (string, error) {
 	res, err := s.httpClient.Get(url)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to download image")
+		return "", fmt.Errorf("failed to download image: %w", err)
 	}
 	defer res.Body.Close()
 	r := io.LimitReader(res.Body, s.conf.MaxUploadSize)
@@ -105,7 +104,7 @@ func (s *Service) uploadImages(ctx context.Context, name string, r io.Reader) (s
 		Option: image.ResizeOptionWeb,
 		Writer: web,
 	}); err != nil {
-		return "", errors.Wrap(err, "failed to resize images")
+		return "", fmt.Errorf("failed to resize images: %w", err)
 	}
 	// upload the image to remote storage
 	res, err := s.uploader.Upload(ctx, upload.Request{

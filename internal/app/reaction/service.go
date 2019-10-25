@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/pkg/errors"
-
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
@@ -55,7 +53,7 @@ func LoadConfigFromEnv() Config {
 // - created_by_id
 func (s *Service) Create(ctx context.Context, reaction *types.Reaction) (*types.ReactionDetail, error) {
 	if err := validator.Validate(reaction); err != nil {
-		return nil, errors.Wrap(err, "invalid comment")
+		return nil, fmt.Errorf("invalid comment: %w", err)
 	}
 	user := auth.FromContext(ctx)
 	if user != nil {

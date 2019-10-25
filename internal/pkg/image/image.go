@@ -1,11 +1,11 @@
 package image
 
 import (
+	"fmt"
 	"image"
 	"io"
 
 	"github.com/disintegration/imaging"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -50,7 +50,7 @@ func Web(w io.Writer, r io.Reader) (string, error) {
 func Resize(r io.Reader, targets ...ResizeTarget) (string, error) {
 	img, ext, err := image.Decode(r)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to decode image")
+		return "", fmt.Errorf("failed to decode image: %w", err)
 	}
 	size := img.Bounds().Size()
 	for _, target := range targets {
@@ -66,10 +66,10 @@ func Resize(r io.Reader, targets ...ResizeTarget) (string, error) {
 		newImg := imaging.Resize(img, width, height, imaging.Box)
 		format, err := imaging.FormatFromExtension(ext)
 		if err != nil {
-			return "", errors.Wrap(err, "failed to get file format")
+			return "", fmt.Errorf("failed to get file format: %w", err)
 		}
 		if err := imaging.Encode(target.Writer, newImg, format); err != nil {
-			return "", errors.Wrap(err, "failed to encode image")
+			return "", fmt.Errorf("failed to encode image: %w", err)
 		}
 	}
 	return ext, nil

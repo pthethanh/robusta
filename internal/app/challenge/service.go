@@ -2,8 +2,7 @@ package challenge
 
 import (
 	"context"
-
-	"github.com/pkg/errors"
+	"fmt"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
 	"github.com/pthethanh/robusta/internal/app/types"
@@ -68,7 +67,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 		c.CreatedByAvatar = user.AvatarURL
 	}
 	if err := s.repo.Insert(ctx, c); err != nil {
-		return errors.Wrap(err, "failed to insert challenge")
+		return fmt.Errorf("failed to insert challenge: %w", err)
 	}
 	if err := s.policy.AddPolicy(auth.NewAdminContext(ctx), types.Policy{
 		Subject: user.UserID,
@@ -76,7 +75,7 @@ func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 		Action:  types.PolicyActionAny,
 		Effect:  types.PolicyEffectAllow,
 	}); err != nil {
-		return errors.Wrap(err, "failed to set permission")
+		return fmt.Errorf("failed to set permission: %w", err)
 	}
 	return nil
 }
@@ -90,7 +89,7 @@ func (s *Service) Get(ctx context.Context, id string) (*types.Challenge, error) 
 	}
 	c, err := s.repo.FindByID(ctx, id)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find the challenge")
+		return nil, fmt.Errorf("failed to find the challenge: %w", err)
 	}
 	return c, nil
 }
@@ -119,7 +118,7 @@ func (s *Service) FindAll(ctx context.Context, r FindRequest) ([]*types.Challeng
 
 	challenges, err := s.repo.FindAll(ctx, r)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find challenges")
+		return nil, fmt.Errorf("failed to find challenges: %w", err)
 	}
 	return challenges, nil
 }
@@ -141,7 +140,7 @@ func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folder
 	}
 	c, err := s.repo.FindByID(ctx, id)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to find the challenge")
+		return nil, fmt.Errorf("failed to find the challenge: %w", err)
 	}
 	return c, nil
 }
@@ -157,7 +156,7 @@ func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 	}
 	if err := s.repo.Update(ctx, req); err != nil {
 		log.WithContext(ctx).Errorf("failed to update challenge, err: %v", err)
-		return errors.Wrap(err, "failed to update challenge")
+		return fmt.Errorf("failed to update challenge: %w", err)
 	}
 	return nil
 }

@@ -3,11 +3,11 @@ package notification
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"html/template"
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/email"
@@ -40,7 +40,7 @@ type (
 func NewService(conf Config, mailer email.Sender, es event.Subscriber, user UserService) (*Service, error) {
 	templates, err := htmlutil.LoadTemplates(conf.TemplatePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to load notification templates")
+		return nil, fmt.Errorf("failed to load notification templates: %w", err)
 	}
 	s := &Service{
 		conf:      conf,
