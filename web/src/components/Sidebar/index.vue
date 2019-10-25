@@ -9,16 +9,16 @@
     <el-menu default-active="1" @select="onSelect" :router=true :background-color="variables.sideBarBackgroundColor" :text-color="variables.sideBarTextColor" :active-text-color="variables.sideBarActiveTextColor">
       <div v-for="(route,index) in routes()" :key="route.path">
         <el-menu-item v-if="visibleChildren(route).length === 0 || visibleChildren(route).length === 1" :index="index + 1 + ''" :route="route.path">
-          <i v-bind:class="route.icon"></i>
-          <span slot="title">{{route.name}}</span>
+          <i v-bind:class="route.meta.icon"></i>
+          <span slot="title">{{route.meta.name}}</span>
         </el-menu-item>
         <el-submenu :index="index+1 + ''" v-if="visibleChildren(route).length > 1">
           <template slot="title">
-            <i v-bind:class="route.icon"></i>
-            <span slot="title">{{route.name}}</span>
+            <i v-bind:class="route.meta.icon"></i>
+            <span slot="title">{{route.meta.name}}</span>
           </template>
           <el-menu-item v-for="(child,childIndex) in visibleChildren(route)" :key="childIndex" :index="index + '-' + childIndex" :route="route.path + '/' + child.path">
-            {{child.name}}
+            {{child.meta.name}}
           </el-menu-item>
         </el-submenu>
       </div>
@@ -94,8 +94,11 @@ export default {
       if (route.hidden) {
         return false
       }
-      var requiredRoles = route.roles
-      if (requiredRoles === undefined) {
+      var requiredRoles = []
+      if (route.meta !== undefined) {
+        requiredRoles = route.meta.roles
+      }
+      if (requiredRoles === undefined || requiredRoles.length === 0) {
         return true
       }
       var currentUser = this.user

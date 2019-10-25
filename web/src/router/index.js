@@ -8,10 +8,13 @@ export const routes = [
   { path: '/home', redirect: '/', hidden: true },
   {
     path: '/',
-    name: i18n.t('nav.home'),
-    icon: 'el-icon-s-home',
+    name: 'home',
     component: Layout,
     redirect: '/',
+    meta: {
+      name: i18n.t('nav.home'),
+      icon: 'el-icon-s-home'
+    },
     children: [{
       path: '',
       component: () => import('@/views/article/home/index')
@@ -19,19 +22,28 @@ export const routes = [
   },
   {
     path: '/articles',
-    name: i18n.t('nav.blog'),
-    icon: 'el-icon-collection',
+    name: 'blog',
     component: Layout,
     redirect: '/',
+    meta: {
+      name: i18n.t('nav.blog'),
+      icon: 'el-icon-collection'
+    },
     children: [
       {
-        name: i18n.t('nav.latest_posts'),
+        name: 'latest_posts',
         path: '',
+        meta: {
+          name: i18n.t('nav.latest_posts')
+        },
         component: () => import('@/views/article/home/index')
       },
       {
-        name: i18n.t('nav.new_post'),
+        name: 'new_post',
         path: 'new',
+        meta: {
+          name: i18n.t('nav.new_post')
+        },
         component: () => import('@/views/article/new/index')
       },
       {
@@ -47,10 +59,13 @@ export const routes = [
   },
   {
     path: '/resources',
-    name: i18n.t('nav.resources'),
-    icon: 'el-icon-help',
+    name: 'resources',
     component: Layout,
     redirect: '/',
+    meta: {
+      name: i18n.t('nav.resources'),
+      icon: 'el-icon-help'
+    },
     children: [{
       path: '',
       component: () => import('@/views/resource/index')
@@ -58,25 +73,37 @@ export const routes = [
   },
   {
     path: '/challenges',
-    name: i18n.t('nav.challenges'),
-    icon: 'el-icon-coffee-cup',
+    name: 'challenges',
     component: Layout,
     redirect: '/challenges/home',
+    meta: {
+      name: i18n.t('nav.challenges'),
+      icon: 'el-icon-coffee-cup'
+    },
     children: [{
       path: 'home',
-      name: i18n.t('nav.list_challenges'),
+      name: 'list_challenges',
+      meta: {
+        name: i18n.t('nav.list_challenges')
+      },
       component: () => import('@/views/challenge/home/index')
     },
     {
       path: 'new',
-      name: i18n.t('nav.new_challenge'),
-      roles: ['group-admin'],
+      name: 'new_challenge',
+      meta: {
+        name: i18n.t('nav.new_challenge'),
+        roles: ['group-admin']
+      },
       component: () => import('@/views/challenge/new/index')
     },
     {
       path: 'admin',
-      name: i18n.t('nav.manage_challenges'),
-      roles: ['group-admin'],
+      name: 'manage_challenges',
+      meta: {
+        name: i18n.t('nav.manage_challenges'),
+        roles: ['group-admin']
+      },
       component: () => import('@/views/challenge/admin/index')
     },
     {
@@ -92,23 +119,32 @@ export const routes = [
   },
   {
     path: '/policies',
-    name: i18n.t('nav.policies'),
-    icon: 'el-icon-setting',
-    roles: ['group-admin'],
+    name: 'policies',
     component: Layout,
     redirect: '/policies/home',
+    meta: {
+      name: i18n.t('nav.policies'),
+      icon: 'el-icon-setting',
+      roles: ['group-admin']
+    },
     children: [{
       path: 'home',
-      name: i18n.t('nav.manage_policies'),
+      name: 'manage_policies',
+      meta: {
+        name: i18n.t('nav.manage_policies')
+      },
       component: () => import('@/views/policy/home/index')
     }]
   },
   {
     path: '/users',
-    name: i18n.t('nav.users'),
+    name: 'users',
     component: Layout,
     hidden: true,
     redirect: '/',
+    meta: {
+      name: i18n.t('nav.users')
+    },
     children: [{
       path: 'register',
       component: () => import('@/views/user/registration/index')
@@ -124,10 +160,13 @@ export const routes = [
   },
   {
     path: '/about',
-    name: i18n.t('nav.about'),
-    icon: 'el-icon-info',
+    name: 'about',
     component: Layout,
     redirect: '/',
+    meta: {
+      name: i18n.t('nav.about'),
+      icon: 'el-icon-info'
+    },
     children: [{
       path: '',
       component: () => import('@/views/About')

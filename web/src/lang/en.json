@@ -46,8 +46,7 @@
         "password_required": "Password is required"
     },
     "article": {
-        "delete_confirm": "This will delete this article permanently. Continue?",
-        "home_title": "Goway - Learn to Go"
+        "delete_confirm": "This will delete this article permanently. Continue?"
     },
     "challenge": {
         "title": "Title",

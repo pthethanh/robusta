@@ -33,7 +33,7 @@ export default {
     ArticleItem,
     ArticleDetail
   },
-  title: this.$i18n.t('article.home_title'),
+  title: 'Goway - Learn to Go',
   data () {
     return {
       articles: [],
