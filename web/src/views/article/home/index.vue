@@ -6,7 +6,7 @@
     <el-row type="flex" justify="center" class="infinite-list-wrapper">
       <el-col :xs="24" :sm="24" :md="18" :lg="14" :xl="14" v-infinite-scroll="fetchData" infinite-scroll-disabled="disabled">
         <article-item v-for="(article,index) in articles" :key="index" :article="article" @selected="openDetail" @tagSelected="tagSelected"></article-item>
-        <div v-if="loading" class="loading">Loading...</div>
+        <div v-if="loading" class="loading">{{ $t('gen.loading') }}</div>
         <div v-if="!loading&&noMore" class="loading">¯\_(ツ)_/¯</div>
       </el-col>
     </el-row>
@@ -33,7 +33,7 @@ export default {
     ArticleItem,
     ArticleDetail
   },
-  title: 'Goway - Learn to Go',
+  title: this.$i18n.t('article.home_title'),
   data () {
     return {
       articles: [],

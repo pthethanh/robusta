@@ -1,9 +1,9 @@
 <template>
   <div class="playground">
     <el-row>
-      <div v-loading="_loading" v-if="!ready" class="loading">Loading...</div>
+      <div v-loading="_loading" v-if="!ready" class="loading">{{ $t('gen.loading') }}</div>
       <div v-if="ready && challenges.length == 0" class="error">
-        There is no challenges in this folder.
+        {{ $t('challenge.folder_no_challenges') }}
       </div>
     </el-row>
     <split-pane :min-percent='5' :default-percent='20' split="vertical" v-if="ready">
@@ -20,26 +20,26 @@
       </template>
       <template slot="paneR" class="right">
         <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
-          <el-tab-pane label="Detail" name="detail" style="height: 100vh; overflow: scroll;">
+          <el-tab-pane :label="$t('challenge.detail')" name="detail" style="height: 100vh; overflow: scroll;">
             <div class="description" v-if="selected !== null">
               <div class="title">{{selected.title}}</div>
               <view-me :data="selected.description" class="description"></view-me>
             </div>
             <challenge-player v-if="selected !== null" :code="selected.sample" :challenge-id="selected.id" :folder-id="folder.id" class="editor" @run-completed="handlePlayerRunCompleted"></challenge-player>
           </el-tab-pane>
-          <el-tab-pane label="Submissions" name="submissions" style="height: 100vh; overflow: scroll;">
+          <el-tab-pane :label="$t('challenge.submissions')" name="submissions" style="height: 100vh; overflow: scroll;">
             <el-table :data="submissions" style="width: 100%" empty-text="No sucess submission found" v-loading="loadingSolution">
-              <el-table-column prop="created_by_name" label="Name">
+              <el-table-column prop="created_by_name" :label="$t('challenge.name')">
               </el-table-column>
-              <el-table-column prop="created_at_date" label="Date">
+              <el-table-column prop="created_at_date" :label="$t('challenge.date')">
               </el-table-column>
-              <el-table-column prop="status" label="Status">
+              <el-table-column prop="status" :label="$t('challenge.status')">
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="Tips" name="tips" style="height: 100vh; overflow: scroll;">
+          <el-tab-pane :label="$t('challenge.status')" name="tips" style="height: 100vh; overflow: scroll;">
             <div v-if="selected.tips !== ''">{{selected.tips}}</div>
-            <div v-if="selected.tips === ''">No tips are provided.</div>
+            <div v-if="selected.tips === ''">{{ $t('challenge.no_tips') }}</div>
           </el-tab-pane>
         </el-tabs>
       </template>

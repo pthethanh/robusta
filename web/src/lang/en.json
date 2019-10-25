@@ -46,14 +46,26 @@
         "password_required": "Password is required"
     },
     "article": {
-        "delete_confirm": "This will delete this article permanently. Continue?"
-        
+        "delete_confirm": "This will delete this article permanently. Continue?",
+        "home_title": "Goway - Learn to Go"
     },
     "challenge": {
         "title": "Title",
         "code_sample": "Code sample",
         "tips": "Tips",
         "test": "Test",
+        "created_by": "Created By",
+        "created_at": "Created At",
+        "updated_at": "Updated At",
+        "type_to_search": "Type to search",
+        "delete_confirm": "This will delete this challenge permanently. Continue?",
+        "folder_no_challenges": "There is no challenge in this folder. Or you don't have permission",
+        "detail": "Detail",
+        "submissions": "Submissions",
+        "name": "Name",
+        "date": "Date",
+        "status": "Status",
+        "no_tips": "No tips are provided.",
         "validation": {
             "sample_required": "Sample is required",
             "test_required": "Test is required"
