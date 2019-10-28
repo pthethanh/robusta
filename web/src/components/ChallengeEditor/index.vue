@@ -19,10 +19,6 @@
             <el-input type="textarea" :rows="15" :placeholder="$t('challenge.test')" v-model="challenge.test">
             </el-input>
           </el-form-item>
-          <el-form-item prop="tips">
-            <el-input type="textarea" :rows="15" :placeholder="$t('challenge.tips')" v-model="challenge.tips">
-            </el-input>
-          </el-form-item>
         </el-form>
       </el-col>
     </el-row>

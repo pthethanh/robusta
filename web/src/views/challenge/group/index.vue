@@ -1,14 +1,13 @@
 <template>
   <div class="playground">
     <el-row>
-      <div v-loading="_loading" v-if="!ready" class="loading">{{ $t('gen.loading') }}</div>
       <div v-if="ready && challenges.length == 0" class="error">
         {{ $t('challenge.folder_no_challenges') }}
       </div>
     </el-row>
-    <split-pane :min-percent='5' :default-percent='20' split="vertical" v-if="ready">
+    <split-pane :min-percent='5' :default-percent='20' split="vertical" v-loading="_loading" :element-loading-text="$t('gen.loading')" element-loading-background="rgba(0, 0, 0, 0.7)">
       <template slot="paneL">
-        <el-menu default-active="0" class="left">
+        <el-menu default-active="0" class="left" v-if="ready">
           <el-menu-item v-for="(challenge,index) in  challenges" :key="challenge.id" @click="onClick(challenge)" :index="index + ''">
             <i class="el-icon-check challenge-completed" v-if="challenge.completed"></i>
             <el-badge value="new" class="badge" v-if="challenge.is_new">
@@ -19,7 +18,7 @@
         </el-menu>
       </template>
       <template slot="paneR" class="right">
-        <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick">
+        <el-tabs type="border-card" v-model="activeTab" @tab-click="handleTabClick" v-if="ready">
           <el-tab-pane :label="$t('challenge.detail')" name="detail" style="height: 100vh; overflow: scroll;">
             <div class="description" v-if="selected !== null">
               <div class="title">{{selected.title}}</div>
@@ -37,9 +36,8 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane :label="$t('challenge.tips')" name="tips" style="height: 100vh; overflow: scroll;">
-            <div v-if="selected.tips !== ''">{{selected.tips}}</div>
-            <div v-if="selected.tips === ''">{{ $t('challenge.no_tips') }}</div>
+          <el-tab-pane :label="$t('challenge.discussions')" name="discussions" style="height: 100vh; overflow: scroll;">
+            <comments :targetID="selected.id" targetType='challenge' class="comments"></comments>
           </el-tab-pane>
         </el-tabs>
       </template>
@@ -48,9 +46,11 @@
 </template>
 
 <script>
+import variables from '@/styles/variables.scss'
 import ChallengePlayer from '@/components/ChallengePlayer'
 import ViewMe from '@/components/ViewMe'
 import SplitPane from 'vue-splitpane'
+import Comments from '@/components/Comments'
 import {
   listChallenges
 } from '@/api/challenge'
@@ -67,7 +67,8 @@ export default {
   components: {
     ChallengePlayer,
     ViewMe,
-    SplitPane
+    SplitPane,
+    Comments
   },
   data () {
     return {
@@ -95,7 +96,10 @@ export default {
     },
     ...mapGetters([
       'user'
-    ])
+    ]),
+    variables () {
+      return variables
+    }
   },
   methods: {
     onClick (challenge) {

@@ -26,7 +26,6 @@ type (
 		ID                  string              `json:"id" bson:"_id"`
 		Title               string              `json:"title" bson:"title"`
 		Description         EditorJSContent     `json:"description" bson:"description"`
-		Tips                string              `json:"tips" bson:"tips"`
 		Type                ChallengeType       `json:"type" bson:"type"`
 		ProgrammingLanguage ProgrammingLanguage `json:"programming_language" bson:"programming_language"`
 		Tags                []string            `json:"tags" bson:"tags"`

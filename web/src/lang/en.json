@@ -53,7 +53,6 @@
     "challenge": {
         "title": "Title",
         "code_sample": "Code sample",
-        "tips": "Tips",
         "test": "Test",
         "created_by": "Created By",
         "created_at": "Created At",
@@ -66,7 +65,7 @@
         "name": "Name",
         "date": "Date",
         "status": "Status",
-        "no_tips": "No tips are provided.",
+        "discussions": "Discussions",
         "validation": {
             "sample_required": "Sample is required",
             "test_required": "Test is required"
