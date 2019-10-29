@@ -57,6 +57,15 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 	if err != nil {
 		return nil, fmt.Errorf("failed to find challenge: %w", err)
 	}
+	switch challenge.Type {
+	case types.ChallengeTypeGoExercise, "":
+		return s.evaluateGoExerciseChallenge(ctx, challenge, r)
+	default:
+		return nil, NotSupported
+	}
+}
+
+func (s *Service) evaluateGoExerciseChallenge(ctx context.Context, challenge *types.Challenge, r *EvaluateRequest) (*playground.EvaluateResponse, error) {
 	res, err := s.runner.Evaluate(ctx, &playground.EvaluateRequest{
 		Solution: []byte(r.Solution),
 		Test:     []byte(challenge.Test),
