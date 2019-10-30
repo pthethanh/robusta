@@ -9,6 +9,7 @@ import (
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
+	"github.com/pthethanh/robusta/internal/pkg/uuid"
 	"github.com/pthethanh/robusta/internal/pkg/validator"
 )
 
@@ -57,6 +58,8 @@ func (s *Service) Create(ctx context.Context, solution *types.Solution) error {
 		solution.CreatedByID = user.UserID
 		solution.CreatedByName = user.GetName()
 		solution.CreatedByAvatar = user.AvatarURL
+	} else {
+		solution.CreatedByID = uuid.New()
 	}
 	if err := s.repo.Insert(ctx, solution); err != nil {
 		log.WithContext(ctx).Errorf("failed to save solution, err: %v", err)
