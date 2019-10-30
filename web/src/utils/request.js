@@ -29,7 +29,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.code !== 200 && res.code !== 201) {
+    if (res.code !== 1000) {
       // eslint-disable-next-line
       return Promise.reject(res.message)
     } else {
@@ -37,18 +37,18 @@ service.interceptors.response.use(
     }
   },
   error => {
+    console.log(error)
     var res = error.response
     if (res !== undefined && res !== null) {
       var code = res.data.code
-      if (code === 401 && (store.getters.token === '' || store.getters.token === undefined)) {
+      if (code === 1100 && (store.getters.token === '' || store.getters.token === undefined)) {
         store.dispatch('ToggleLogin', true)
-        return Promise.reject(error)
+        return Promise.reject(res.data)
       }
-      // eslint-disable-next-line
-      console.log(res)
-      return Promise.reject(res.data.message)
+      return Promise.reject(res.data)
     }
-    return Promise.reject(error)
+    let data = { code: 1004, status: 500 }
+    return Promise.reject(data)
   }
 )
 

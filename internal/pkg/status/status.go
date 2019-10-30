@@ -1,67 +1,56 @@
 package status
 
 import (
-	"encoding/json"
-	"net/http"
+	"errors"
+	"fmt"
 )
 
 type (
 	Status struct {
-		code    uint32
-		status  int
-		message string
+		XCode    uint32 `json:"code" yaml:"code"`
+		XStatus  int    `json:"status" yaml:"status"`
+		XMessage string `json:"message" yaml:"message"`
 	}
-)
-
-var (
-	Success      = New(CodeSuccess, http.StatusOK, "success")
-	Unauthorized = New(CodeUnauthorized, http.StatusUnauthorized, "You're not authorized to access the resource.")
 )
 
 // New return a new status.
 func New(code uint32, status int, message string) Status {
 	return Status{
-		code:    code,
-		status:  status,
-		message: message,
+		XCode:    code,
+		XStatus:  status,
+		XMessage: message,
 	}
 }
 
 func (s Status) Error() string {
-	return s.message
+	return s.XMessage
 }
 
 func (s Status) Code() uint32 {
-	return s.code
+	return s.XCode
 }
 
 func (s Status) Message() string {
-	return s.message
+	return s.XMessage
 }
 
 func (s Status) Status() int {
-	return s.status
+	return s.XStatus
 }
 
-func (s Status) MarshalJSON() ([]byte, error) {
-	return json.Marshal(map[string]interface{}{
-		"code":    s.code,
-		"message": s.message,
-		"status":  s.status,
-	})
+// Is implement errors.Is method
+func (s Status) Is(err error) bool {
+	var status Status
+	if !errors.As(err, &status) {
+		return false
+	}
+	return status.Code() == s.Code()
 }
 
-func (s *Status) UnmarshalJSON(data []byte) error {
-	var m struct {
-		Code    uint32
-		Status  int
-		Message string
-	}
-	if err := json.Unmarshal(data, &m); err != nil {
-		return err
-	}
-	s.code = m.Code
-	s.message = m.Message
-	s.status = m.Status
-	return nil
+func (s Status) String() string {
+	return fmt.Sprintf("code: %d, status: %d, message: %s", s.XCode, s.XStatus, s.XMessage)
+}
+
+func (s Status) GoString() string {
+	return fmt.Sprintf("code: %d, status: %d, message: %s", s.XCode, s.XStatus, s.XMessage)
 }

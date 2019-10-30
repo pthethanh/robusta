@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/db"
@@ -69,15 +70,15 @@ func (s *Service) Auth(ctx context.Context, email, password string) (*types.User
 	user, err := s.repo.FindByEmail(ctx, email)
 	if err != nil && !db.IsErrNotFound(err) {
 		log.WithContext(ctx).Errorf("failed to check existing user by email, err: %v", err)
-		return nil, fmt.Errorf("failed to check existing user by email: %w", err)
+		return nil, status.Gen().Internal
 	}
 	if db.IsErrNotFound(err) {
 		log.WithContext(ctx).Debugf("user not found, email: %s", email)
-		return nil, types.ErrNotFound
+		return nil, status.Auth().InvalidUserPassword
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		log.WithContext(ctx).Error("invalid password")
-		return nil, types.ErrUnauthorized
+		return nil, status.Auth().InvalidUserPassword
 	}
 	return user.Strip(), nil
 }
@@ -93,7 +94,7 @@ func (s *Service) Register(ctx context.Context, req *types.RegisterRequest) (*ty
 	}
 	if existingUser != nil {
 		log.WithContext(ctx).Debug("email already registered")
-		return nil, ErrEmailDuplicated
+		return nil, status.User().DuplicatedEmail
 	}
 	password, err := s.generatePassword(req.Password)
 	if err != nil {
@@ -168,7 +169,7 @@ func (s *Service) FindAll(ctx context.Context) ([]*types.UserInfo, error) {
 func (s *Service) FindByUserID(ctx context.Context, id string) (*types.User, error) {
 	user, err := s.repo.FindByUserID(ctx, id)
 	if err != nil && db.IsErrNotFound(err) {
-		return nil, types.ErrNotFound
+		return nil, status.Gen().NotFound
 	}
 	if err != nil && !db.IsErrNotFound(err) {
 		return nil, err

@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -135,8 +136,8 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 	// don't allow to find by ID for deleted article
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
-		AppError: ErrNotFound,
-		Data:     a,
+		Status: status.Gen().NotFound,
+		Data:   a,
 	})
 	return
 }

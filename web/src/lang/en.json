@@ -162,5 +162,10 @@
             "success_message": "Password has been reset successfully. Please try to login with the new password.",
             "failed_message": "There were some error during resetting password"
         }
+    },
+    "server": {
+        "1004": "Internal server error",
+        "1100": "You are not authorized to access this resource",
+        "1200": "Invalid email or password"
     }
 }

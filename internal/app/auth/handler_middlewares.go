@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/pthethanh/robusta/internal/pkg/http/respond"
-
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/jwt"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 )
@@ -48,7 +48,7 @@ func UserInfoMiddleware(verifier jwt.Verifier) func(http.Handler) http.Handler {
 func RequiredAuthMiddleware(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if user := FromContext(r.Context()); user == nil {
-			respond.JSON(w, http.StatusUnauthorized, ErrUnauthorized)
+			respond.JSON(w, http.StatusUnauthorized, status.Policy().Unauthorized)
 			return
 		}
 		inner.ServeHTTP(w, r)

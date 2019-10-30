@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/lint"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 	"github.com/pthethanh/robusta/internal/pkg/playground"
@@ -51,7 +52,7 @@ func (s *Service) Run(ctx context.Context, r *Request) (*Response, error) {
 func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground.EvaluateResponse, error) {
 	if err := validator.Validate(r); err != nil {
 		log.WithContext(ctx).Errorf("validation failed, err: %v", err)
-		return nil, types.ErrBadRequest
+		return nil, status.Gen().BadRequest
 	}
 	challenge, err := s.challengeSrv.FindFolderChallengeByID(ctx, r.ChallengeID, r.FolderID)
 	if err != nil {
@@ -61,7 +62,7 @@ func (s *Service) Evaluate(ctx context.Context, r *EvaluateRequest) (*playground
 	case types.ChallengeTypeGoExercise, "":
 		return s.evaluateGoExerciseChallenge(ctx, challenge, r)
 	default:
-		return nil, NotSupported
+		return nil, status.Challenge().NotSupported
 	}
 }
 

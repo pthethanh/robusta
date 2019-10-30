@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/email"
@@ -120,6 +121,6 @@ func (s *Service) Close() error {
 	case <-done:
 		return nil
 	case <-time.After(s.conf.CloseTimeout):
-		return ErrTimeout
+		return status.Gen().Timeout
 	}
 }

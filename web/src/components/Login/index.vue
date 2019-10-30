@@ -71,7 +71,6 @@ export default {
   },
   methods: {
     loginLocal () {
-      var self = this
       return new Promise((resolve, reject) => {
         var data = {
           provider: 'local',
@@ -79,15 +78,19 @@ export default {
           password: this.user.password
         }
         login(JSON.stringify(data)).then(response => {
-          self.$store.dispatch('ToggleLogin', false)
+          this.$store.dispatch('ToggleLogin', false)
           const data = response.data
-          self.$store.dispatch('SetToken', data.token)
-          self.$store.dispatch('GetInfo')
-          self.$router.push(this.getRedirect())
+          this.$store.dispatch('SetToken', data.token)
+          this.$store.dispatch('GetInfo')
+          this.$router.push(this.getRedirect())
           resolve()
         }).catch(error => {
+          if (error.code) {
+            this.error = this.$i18n.t('server.' + error.code)
+          } else {
+            this.error = this.$i18n.t('login.login_failed')
+          }
           this.loading = false
-          this.error = this.$i18n.t('login.login_failed')
           reject(error)
         })
       })

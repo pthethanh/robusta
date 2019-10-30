@@ -8,7 +8,7 @@ import (
 type (
 	appError interface {
 		Error() string
-		Code() int
+		Code() uint32
 		Message() string
 	}
 )

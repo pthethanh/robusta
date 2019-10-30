@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
@@ -97,7 +98,7 @@ func (h *OAuth2Handler) Callback(w http.ResponseWriter, r *http.Request) {
 	remoteUser, err := gothic.CompleteUserAuth(w, r)
 	if err != nil {
 		log.WithContext(r.Context()).Errorf("failed to login, err: %v", err)
-		respond.Error(w, ErrUnauthorized, http.StatusUnauthorized)
+		respond.Error(w, status.Policy().Unauthorized, http.StatusUnauthorized)
 		return
 	}
 	// update user info to our DB
@@ -132,7 +133,7 @@ func (h *OAuth2Handler) Callback(w http.ResponseWriter, r *http.Request) {
 // Logout handler OAuth logout
 func (h *OAuth2Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	gothic.Logout(w, r)
-	respond.JSON(w, http.StatusOK, types.SuccessResponse)
+	respond.JSON(w, http.StatusOK, status.Success())
 }
 
 // Login handle OAuth login
@@ -170,7 +171,7 @@ func (h *OAuth2Handler) Login(w http.ResponseWriter, r *http.Request) {
 // upsertUser perform an update if user already exist, otherwise new user will be created
 func (h *OAuth2Handler) upsertUser(ctx context.Context, newUser *types.User) (*types.User, error) {
 	existingUser, err := h.userService.FindByUserID(ctx, newUser.UserID)
-	if err != nil && err != types.ErrNotFound {
+	if err != nil && !errors.Is(err, status.Gen().NotFound) {
 		log.WithContext(ctx).Errorf("failed to find user, err: %v", err)
 		return nil, err
 	}

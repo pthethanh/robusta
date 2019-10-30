@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/pkg/image"
 	"github.com/pthethanh/robusta/internal/pkg/linkresolver"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -61,16 +61,16 @@ func (s *Service) FetchURL(ctx context.Context, url string) (*Link, error) {
 	link, err := s.linkResolver.Resolve(url)
 	if err != nil {
 		return &Link{
-			AppError: types.AppSuccess,
-			Success:  LinkStatusSuccess,
+			Status:  status.Success(),
+			Success: LinkStatusSuccess,
 			Meta: LinkMeta{
 				Title: url,
 			},
 		}, nil
 	}
 	return &Link{
-		AppError: types.AppSuccess,
-		Success:  LinkStatusSuccess,
+		Status:  status.Success(),
+		Success: LinkStatusSuccess,
 		Meta: LinkMeta{
 			Title:       link.Title,
 			Description: link.Description,

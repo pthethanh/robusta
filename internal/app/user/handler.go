@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 )
@@ -67,7 +68,7 @@ func (h *Handler) GenerateResetPasswordToken(w http.ResponseWriter, r *http.Requ
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	respond.JSON(w, http.StatusOK, types.AppSuccess)
+	respond.JSON(w, http.StatusOK, status.Success())
 }
 
 func (h *Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
@@ -82,5 +83,5 @@ func (h *Handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, err, http.StatusInternalServerError)
 		return
 	}
-	respond.JSON(w, http.StatusOK, types.AppSuccess)
+	respond.JSON(w, http.StatusOK, status.Success())
 }

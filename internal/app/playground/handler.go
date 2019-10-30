@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -41,7 +42,7 @@ func (h *Handler) Run(w http.ResponseWriter, r *http.Request) {
 		respond.Error(w, fmt.Errorf("failed to run: %w", err), http.StatusInternalServerError)
 		return
 	}
-	res.Code = types.AppCodeSuccess
+	res.Code = int(status.Success().Code())
 	respond.JSON(w, http.StatusOK, res)
 }
 

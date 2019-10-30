@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -112,7 +113,7 @@ func (h *Handler) AddChildren(w http.ResponseWriter, r *http.Request) {
 	}
 	var req AddChildrenRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respond.Error(w, types.ErrBadRequest, http.StatusBadRequest)
+		respond.Error(w, status.Gen().BadRequest, http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
@@ -135,7 +136,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	var req UpdateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respond.Error(w, types.ErrBadRequest, http.StatusBadRequest)
+		respond.Error(w, status.Gen().BadRequest, http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()

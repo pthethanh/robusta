@@ -36,7 +36,7 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	token, user, err := h.srv.Auth(r.Context(), req.Username, req.Password)
 	if err != nil {
-		respond.Error(w, ErrUnauthorized, http.StatusUnauthorized)
+		respond.Error(w, err, http.StatusUnauthorized)
 		return
 	}
 	setCookies(w, r, token, user)

@@ -1,0 +1,47 @@
+gen:
+  success:
+    code: 1000
+    status: 200
+    message: "Success"
+  not_found:
+    code: 1001
+    status: 404
+    message: "Not found"
+  timeout:
+    code: 1002
+    status: 500
+    message: "Timeout"
+  bad_request:
+    code: 1003
+    status: 400
+    message: "Bad request"
+  internal:
+    code: 1004
+    status: 500
+    message: "Internal server error"
+policy:
+  unauthorized:
+    code: 1100
+    status: 401
+    message: "You are not authorized to access this resource"
+auth:
+  invalid_user_password:
+    code: 1200
+    status: 401
+    message: "Invalid email or password"
+user:
+  duplicated_email:
+    code: 1300
+    status: 400
+    message: "Duplicated email"
+editor:
+  file_size_exceed_limit:
+    code: 1400
+    status: 500
+    message: "File size exceed limit"
+#article:
+challenge:
+  not_supported:
+    code: 1600
+    status: 400
+    message: "Challenge type not supported"

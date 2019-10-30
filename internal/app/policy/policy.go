@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/db/mongodb"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -79,7 +80,7 @@ func (s *Service) Validate(ctx context.Context, obj string, act string) error {
 	}
 	if !s.isAllowed(ctx, sub, obj, act) {
 		log.WithContext(ctx).WithFields(log.Fields{"sub": sub, "action": act, "obj": obj}).Errorf("the user is not authorized to do the action")
-		return types.ErrUnauthorized
+		return status.Policy().Unauthorized
 	}
 	return nil
 }

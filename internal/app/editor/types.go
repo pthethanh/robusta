@@ -3,13 +3,13 @@ package editor
 import (
 	"time"
 
-	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/status"
 )
 
 type (
 	LinkStatus int
 	Link       struct {
-		types.AppError
+		status.Status
 		Success LinkStatus `json:"success"`
 		Meta    LinkMeta   `json:"meta"`
 	}
@@ -26,7 +26,7 @@ type (
 
 	ImageToolStatus   int
 	ImageToolResponse struct {
-		types.AppError
+		status.Status
 		Success ImageToolStatus `json:"success"`
 		File    ImageToolFile   `json:"file"`
 	}

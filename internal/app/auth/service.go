@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/jwt"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -36,7 +37,7 @@ func (s *Service) Auth(ctx context.Context, username, password string) (string, 
 	for name, authenticator := range s.authenticators {
 		user, err := authenticator.Auth(ctx, username, password)
 		if err != nil {
-			log.WithContext(ctx).Error("failed to login with %s", name)
+			log.WithContext(ctx).Errorf("failed to login with %s, err: %#v", name, err)
 			continue
 		}
 		token, err := s.jwtSigner.Sign(userToClaims(user, jwt.DefaultLifeTime))
@@ -46,5 +47,5 @@ func (s *Service) Auth(ctx context.Context, username, password string) (string, 
 		}
 		return token, user, nil
 	}
-	return "", nil, ErrUnauthorized
+	return "", nil, status.Auth().InvalidUserPassword
 }

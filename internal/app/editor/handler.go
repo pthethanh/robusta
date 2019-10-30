@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/pthethanh/robusta/internal/app/types"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/pkg/log"
 
 	"github.com/pthethanh/robusta/internal/pkg/http/respond"
@@ -39,8 +39,8 @@ func (h *Handler) UploadImageByFile(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(h.conf.MaxUploadSize); err != nil {
 		log.WithContext(r.Context()).Errorf("failed to parse request", err)
 		respond.JSON(w, http.StatusOK, ImageToolResponse{
-			AppError: ErrFileSizeExceedLimit,
-			Success:  ImageToolStatusFailed,
+			Status:  status.Editor().FileSizeExceedLimit,
+			Success: ImageToolStatusFailed,
 		})
 		return
 	}
@@ -49,8 +49,8 @@ func (h *Handler) UploadImageByFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.WithContext(r.Context()).Errorf("failed to get form file")
 		respond.JSON(w, http.StatusOK, ImageToolResponse{
-			AppError: types.AppSuccess,
-			Success:  ImageToolStatusFailed,
+			Status:  status.Success(),
+			Success: ImageToolStatusFailed,
 		})
 		return
 	}
@@ -61,8 +61,8 @@ func (h *Handler) UploadImageByFile(w http.ResponseWriter, r *http.Request) {
 		log.WithContext(r.Context()).Errorf("failed to upload image %v, err: %v", handler.Filename, err)
 	}
 	respond.JSON(w, http.StatusOK, ImageToolResponse{
-		AppError: types.AppSuccess,
-		Success:  uploadStatus,
+		Status:  status.Success(),
+		Success: uploadStatus,
 		File: ImageToolFile{
 			URL: uploadedPath,
 		},
@@ -88,16 +88,16 @@ func (h *Handler) UploadImageByURL(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.WithContext(r.Context()).Errorf("failed to decode request, err: %v", err)
 		respond.JSON(w, http.StatusOK, ImageToolResponse{
-			AppError: types.AppSuccess,
-			Success:  ImageToolStatusFailed,
+			Status:  status.Success(),
+			Success: ImageToolStatusFailed,
 		})
 		return
 	}
 	if req.URL == "" {
 		log.WithContext(r.Context()).Errorf("url is missing")
 		respond.JSON(w, http.StatusOK, ImageToolResponse{
-			AppError: types.AppSuccess,
-			Success:  ImageToolStatusFailed,
+			Status:  status.Success(),
+			Success: ImageToolStatusFailed,
 		})
 		return
 	}
@@ -108,8 +108,8 @@ func (h *Handler) UploadImageByURL(w http.ResponseWriter, r *http.Request) {
 		log.WithContext(r.Context()).Errorf("failed to upload image %v, err: %v", r.URL, err)
 	}
 	respond.JSON(w, http.StatusOK, ImageToolResponse{
-		AppError: types.AppSuccess,
-		Success:  uploadStatus,
+		Status:  status.Success(),
+		Success: uploadStatus,
 		File: ImageToolFile{
 			URL: uploadedURL,
 		},

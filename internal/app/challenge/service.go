@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/pthethanh/robusta/internal/app/auth"
+	"github.com/pthethanh/robusta/internal/app/status"
 	"github.com/pthethanh/robusta/internal/app/types"
 	"github.com/pthethanh/robusta/internal/pkg/config/envconfig"
 	"github.com/pthethanh/robusta/internal/pkg/log"
@@ -54,7 +55,7 @@ func LoadConfigFromEnv() Config {
 func (s *Service) Create(ctx context.Context, c *types.Challenge) error {
 	if err := validator.Validate(c); err != nil {
 		log.WithContext(ctx).Errorf("invalid input, err: %v", err)
-		return types.ErrBadRequest
+		return status.Gen().BadRequest
 	}
 	if err := s.policy.Validate(ctx, types.PolicyObjectChallenge, types.PolicyActionChallengeCreate); err != nil {
 		log.WithContext(ctx).Errorf("failed to create challenge due to permission issue, err: %v", err)
@@ -148,7 +149,7 @@ func (s *Service) FindFolderChallengeByID(ctx context.Context, id string, folder
 func (s *Service) Update(ctx context.Context, req UpdateRequest) error {
 	if err := validator.Validate(req); err != nil {
 		log.WithContext(ctx).Errorf("bad request, err: %v", err)
-		return types.ErrBadRequest
+		return status.Gen().BadRequest
 	}
 	if err := s.policy.Validate(ctx, req.ID, types.PolicyActionChallengeUpdate); err != nil {
 		log.WithContext(ctx).Errorf("failed to update challenge due to permission issue, err: %v", err)
