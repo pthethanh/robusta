@@ -40,9 +40,15 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	setCookies(w, r, token, user)
+	info, err := userInfoCookieValue(user)
+	if err != nil {
+		respond.Error(w, err, http.StatusUnauthorized)
+		return
+	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: map[string]interface{}{
 			"token": token,
+			"user_info": info,
 		},
 	})
 }

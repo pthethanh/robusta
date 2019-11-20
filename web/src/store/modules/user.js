@@ -5,7 +5,9 @@ import {
   getToken,
   removeToken,
   getUser,
-  removeUser
+  removeUser,
+  setToken,
+  setUser
 } from '@/utils/auth'
 import router from '../../router'
 
@@ -52,6 +54,11 @@ const user = {
     },
     SetToken({ commit, state }, token) {
       commit('SET_TOKEN', token)
+      setToken(token)
+    },
+    SetInfo({ commit, state }, info) {
+      commit('SET_INFO', info)
+      setUser(info)
     },
     LogOut ({ commit, state }) {
       return new Promise((resolve, reject) => {

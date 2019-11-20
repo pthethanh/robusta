@@ -112,11 +112,10 @@ func createTokenCookie(token string, r *http.Request) *http.Cookie {
 
 // createUserInfoCookie create a user info (base64) cookie which will expires after 24h
 func createUserInfoCookie(user *types.User, r *http.Request) (*http.Cookie, error) {
-	b, err := json.Marshal(user)
+	info, err := userInfoCookieValue(user)
 	if err != nil {
 		return nil, err
 	}
-	info := base64.StdEncoding.EncodeToString(b)
 	return &http.Cookie{
 		Name:     UserCookieName,
 		Value:    info,
@@ -138,4 +137,12 @@ func setCookies(w http.ResponseWriter, r *http.Request, token string, user *type
 		return
 	}
 	http.SetCookie(w, userCookie)
+}
+
+func userInfoCookieValue(user *types.User) (string, error) {
+	b, err := json.Marshal(user)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(b), nil
 }

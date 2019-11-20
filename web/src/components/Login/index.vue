@@ -81,6 +81,7 @@ export default {
           this.$store.dispatch('ToggleLogin', false)
           const data = response.data
           this.$store.dispatch('SetToken', data.token)
+          this.$store.dispatch('SetInfo', data.user_info)
           this.$store.dispatch('GetInfo')
           this.$router.push(this.getRedirect())
           resolve()
