@@ -1,18 +1,17 @@
 # robusta
 
-[![Join the chat at https://gitter.im/pthethanh/robusta](https://badges.gitter.im/pthethanh/robusta.svg)](https://gitter.im/pthethanh/robusta?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+Just a simple website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com
 
-A website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com
+**Note** that this project now is no longer in active development, but feel free to make pull request.
 
 ## Prerequisites
 
 Make sure you have the development environment matches with these notes below so we can mitigate any problems of version mismatch.
 
 - Backend:
-  - Go SDK: 1.12.
+  - Go SDK: 1.13.
     Make sure to set `$GOROOT` and `$GOPATH` correctly.
     You can check those environment variable by typing: `go env`.
-  - Install [govendor](https://github.com/kardianos/govendor) for dependency management. This is mostly supports for auto reload server.
   - MongoDB: 4.1 (latest 4.1.8).
   - Go module
 
