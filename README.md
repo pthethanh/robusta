@@ -48,7 +48,7 @@ You can use Docker to start all services at once. This will support auto reload 
 
 ```shell
 $ cd /web && yarn install && cd ../
-$ make compose
+$ make compose_dev
 ```
 
 After started, services will be available at `localhost` with ports as below:
