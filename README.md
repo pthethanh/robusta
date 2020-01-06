@@ -2,6 +2,8 @@
 
 Just a simple website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com
 
+This project follows [golang-standards/project-layout](https://github.com/golang-standards/project-layout) and hence can be used as a references for new Go developers.
+
 **Note** that this project now is no longer in active development, but feel free to make pull request.
 
 ## Prerequisites
