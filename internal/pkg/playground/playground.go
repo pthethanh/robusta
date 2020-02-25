@@ -110,9 +110,13 @@ func (c *Client) Evaluate(ctx context.Context, r *EvaluateRequest) (*EvaluateRes
 			TestsFailed:  res.TestsFailed,
 		}, err
 	}
+	status := res.Status
+	if res.Status == -1 && res.IsTest && res.TestsFailed == 0 {
+		status = 0
+	}
 	return &EvaluateResponse{
 		Problems:     problems,
-		Status:       res.Status,
+		Status:       status,
 		Events:       res.Events,
 		IsTestFailed: res.TestsFailed > 0,
 		Error:        res.Errors,
