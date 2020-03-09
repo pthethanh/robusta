@@ -47,7 +47,7 @@ func (h *Handler) Auth(w http.ResponseWriter, r *http.Request) {
 	}
 	respond.JSON(w, http.StatusOK, types.BaseResponse{
 		Data: map[string]interface{}{
-			"token": token,
+			"token":     token,
 			"user_info": info,
 		},
 	})

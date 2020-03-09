@@ -2,6 +2,7 @@ package status_test
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"github.com/pthethanh/robusta/internal/pkg/status"
@@ -15,8 +16,9 @@ func TestStatusMarshal(t *testing.T) {
 		return
 	}
 	wants := `{"code":200,"message":"ok","status":200}`
-	if string(b) != wants {
-		t.Errorf("got %s, wants %s", string(b), wants)
+	got := string(b)
+	if strings.Contains(got, `"code":200"`) && strings.Contains(got, `"status":200`) {
+		t.Errorf("got %s, wants %s", got, wants)
 	}
 }
 
