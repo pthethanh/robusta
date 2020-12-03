@@ -1,6 +1,6 @@
 # robusta
 
-Just a simple website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com
+Just a simple website to share technology knowledge. Live demo is available at: https://goway.herokuapp.com [currently shutdown because the old db server is end of life and I could not find a new one for free]
 
 This project follows [golang-standards/project-layout](https://github.com/golang-standards/project-layout) and hence can be used as a reference for new Go developers.
 
