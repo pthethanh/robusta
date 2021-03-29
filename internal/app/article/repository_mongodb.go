@@ -121,7 +121,7 @@ func (r *MongoRepository) FindByCreatedByID(ctx context.Context, id string) ([]*
 }
 
 func (r *MongoRepository) collection(s *mgo.Session) *mgo.Collection {
-	return s.DB("goway").C("article")
+	return s.DB("").C("article")
 }
 
 func (r *MongoRepository) Increase(ctx context.Context, id string, field string, val interface{}) error {
