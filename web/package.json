@@ -35,7 +35,7 @@
     "@editorjs/quote": "^2.2.0",
     "@editorjs/table": "^1.2.0",
     "@editorjs/warning": "^1.1.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "code-example": "file:./src/components/Editor/plugins/code-example",
     "core-js": "^2.6.5",
     "date-fns": "^2.0.0-beta.3",
